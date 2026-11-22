@@ -1,53 +1,57 @@
 # LoopTrial
 
-LoopTrial 让工程师和已有的 AI Agent 通过同一组 CLI / MCP 操作发现设备、采集波形、调整临时参数、回读生效值，并按实验编号复核结果。用户可以先告诉 Agent “平时工作在 50 °C”，随后只说“升温太慢，帮我调快一点”。设备能力给出可测信号、单位、可写范围和动作，Agent 根据对话与基线安排下一轮。工具本身可离线运行，无需模型账号。
+**简体中文** · [English](README.en.md)
 
-**[下载 v0.1.0](https://github.com/yuheng-null/LoopTrial/releases/tag/v0.1.0)** · [自主调参与停止记录](docs/ACCEPTANCE.md) · [Blue Pill 接线、协议与实测](docs/HARDWARE.md) · [五类实验和新设备接入示例](docs/EXPERIMENTS.md)
+LoopTrial 是给嵌入式工程师和 AI Agent 用的实验工具。接入设备后，你可以采一段波形诊断问题，也可以让 Agent 调整参数、读回生效值，在相同工况下重做实验。每次运行都有独立编号，原始采样和计算结果可以一起交给队友。
+
+例如，你先告诉 Agent「这台温控器平时工作在 50 °C」，之后只说「升温太慢，帮我调快一点」。Agent 可以从设备描述中找到温度、加热输出和可写增益，先跑一次基线，再比较升温时间和超调。候选合格后重新运行确认；若输出已经持续顶到上限，也可以保留原配置，把停止原因和波形交给你。
+
+[下载 v0.1.0](https://github.com/yuheng-null/LoopTrial/releases/tag/v0.1.0) · [实验示例](docs/EXPERIMENTS.md) · [已有工程接入](docs/HARDWARE.md)
+
+## 可以用它做什么
+
+| 用途 | 随包示例 |
+| --- | --- |
+| 测量与信号处理 | 在同一段压力输入上比较滤波前后的静止噪声和响应延迟。 |
+| 传感器标定 | 用两个已知参考点求零点和比例系数，留出第三点检查误差。 |
+| 控制器调试 | 温控看升温时间和超调，轮速看跟踪误差和输出饱和，两轮直立看扰动后的倾角恢复和车轮漂移。 |
+
+![模拟压力阶跃的原始读数和滤波曲线。滤波减小了静止时的噪声，也让阶跃边沿变缓。](docs/media/pressure-filter.png)
+
+同一段模拟压力采样，滤波后读数更稳，跟上台阶也多用了约 0.2 秒。下面的命令可以重做这组比较。
 
 ## 第一次使用
 
-在项目目录之外打开空目录。以下命令适用于 Windows PowerShell，先安装 Python 3.12 和 Python Launcher。联网安装依赖后，模拟、采集、MCP 和记录复核均在本机执行。将 Release 中的 `looptrial-0.1.0-py3-none-any.whl` 下载到当前目录。可用 `Get-FileHash .\looptrial-0.1.0-py3-none-any.whl` 对照同一发布页的 SHA256SUMS.txt。
+安装 Python 3.12 和 Windows Python Launcher，将[主机安装包](https://github.com/yuheng-null/LoopTrial/releases/download/v0.1.0/looptrial-0.1.0-py3-none-any.whl)下载到一个空目录，然后在该目录打开 PowerShell。首次安装需要联网获取依赖，内置模拟器在本机运行。
 
 ```powershell
 py -3.12 -m venv .venv
 .\.venv\Scripts\python -m pip install .\looptrial-0.1.0-py3-none-any.whl
 $env:PATH = "$PWD\.venv\Scripts;$env:PATH"
 $env:LOOPTRIAL_HOME = "$PWD\lab"
-looptrial describe sim://thermal
-$r = looptrial run sim://thermal step --condition target_c=50 | ConvertFrom-Json
-looptrial review $r.id
-looptrial-client
 ```
 
-温控默认基线从 20 °C 加热，361 个采样点覆盖 180 s 虚拟时间，达到阶跃幅度 95% 用时 60 s。最后一条命令启动独立标准 MCP 客户端和 stdio 服务进程。客户端发现工具后重新做一次实验，用返回的编号取回结果并离线重算。
-
-若只想诊断传感器读数抖动，一次采集就能取得静止噪声、响应延迟和波形片段。
+用同一个随机种子采两次，让滤波器收到相同的原始信号。两次 `apply` 都会返回实际生效的参数。
 
 ```powershell
-$s = looptrial run sim://sensor capture | ConvertFrom-Json
-looptrial wave $s.id --start 145 --count 12
-Invoke-Item "$env:LOOPTRIAL_HOME\runs\$($s.id)\plot.svg"
+looptrial describe sim://sensor
+looptrial apply sim://sensor alpha=1
+$a = looptrial run sim://sensor capture --condition seed=17 | ConvertFrom-Json
+looptrial apply sim://sensor alpha=0.2
+$b = looptrial run sim://sensor capture --condition seed=17 | ConvertFrom-Json
+looptrial compare $a.id $b.id
+looptrial review $b.id
 ```
 
-每个 `runs/<id>/` 包含 `record.json`、`samples.csv` 和有单位的 `plot.svg`（有足够采样点时生成）。把整个目录复制到另一台装有相同版本的电脑，执行 `looptrial review <复制后的目录>`。复核会校验 CSV 的 SHA-256 并从采样重算指标及判据。设备、原目录和 SQLite 索引均可离线。
+`compare` 给出第二次减去第一次的指标差值。打开 `lab/runs/<id>/` 可以看到参数和工况（`record.json`）、带时间戳的采样（`samples.csv`）及波形（`plot.svg`）。把整个目录复制到另一台装有 LoopTrial 的电脑，即可用 `looptrial review <目录>` 离线校验并重算。
 
-## 接入自己的 Agent
+## 接入自己的 Agent 或设备
 
-向支持 stdio MCP 的客户端注册 `looptrial-mcp`，或允许 Agent 在环境中执行 `looptrial`。用 `(Get-Command looptrial-mcp).Source` 获取 Windows 可执行文件的绝对路径。从 GUI 启动的客户端可在配置中指定同一 `LOOPTRIAL_HOME`。运行 `looptrial resources` 可找到 MCP 配置模板、Agent 使用说明和插件源码。返回的 `installed_guide` 目录内还有离线中文指南、完整验收记录和可执行示例。用 `looptrial-client --list` 查看客户端实际发现的工具输入。
+- **Agent** 可以直接执行 CLI，也可以通过 MCP（Model Context Protocol）调用同一套操作。向支持 stdio 的客户端注册 `looptrial-mcp`，可用 `(Get-Command looptrial-mcp).Source` 获得绝对路径。让客户端使用与 CLI 相同的 `LOOPTRIAL_HOME` 即可共享记录。运行 `looptrial-client` 可通过独立的标准 MCP 客户端完成一次实验。
+- **实物设备**通过固件或适配器声明信号、单位、允许写入的参数和实验动作。随包的 STM32F103 Blue Pill 固件演示 USB 转串口与 BD-BT26 蓝牙 GATT 两种接法。已有通信协议也可以由小型 Python 适配器接入。实时采样与控制留在设备或本地程序，Agent 根据每轮结果决定下一步。
 
-- 初次接入先用 `devices` 和 `describe` 核实对象与范围。`read` 返回当前生效参数，`apply URI name=value` 写入并独立回读，`writes URI` 可查写入及回退回执。板卡写入 RAM，复位恢复默认。模拟器在当前实验目录保留会话值，新的目录使用模型默认值。
-- `run` 使用当前生效值。可多次给出 `--condition k=v`、`--goal metric:le:value` 和 `--constraint metric:ge:value`，上下界都支持。用 `--note` 记录前文授权、阈值来源、预算或候选理由。只采集时可省略目标。摘要中的 `passed` 为 true、false 或 null，依次表示达标、未达标、只测量。
-- `--background --key trial-1` 会返回编号。离开后用 `status ID` 查询，`cancel ID` 请求取消，再查终态。相同请求重用 key 可取得同一编号，独立复测请用新 key 或省略。模拟专用 `--pace 4` 在采集前保留四秒可观察的等待窗口。
-- `records` 查询最近试验，`compare A B` 对相同设备、版本、动作及工况的完整记录计算 B−A。故障试验保留部分采样和最后可确认状态。CLI 的 run/status 对失败或取消返回 1，输入或操作错误返回 2，完成的测量返回 0；判定是否满足实验目标请读 `passed`。MCP 返回结构化结果，操作失败有 `error.code`。
+## 文档与许可
 
-## 设备、构建与复验
+[CLI / MCP 命令参考](docs/CLI.md) · [跨领域实验与适配器示例](docs/EXPERIMENTS.md) · [Blue Pill 接线、协议与固件接入](docs/HARDWARE.md) · [发布与源码构建](docs/RELEASE.md) · [验收记录](docs/ACCEPTANCE.md)
 
-| 想做的事 | 入口 |
-| --- | --- |
-| 只读采集、滤波、三点标定、温控、轮速、直立与旧日志适配 | [实验指南](docs/EXPERIMENTS.md) |
-| 把已有 UART 工程接到 CLI/MCP，使用 Blue Pill 的 USB 或 BLE 链路 | [固件、协议和接入指南](docs/HARDWARE.md) |
-| 找到“一句症状”、不同工况、候选失败后继续和自主停止的原始记录 | [实验验收索引](docs/ACCEPTANCE.md) |
-| 从标签重新构建 wheel、源码包和示例固件，核对实测版本和限制 | [发布说明与构建](docs/RELEASE.md) |
-| 检查产品任务和开源复用选择 | [公开任务书](docs/GOAL.md) · [复用清单](docs/REUSE.md) |
-
-本版使用 GPL-3.0-or-later。各依赖采用各自的许可条款。详见 [LICENSE](LICENSE) 和 [第三方声明](THIRD_PARTY.md)。
+LoopTrial 采用 **GPL-3.0-or-later**。依赖项目保留各自的许可证。[完整许可](LICENSE) · [第三方声明](THIRD_PARTY.md)
