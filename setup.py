@@ -7,7 +7,8 @@ from setuptools import setup
 
 groups = defaultdict(list)
 for pattern in (
-    "README.md", "README.en.md", "LICENSE", "THIRD_PARTY.md", "docs/*.md", "docs/media/*.png", "examples/*.py",
+    "README.md", "README.en.md", "LICENSE", "THIRD_PARTY*.md", "docs/*.md", "docs/media/*.png", "examples/*.py",
+    "src/looptrial/resources/*.md", "src/looptrial/resources/mcp-config.json",
     "requirements/*.txt", "firmware/*.py", "firmware/*.c", "firmware/*.h", "firmware/*.ld",
     "evidence/**/*.md", "evidence/**/*.json", "evidence/**/*.jsonl",
     "evidence/**/*.zip", "evidence/**/*.csv", "evidence/**/*.svg",

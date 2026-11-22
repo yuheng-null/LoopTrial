@@ -1,5 +1,7 @@
 # PowerShell quick start
 
+[简体中文](quickstart.zh-CN.md) · **English**
+
 From a shell with the installed console scripts on PATH:
 
 ```powershell
@@ -21,4 +23,4 @@ looptrial compare $r.id $b.id
 looptrial apply sim://thermal "kp=$($old.kp)"
 ```
 
-MCP host configuration template: mcp-config.json. Replace the command with the installed looptrial-mcp executable's full path when necessary. Set the same absolute LOOPTRIAL_HOME in both clients to share the catalog. Each run folder is portable by itself. Copy it and pass its path to looptrial review.
+Use the [MCP host configuration template](mcp-config.json). Replace the command with the installed looptrial-mcp executable's full path when necessary. Set the same absolute LOOPTRIAL_HOME in both clients to share the catalog. Each run folder is portable by itself. Copy it and pass its path to looptrial review.

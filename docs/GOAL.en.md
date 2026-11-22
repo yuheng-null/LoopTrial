@@ -1,0 +1,81 @@
+# LoopTrial first-release specification
+
+[简体中文](GOAL.md) · **English**
+
+Deliver an embedded measurement, calibration and control experiment tool that a developer can install and an existing AI agent can use directly. Through a project's existing UART the agent should be able to discover a device, acquire signals, change parameters within agreed bounds, run experiments and check results. Prioritize small MCUs and firmware that students and engineers already have. Routine use must work without a dedicated model account or paid API.
+
+## Start from the user's goal or symptom
+
+The user can simply say, “This heater takes too long to warm up. Speed it up.” They interact with their own agent throughout. When the conversation already provides enough information to decide the next step, the agent should choose a suitable CLI or MCP operation, construct its arguments and invoke it. The user need not name LoopTrial, choose an interface, fill in another experiment form or repeat earlier information. Each tool takes only the arguments its operation needs.
+
+Carry forward the user's objective, known conditions and authorization. Consult project source, device configuration, capabilities and effective values as needed. Measure a baseline when it can answer an open question. Before comparing candidates, turn the objective into measurable criteria and choose an action, confirmation method and finite time or trial budget. For a slow heater, for example, compare time to operating temperature from the same starting temperature, then check whether overshoot worsened. Record which requirements came from the user, which limits came from the device and which criteria the agent selected from the baseline.
+
+Ground hardware ratings, writable ranges and authorization in evidence. Ask one specific question only if a significant unresolved choice changes the next operation. While waiting, continue independent measurements and analysis. One waveform may answer the question. The user's intent and the evidence determine whether to change parameters, run further trials or report a diagnosis.
+
+## What the tool should help the agent determine
+
+An agent seeing a new device should discover its identity and firmware version, signal names and units, supported experiments, and how to verify an operation. For existing projects, provide minimal firmware integration and a short guide to finding relevant variables, settings or actions in source, checking sample period, scale, sign and units, and verifying the mapping with real readings. Allow a small adapter to wrap an existing protocol.
+
+Provide composable operations for capability discovery, reading or setting parameters, bounded acquisition, declared actions, status and comparison. They should also allow a whole trial in a single call. Devices may have no PID terms, vehicle type, actuator or setpoint. Devices or local programs handle high-rate sampling and action timing. Agents can return to long trials, resume a session or cancel. Default responses should be compact and reference the raw data, with waveform slices available on demand. Structured failures should guide the next check.
+
+For example, if a user asks to speed up a right wheel and its output stays saturated, return the interval and evidence so the agent can compare both wheels at the same command. For a jittery sensor, the same agent can capture a raw trace and compare the noise and delay of two filter settings. Valid outcomes include retaining the original settings, identifying an output limit and discovering that an independent reference is missing.
+
+## Unattended tuning across devices
+
+When repeatable trials are possible, the agent should determine conditions, objectives, hard constraints, writable parameters and budget using the approach above. Within existing user authorization and device limits, it should carry out the following through public CLI or MCP operations. The user need not select candidates, approve every write, collect samples or interpret waveforms.
+
+1. **Measure a baseline.** Read effective settings, run the agreed excitation or capture, collect timestamped samples, and check conditions and data quality.
+2. **Act on observations.** Calculate metrics, identify unmet objectives or constraints, and choose a candidate or a measurement that distinguishes possible causes. Send the command, verify effective values and collect new samples under comparable conditions. Follow the recovery strategy for a worse candidate. Continue while feasible trials and budget remain.
+3. **Confirm success with new trials.** Repeat under the agreed conditions the selected number of times. Check every objective and hard constraint. Record all confirmation outcomes and final parameters. If the baseline already qualifies, go straight to confirmation.
+4. **Stop autonomously when progress is blocked.** State the unmet metric, supporting data and missing conditions. Distinguish output saturation, insufficient samples, ineffective writes, budget exhaustion and the need for a physical reset. Restore the agreed settings and read them back when possible. Mark device state unknown after a disconnect when it cannot be confirmed. An exhausted budget only describes the search performed.
+
+Devices expose signals, actions and limits. Experiments define metrics, confirmation conditions and stopping rules. A heater trial can constrain both rise time and overshoot from a matched start. A sensor trial may limit noise and delay together. A racing vehicle could require a valid finish and optimize lap time. All should share the same acquisition, command, confirmation and recording facilities.
+
+## Test generality with different plants
+
+| Representative experiment | Required experience |
+| --- | --- |
+| Sensors and signal processing | Acquire from a device without PID or an actuator. Compare two filters on the same input containing both a stationary interval and a known change. Quantify noise and response delay and return raw traces and differences. Explain which reference or repeatability conditions a physical sensor needs. |
+| Measurement calibration | Use two known references on the same sensor model to fit offset and scale. Compare error before and after calibration on a third, held-out reference. Save references, units, raw values, coefficients and validation residuals. The method should transfer to ADCs or linear sensors. |
+| Thermal and other slow processes | Simulate inertia and delay. Compare warm-up, overshoot and steady-state error from identical initial conditions. Support status during the trial and retrieval by ID later. Automated tests may use a simulated clock. |
+| Motor wheel speed | Run repeatable speed steps under amplitude and trial limits. Read the baseline, propose or select candidates, apply, acquire, confirm, then retain or restore. Results must distinguish poor tracking from output saturation. |
+| Two-wheel balance | Apply repeatable small disturbances to a simulated baseline known to stand upright. Evaluate tilt recovery, wheel drift and output limits together. Add device descriptions and evaluation as needed while reusing tools; real-time stabilization runs on the device. |
+
+Start with the simplest working path, then challenge it with different plant dynamics. Small examples can share a simulator, commands, MCP interface, acquisition and record code. A user should be able to add an experiment from a short example without changing the core CLI or MCP server. Other possible applications include pump pressure response, servo deadband and power supply load steps. Each project provides its own standards, loads and actuators.
+
+## Required capabilities
+
+- **One experiment over two transports.** USB-to-UART and BLE GATT share a device protocol. Provide a BD-BT26 preset with configurable notify and write characteristics. For identical firmware and experiment, only the connection setting should change. Handshake first to verify identity and capabilities. COM ports and BLE names support discovery. Confirm project identity at application level.
+- **CLI and MCP.** Provide installed commands, help, noninteractive structured output, clear tool schemas, exit codes and errors. Both interfaces use the same implementation. Include a model-independent standard MCP client that discovers tools and runs an experiment through a real session. Keep thousands of samples out of the conversation by default.
+- **One reviewable record per trial.** Include ID, plant or data source, firmware or model version, timestamps and units, excitation or references, effective configuration, constraints, raw data and any reason for stopping. Support offline recalculation, before/after comparison and a human-readable plot. Existing inputs must remain reviewable. Predict a response to new parameters through a new trial or a clearly identified model.
+- **Trustworthy data and actions.** Handle fragmented or coalesced frames, lost acknowledgements, sample gaps and reconnects on both transports. Resubmission must not start the same trial twice. Distinguish command sent, applied and restoration verified. Report insufficient data or incomparable starts, and show constraints separately from objectives. Use temporary parameter changes by default. Express persistence as a separate operation. Device firmware enforces timeouts, limits and fallback while preserving existing real-time control.
+- **Practical integration.** Deliver a minimal MCU implementation, buildable dual-transport Blue Pill example and instructions for mapping capabilities to an existing project. A lightweight device description should expose just the supported subset. Support slow sampling, fast board-side buffering or read-only acquisition as appropriate. Standalone measurement is a valid use.
+
+## Acceptance procedure
+
+1. Install the actual release package in a clean environment and follow the README's hardware-free quick start. Exercise the external CLI and an independent standard MCP client. Emulate a new agent with no repository context: discover capabilities from tool descriptions, run a trial and retrieve its record. Verify that the summary supports the next decision and raw evidence is accessible.
+2. Run the representative experiments above and pass the [unattended tuning criteria](#unattended-tuning-acceptance). Verify key metrics using a known response or independent computation. Supply reproducible inputs, commands and small examples. Identify the adapter code each new domain needed.
+3. Exercise the same trial over serial and BLE. Test fragmentation, retry, disconnect and mismatched readback, checking final device state and retained records. Controlled substitutes or virtual endpoints are suitable for routine regressions. Use normal clients to leave a long experiment and retrieve it later.
+4. Build the MCU example. The initial bench has one Blue Pill, ST-LINK, USB serial on PA2/PA3 and BD-BT26 on PB6/PB7. When available, run a parameter-dependent software plant on the board. Identify it, acquire, apply parameters, verify readback, confirm and retrieve records separately over wired and BLE connections. Retain board timestamps and effective values. Thermal, sensor, speed and balance examples can be accepted in simulation. Report host simulation, on-board model, each physical connection and outstanding physical performance tests separately. If a link is unavailable, record the symptom and continue the remaining work without waiting for new hardware.
+5. Complete [first-release acceptance](#first-release-acceptance), commit and push the verified work to this repository, then verify the remote version.
+
+### Unattended tuning acceptance
+
+- **A symptom starts the process.** Put an existing agent in front of a connected test device. Give a key condition earlier, such as “We normally run at 50 °C.” End with only “It takes too long to warm up. Speed it up.” Then withdraw human input. The tester supplies no tool name, structured task sheet, commands, candidate gains or scoring formula. Real CLI or MCP records must show discovery, use of earlier context, experiment design, baseline acquisition and a conclusion. Keep the final message identical, vary only the earlier temperature and verify the targets actually used. Save redacted conversations, rationale for criteria and budget, arguments and run IDs so reviewers can check that nothing had to be entered twice. Simulators are acceptable.
+- **Tune two distinct devices from scratch.** Start each of two controllable plants with different principles, such as a heater and configurable filter, from settings that miss the goal. The agent may choose criteria and budget using conversation, capabilities and baseline. The symptom case may count. It must obtain the baseline, analyze data, command parameters, verify application, collect a fresh response and confirm success in the preselected number of fresh trials. Simulator outputs must respond to the parameters actually written.
+- **Observations determine the next step.** On one plant change load, delay or noise and give the same goal. Record how the agent changes its candidates, adds measurements or stops. At least once a candidate must fail and the client must choose and run the next trial autonomously.
+- **A blocked trial still has a reviewable result.** Choose a target one model cannot reach within its output range. In another case interrupt capture or fail a readback. Report the last valid measurement, unmet conditions, evidence for stopping, last confirmed parameters and restoration state. A physical-limit diagnosis requires matching measurements. If a manual reset or reference is needed, identify the specific action and finish.
+- **Use the real interfaces.** Across success and stop cases, exercise the installed noninteractive CLI and an independent standard MCP client. Save commands or tool logs, candidate decisions, readbacks, raw samples, metrics and confirmations. Another user must be able to recalculate by ID offline and see why each candidate was accepted, continued or stopped. Routine acceptance can use simulators without a physical track or particular vehicle.
+
+## First-release acceptance
+
+Take the perspective of someone receiving the product for the first time. The starting point is a versioned release and its matching source commit.
+
+- **Downloadable artifacts.** Build the host installer and Blue Pill example firmware from a clean checkout using public commands. Supply actual files, version, commit and SHA-256 hashes. After installation, users must be able to locate runtime resources, examples and configuration templates. Keep build and regression entry points and dependency version information in the source.
+- **Use the released package.** In a new environment outside the project, install the actual artifacts using the README prerequisites. Copy the quick start, run a hardware-free trial, connect an independent MCP client, retrieve the result and review it offline. Verify readers can find success and autonomous-stop examples. Record the package name, commands and outcomes.
+- **Users can connect their own boards.** Ship CLI and MCP usage, device protocol, existing-firmware integration steps, and Blue Pill model, wiring, build, programming and connectivity checks. Include a portable public record with parameters, metrics and waveform that can be interpreted away from the development machine.
+- **Ready-to-use release notes.** Describe features, verified platforms, quick start, artifact locations, licenses and third-party notices, known limitations and evidence by validation type. Report the actual release material locations. If publishing a GitHub Release, verify the tagged commit and download the assets to check their hashes.
+
+## Implementation decisions
+
+Select mature components using the [upstream design references](REUSE.en.md). Layout, language, protocol, algorithms, command names, packaging and execution order are implementation choices. Favor low integration cost for new devices, make it easy for an agent to verify its actions, and challenge the design with failures and counterexamples. A shorter route that delivers the same user experience may replace an early concept. Carry the initial project through to a usable product, arranging changes, tests and reviews using engineering judgment.

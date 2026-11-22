@@ -1,5 +1,7 @@
 # LoopTrial 0.1.0
 
+**简体中文** · [English](RELEASE.en.md)
+
 从 [v0.1.0 发布页](https://github.com/yuheng-null/LoopTrial/releases/tag/v0.1.0) 下载。标签固定用于构建的源码。SHA256SUMS.txt 列出主机 wheel、完整源码分发包、板端 BIN、ELF 和实验资料包的 SHA-256。release-audit.json 记录构建提交、平台、包外安装、标准 MCP 调用与离线核验结果。
 
 ## 发布物和入口

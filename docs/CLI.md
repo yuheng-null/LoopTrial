@@ -1,6 +1,6 @@
 # LoopTrial CLI & MCP
 
-[中文首页](../README.md) · [English overview](../README.en.md)
+[简体中文](CLI.zh-CN.md) · **English**
 
 The CLI prints JSON. MCP tools use the same device adapters and experiment store. Run `looptrial --help` for the CLI, `looptrial-client --list` for MCP tool schemas, and `looptrial resources` to locate the installed guides, example adapter, and MCP configuration template.
 

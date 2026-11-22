@@ -6,7 +6,13 @@ LoopTrial is an experiment toolkit for embedded engineers and AI agents. Capture
 
 Suppose you've already told your agent that a heater normally runs at 50 °C. Later you can just say, “It takes too long to warm up.” The agent can discover the temperature signal, heater output and writable gains, measure a baseline, then compare warm-up time and overshoot. It can confirm an improvement with a fresh run or stop and show you where the heater was already at its output limit.
 
-[Download v0.1.0](https://github.com/yuheng-null/LoopTrial/releases/tag/v0.1.0) · [CLI and MCP reference](docs/CLI.md) · [Device integration guide (中文)](docs/HARDWARE.md)
+[Download v0.1.0](https://github.com/yuheng-null/LoopTrial/releases/tag/v0.1.0) · [CLI and MCP reference](docs/CLI.md) · [Device integration guide](docs/HARDWARE.en.md)
+
+## Start with your agent
+
+Give this page's URL and your symptom to an agent that can run local tools. For example, “I’m using the simulated pressure sensor. Its reading jumps around even at rest. How much does it vary?” Use the device and operating conditions already established in the conversation. With LoopTrial connected over MCP, call `devices` and `describe`, then use `run_experiment` with a supported action. A shell-enabled agent can use the CLI directly. From a clone, run `python -m pip install .` in a Python 3.11+ virtual environment at the repository root. With only the URL, follow the wheel installation under **Quick start** below.
+
+For a first hardware-free diagnosis, run `looptrial describe sim://sensor`, then `looptrial run sim://sensor capture` and `looptrial review <id>` with the returned ID. Confirm the target before using hardware. For tuning, work within the existing write authorization, read back effective values and repeat the experiment. [Agent's experiment guide](src/looptrial/resources/agent-guide.en.md) · [CLI and MCP reference](docs/CLI.md)
 
 ## What you can do
 
@@ -52,6 +58,6 @@ looptrial review $b.id
 
 ## Documentation and license
 
-[CLI and MCP reference](docs/CLI.md) · [Experiments and adapter example (中文)](docs/EXPERIMENTS.md) · [Wiring, protocol and firmware integration (中文)](docs/HARDWARE.md) · [Release and build guide (中文)](docs/RELEASE.md) · [Acceptance records (中文)](docs/ACCEPTANCE.md)
+[CLI and MCP reference](docs/CLI.md) · [Experiments and adapter example](docs/EXPERIMENTS.en.md) · [Wiring, protocol and firmware integration](docs/HARDWARE.en.md) · [Release and build guide](docs/RELEASE.en.md) · [Acceptance records](docs/ACCEPTANCE.en.md) · [Project goals](docs/GOAL.en.md) · [Upstream design references](docs/REUSE.en.md)
 
 LoopTrial is licensed under **GPL-3.0-or-later**. Dependencies retain their respective licenses. [License](LICENSE) · [Third-party notices](THIRD_PARTY.md)

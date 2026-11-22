@@ -1,5 +1,7 @@
 # Blue Pill 实验与既有固件接入
 
+**简体中文** · [English](HARDWARE.en.md)
+
 示例面向 STM32F103C8T6，使用 64 KiB Flash、20 KiB SRAM 的链接布局。板内运行一阶软件对象。每次阶跃将输出置零，按设定周期更新并缓存测量值，串口和 GATT 均可读取同一对象。通电默认 `gain=2`，范围 1～16，修改保存在 RAM。本例占用两组 USART 和 SysTick，复位时钟为 HSI 8 MHz。
 
 | 接口 | Blue Pill | 接线或用途 |

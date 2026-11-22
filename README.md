@@ -8,6 +8,12 @@ LoopTrial 是给嵌入式工程师和 AI Agent 用的实验工具。接入设备
 
 [下载 v0.1.0](https://github.com/yuheng-null/LoopTrial/releases/tag/v0.1.0) · [实验示例](docs/EXPERIMENTS.md) · [已有工程接入](docs/HARDWARE.md)
 
+## 让 Agent 开始
+
+把本页网址和症状发给能运行本地工具的 Agent 即可。例如：「我在用模拟压力传感器，静置时读数也在跳，波动大概有多大？」Agent 可沿用对话中的工况和设备。已有 LoopTrial MCP 连接时，调用 `devices`、`describe`，再按返回的动作调用 `run_experiment`。有终端时也可以直接用 CLI。克隆仓库后，在 Python 3.11+ 的虚拟环境中从仓库根目录运行 `python -m pip install .`；只有网址时，可按下方「第一次使用」安装发布包。
+
+第一次无硬件诊断可执行 `looptrial describe sim://sensor`，随后执行 `looptrial run sim://sensor capture`，用返回的 `id` 运行 `looptrial review <id>`。接入实物前先确认目标设备；调参时沿用已有写入授权，独立回读并复测。[Agent 实验指南](src/looptrial/resources/agent-guide.md) · [CLI / MCP 命令参考](docs/CLI.zh-CN.md)
+
 ## 可以用它做什么
 
 | 用途 | 随包示例 |
@@ -52,6 +58,6 @@ looptrial review $b.id
 
 ## 文档与许可
 
-[CLI / MCP 命令参考](docs/CLI.md) · [跨领域实验与适配器示例](docs/EXPERIMENTS.md) · [Blue Pill 接线、协议与固件接入](docs/HARDWARE.md) · [发布与源码构建](docs/RELEASE.md) · [验收记录](docs/ACCEPTANCE.md)
+[CLI / MCP 命令参考](docs/CLI.zh-CN.md) · [跨领域实验与适配器示例](docs/EXPERIMENTS.md) · [Blue Pill 接线、协议与固件接入](docs/HARDWARE.md) · [发布与源码构建](docs/RELEASE.md) · [验收记录](docs/ACCEPTANCE.md) · [项目任务书](docs/GOAL.md) · [开源复用依据](docs/REUSE.md)
 
-LoopTrial 采用 **GPL-3.0-or-later**。依赖项目保留各自的许可证。[完整许可](LICENSE) · [第三方声明](THIRD_PARTY.md)
+LoopTrial 采用 **GPL-3.0-or-later**。依赖项目保留各自的许可证。[完整许可](LICENSE) · [第三方声明](THIRD_PARTY.zh-CN.md)
