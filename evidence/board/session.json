@@ -1,0 +1,940 @@
+[
+  {
+    "arguments": [
+      "describe",
+      "serial://<USB-port>"
+    ],
+    "exit": 0,
+    "result": {
+      "id": "bluepill-step",
+      "version": "0.1.0",
+      "source": "board-software-model",
+      "description": "Two UART bridges reach one RAM-only, deterministic first-order plant on the MCU.",
+      "signals": {
+        "t": {
+          "unit": "s",
+          "description": "Time since board-side start, from SysTick."
+        },
+        "target": {
+          "unit": "count"
+        },
+        "response": {
+          "unit": "count"
+        }
+      },
+      "parameters": {
+        "gain": {
+          "type": "integer",
+          "min": 1,
+          "max": 16,
+          "default": 2,
+          "unit": "1/16 per sample"
+        }
+      },
+      "actions": {
+        "step": {
+          "description": "Start from zero and capture a bounded first-order response.",
+          "metrics": {
+            "final_response": {
+              "unit": "count",
+              "description": "Last measured output."
+            },
+            "final_error": {
+              "unit": "count",
+              "description": "Target minus last output."
+            },
+            "mean_absolute_error": {
+              "unit": "count",
+              "description": "Mean absolute tracking error."
+            }
+          },
+          "conditions": {
+            "target": {
+              "type": "integer",
+              "min": 1,
+              "max": 1000,
+              "default": 100,
+              "unit": "count"
+            },
+            "samples": {
+              "type": "integer",
+              "min": 4,
+              "max": 64,
+              "default": 20,
+              "unit": "sample"
+            },
+            "period_ms": {
+              "type": "integer",
+              "min": 10,
+              "max": 100,
+              "default": 20,
+              "unit": "ms"
+            }
+          }
+        }
+      }
+    }
+  },
+  {
+    "arguments": [
+      "apply",
+      "serial://<USB-port>",
+      "gain=2"
+    ],
+    "exit": 0,
+    "result": {
+      "time": "2026-11-22T06:12:40.206+00:00",
+      "device": "bluepill-step",
+      "source": "serial://device",
+      "before": {
+        "gain": 2
+      },
+      "requested": {
+        "gain": 2
+      },
+      "persistence": "temporary",
+      "state": "verified",
+      "applied": {
+        "gain": 2
+      },
+      "verified": {
+        "gain": 2
+      }
+    }
+  },
+  {
+    "arguments": [
+      "run",
+      "serial://<USB-port>",
+      "step",
+      "--condition",
+      "target=120",
+      "--condition",
+      "samples=16",
+      "--condition",
+      "period_ms=20",
+      "--goal",
+      "final_error:le:0.01",
+      "--note",
+      "baseline"
+    ],
+    "exit": 0,
+    "result": {
+      "id": "ce87807b99764096941e4bbdd8d17e99",
+      "status": "completed",
+      "source": "serial://device",
+      "action": "step",
+      "conditions": {
+        "target": 120,
+        "samples": 16,
+        "period_ms": 20
+      },
+      "parameters": {
+        "gain": 2
+      },
+      "device_state": {
+        "state": "verified",
+        "values": {
+          "gain": 2
+        }
+      },
+      "samples": 16,
+      "metrics": {
+        "final_response": 105.834,
+        "final_error": 14.165999999999997,
+        "mean_absolute_error": 46.3
+      },
+      "checks": {
+        "goals": [
+          {
+            "metric": "final_error",
+            "op": "le",
+            "limit": 0.01,
+            "value": 14.165999999999997,
+            "passed": false
+          }
+        ],
+        "constraints": []
+      },
+      "passed": false,
+      "record": "runs/ce87807b99764096941e4bbdd8d17e99/record.json"
+    }
+  },
+  {
+    "arguments": [
+      "review",
+      "ce87807b99764096941e4bbdd8d17e99"
+    ],
+    "exit": 0,
+    "result": {
+      "id": "ce87807b99764096941e4bbdd8d17e99",
+      "status": "completed",
+      "samples": 16,
+      "samples_sha256": "dd0344978c848df751cf753aee3b5e74627ffd9f661a59cc5e71f06abb2ba32d",
+      "parameters": {
+        "gain": 2
+      },
+      "device_state": {
+        "state": "verified",
+        "values": {
+          "gain": 2
+        }
+      },
+      "recomputed": true,
+      "metrics": {
+        "final_response": 105.834,
+        "final_error": 14.165999999999997,
+        "mean_absolute_error": 46.3
+      },
+      "checks": {
+        "goals": [
+          {
+            "metric": "final_error",
+            "op": "le",
+            "limit": 0.01,
+            "value": 14.165999999999997,
+            "passed": false
+          }
+        ],
+        "constraints": []
+      },
+      "passed": false
+    }
+  },
+  {
+    "arguments": [
+      "apply",
+      "serial://<USB-port>",
+      "gain=8"
+    ],
+    "exit": 0,
+    "result": {
+      "time": "2026-11-22T06:12:42.331+00:00",
+      "device": "bluepill-step",
+      "source": "serial://device",
+      "before": {
+        "gain": 2
+      },
+      "requested": {
+        "gain": 8
+      },
+      "persistence": "temporary",
+      "state": "verified",
+      "applied": {
+        "gain": 8
+      },
+      "verified": {
+        "gain": 8
+      }
+    }
+  },
+  {
+    "arguments": [
+      "run",
+      "serial://<USB-port>",
+      "step",
+      "--condition",
+      "target=120",
+      "--condition",
+      "samples=16",
+      "--condition",
+      "period_ms=20",
+      "--goal",
+      "final_error:le:0.01",
+      "--note",
+      "candidate"
+    ],
+    "exit": 0,
+    "result": {
+      "id": "1771d022950e493aa6ab2fcc7e2bf68e",
+      "status": "completed",
+      "source": "serial://device",
+      "action": "step",
+      "conditions": {
+        "target": 120,
+        "samples": 16,
+        "period_ms": 20
+      },
+      "parameters": {
+        "gain": 8
+      },
+      "device_state": {
+        "state": "verified",
+        "values": {
+          "gain": 8
+        }
+      },
+      "samples": 16,
+      "metrics": {
+        "final_response": 119.999,
+        "final_error": 0.0010000000000047748,
+        "mean_absolute_error": 7.499562500000001
+      },
+      "checks": {
+        "goals": [
+          {
+            "metric": "final_error",
+            "op": "le",
+            "limit": 0.01,
+            "value": 0.0010000000000047748,
+            "passed": true
+          }
+        ],
+        "constraints": []
+      },
+      "passed": true,
+      "record": "runs/1771d022950e493aa6ab2fcc7e2bf68e/record.json"
+    }
+  },
+  {
+    "arguments": [
+      "review",
+      "1771d022950e493aa6ab2fcc7e2bf68e"
+    ],
+    "exit": 0,
+    "result": {
+      "id": "1771d022950e493aa6ab2fcc7e2bf68e",
+      "status": "completed",
+      "samples": 16,
+      "samples_sha256": "a98663f1bc84f39ebe0563488cb345f91fae537bacad32bbd855e86e7d318a3c",
+      "parameters": {
+        "gain": 8
+      },
+      "device_state": {
+        "state": "verified",
+        "values": {
+          "gain": 8
+        }
+      },
+      "recomputed": true,
+      "metrics": {
+        "final_response": 119.999,
+        "final_error": 0.0010000000000047748,
+        "mean_absolute_error": 7.499562500000001
+      },
+      "checks": {
+        "goals": [
+          {
+            "metric": "final_error",
+            "op": "le",
+            "limit": 0.01,
+            "value": 0.0010000000000047748,
+            "passed": true
+          }
+        ],
+        "constraints": []
+      },
+      "passed": true
+    }
+  },
+  {
+    "arguments": [
+      "run",
+      "serial://<USB-port>",
+      "step",
+      "--condition",
+      "target=120",
+      "--condition",
+      "samples=16",
+      "--condition",
+      "period_ms=20",
+      "--goal",
+      "final_error:le:0.01",
+      "--note",
+      "confirmation"
+    ],
+    "exit": 0,
+    "result": {
+      "id": "b269a2ceaed647d9a3a6e37df069ae12",
+      "status": "completed",
+      "source": "serial://device",
+      "action": "step",
+      "conditions": {
+        "target": 120,
+        "samples": 16,
+        "period_ms": 20
+      },
+      "parameters": {
+        "gain": 8
+      },
+      "device_state": {
+        "state": "verified",
+        "values": {
+          "gain": 8
+        }
+      },
+      "samples": 16,
+      "metrics": {
+        "final_response": 119.999,
+        "final_error": 0.0010000000000047748,
+        "mean_absolute_error": 7.499562500000001
+      },
+      "checks": {
+        "goals": [
+          {
+            "metric": "final_error",
+            "op": "le",
+            "limit": 0.01,
+            "value": 0.0010000000000047748,
+            "passed": true
+          }
+        ],
+        "constraints": []
+      },
+      "passed": true,
+      "record": "runs/b269a2ceaed647d9a3a6e37df069ae12/record.json"
+    }
+  },
+  {
+    "arguments": [
+      "review",
+      "b269a2ceaed647d9a3a6e37df069ae12"
+    ],
+    "exit": 0,
+    "result": {
+      "id": "b269a2ceaed647d9a3a6e37df069ae12",
+      "status": "completed",
+      "samples": 16,
+      "samples_sha256": "a98663f1bc84f39ebe0563488cb345f91fae537bacad32bbd855e86e7d318a3c",
+      "parameters": {
+        "gain": 8
+      },
+      "device_state": {
+        "state": "verified",
+        "values": {
+          "gain": 8
+        }
+      },
+      "recomputed": true,
+      "metrics": {
+        "final_response": 119.999,
+        "final_error": 0.0010000000000047748,
+        "mean_absolute_error": 7.499562500000001
+      },
+      "checks": {
+        "goals": [
+          {
+            "metric": "final_error",
+            "op": "le",
+            "limit": 0.01,
+            "value": 0.0010000000000047748,
+            "passed": true
+          }
+        ],
+        "constraints": []
+      },
+      "passed": true
+    }
+  },
+  {
+    "arguments": [
+      "describe",
+      "ble://BD-BT26"
+    ],
+    "exit": 0,
+    "result": {
+      "id": "bluepill-step",
+      "version": "0.1.0",
+      "source": "board-software-model",
+      "description": "Two UART bridges reach one RAM-only, deterministic first-order plant on the MCU.",
+      "signals": {
+        "t": {
+          "unit": "s",
+          "description": "Time since board-side start, from SysTick."
+        },
+        "target": {
+          "unit": "count"
+        },
+        "response": {
+          "unit": "count"
+        }
+      },
+      "parameters": {
+        "gain": {
+          "type": "integer",
+          "min": 1,
+          "max": 16,
+          "default": 2,
+          "unit": "1/16 per sample"
+        }
+      },
+      "actions": {
+        "step": {
+          "description": "Start from zero and capture a bounded first-order response.",
+          "metrics": {
+            "final_response": {
+              "unit": "count",
+              "description": "Last measured output."
+            },
+            "final_error": {
+              "unit": "count",
+              "description": "Target minus last output."
+            },
+            "mean_absolute_error": {
+              "unit": "count",
+              "description": "Mean absolute tracking error."
+            }
+          },
+          "conditions": {
+            "target": {
+              "type": "integer",
+              "min": 1,
+              "max": 1000,
+              "default": 100,
+              "unit": "count"
+            },
+            "samples": {
+              "type": "integer",
+              "min": 4,
+              "max": 64,
+              "default": 20,
+              "unit": "sample"
+            },
+            "period_ms": {
+              "type": "integer",
+              "min": 10,
+              "max": 100,
+              "default": 20,
+              "unit": "ms"
+            }
+          }
+        }
+      }
+    }
+  },
+  {
+    "arguments": [
+      "apply",
+      "ble://BD-BT26",
+      "gain=2"
+    ],
+    "exit": 0,
+    "result": {
+      "time": "2026-11-22T06:12:55.085+00:00",
+      "device": "bluepill-step",
+      "source": "ble://device",
+      "before": {
+        "gain": 8
+      },
+      "requested": {
+        "gain": 2
+      },
+      "persistence": "temporary",
+      "state": "verified",
+      "applied": {
+        "gain": 2
+      },
+      "verified": {
+        "gain": 2
+      }
+    }
+  },
+  {
+    "arguments": [
+      "run",
+      "ble://BD-BT26",
+      "step",
+      "--condition",
+      "target=120",
+      "--condition",
+      "samples=16",
+      "--condition",
+      "period_ms=20",
+      "--goal",
+      "final_error:le:0.01",
+      "--note",
+      "baseline"
+    ],
+    "exit": 0,
+    "result": {
+      "id": "ba8fd2e23b5e4dd0b8aeb1d033695275",
+      "status": "completed",
+      "source": "ble://device",
+      "action": "step",
+      "conditions": {
+        "target": 120,
+        "samples": 16,
+        "period_ms": 20
+      },
+      "parameters": {
+        "gain": 2
+      },
+      "device_state": {
+        "state": "verified",
+        "values": {
+          "gain": 2
+        }
+      },
+      "samples": 16,
+      "metrics": {
+        "final_response": 105.834,
+        "final_error": 14.165999999999997,
+        "mean_absolute_error": 46.3
+      },
+      "checks": {
+        "goals": [
+          {
+            "metric": "final_error",
+            "op": "le",
+            "limit": 0.01,
+            "value": 14.165999999999997,
+            "passed": false
+          }
+        ],
+        "constraints": []
+      },
+      "passed": false,
+      "record": "runs/ba8fd2e23b5e4dd0b8aeb1d033695275/record.json"
+    }
+  },
+  {
+    "arguments": [
+      "review",
+      "ba8fd2e23b5e4dd0b8aeb1d033695275"
+    ],
+    "exit": 0,
+    "result": {
+      "id": "ba8fd2e23b5e4dd0b8aeb1d033695275",
+      "status": "completed",
+      "samples": 16,
+      "samples_sha256": "dd0344978c848df751cf753aee3b5e74627ffd9f661a59cc5e71f06abb2ba32d",
+      "parameters": {
+        "gain": 2
+      },
+      "device_state": {
+        "state": "verified",
+        "values": {
+          "gain": 2
+        }
+      },
+      "recomputed": true,
+      "metrics": {
+        "final_response": 105.834,
+        "final_error": 14.165999999999997,
+        "mean_absolute_error": 46.3
+      },
+      "checks": {
+        "goals": [
+          {
+            "metric": "final_error",
+            "op": "le",
+            "limit": 0.01,
+            "value": 14.165999999999997,
+            "passed": false
+          }
+        ],
+        "constraints": []
+      },
+      "passed": false
+    }
+  },
+  {
+    "arguments": [
+      "apply",
+      "ble://BD-BT26",
+      "gain=8"
+    ],
+    "exit": 0,
+    "result": {
+      "time": "2026-11-22T06:13:06.635+00:00",
+      "device": "bluepill-step",
+      "source": "ble://device",
+      "before": {
+        "gain": 2
+      },
+      "requested": {
+        "gain": 8
+      },
+      "persistence": "temporary",
+      "state": "verified",
+      "applied": {
+        "gain": 8
+      },
+      "verified": {
+        "gain": 8
+      }
+    }
+  },
+  {
+    "arguments": [
+      "run",
+      "ble://BD-BT26",
+      "step",
+      "--condition",
+      "target=120",
+      "--condition",
+      "samples=16",
+      "--condition",
+      "period_ms=20",
+      "--goal",
+      "final_error:le:0.01",
+      "--note",
+      "candidate"
+    ],
+    "exit": 0,
+    "result": {
+      "id": "31b8afbc06b74979a2c5c3b66f381f92",
+      "status": "completed",
+      "source": "ble://device",
+      "action": "step",
+      "conditions": {
+        "target": 120,
+        "samples": 16,
+        "period_ms": 20
+      },
+      "parameters": {
+        "gain": 8
+      },
+      "device_state": {
+        "state": "verified",
+        "values": {
+          "gain": 8
+        }
+      },
+      "samples": 16,
+      "metrics": {
+        "final_response": 119.999,
+        "final_error": 0.0010000000000047748,
+        "mean_absolute_error": 7.499562500000001
+      },
+      "checks": {
+        "goals": [
+          {
+            "metric": "final_error",
+            "op": "le",
+            "limit": 0.01,
+            "value": 0.0010000000000047748,
+            "passed": true
+          }
+        ],
+        "constraints": []
+      },
+      "passed": true,
+      "record": "runs/31b8afbc06b74979a2c5c3b66f381f92/record.json"
+    }
+  },
+  {
+    "arguments": [
+      "review",
+      "31b8afbc06b74979a2c5c3b66f381f92"
+    ],
+    "exit": 0,
+    "result": {
+      "id": "31b8afbc06b74979a2c5c3b66f381f92",
+      "status": "completed",
+      "samples": 16,
+      "samples_sha256": "a98663f1bc84f39ebe0563488cb345f91fae537bacad32bbd855e86e7d318a3c",
+      "parameters": {
+        "gain": 8
+      },
+      "device_state": {
+        "state": "verified",
+        "values": {
+          "gain": 8
+        }
+      },
+      "recomputed": true,
+      "metrics": {
+        "final_response": 119.999,
+        "final_error": 0.0010000000000047748,
+        "mean_absolute_error": 7.499562500000001
+      },
+      "checks": {
+        "goals": [
+          {
+            "metric": "final_error",
+            "op": "le",
+            "limit": 0.01,
+            "value": 0.0010000000000047748,
+            "passed": true
+          }
+        ],
+        "constraints": []
+      },
+      "passed": true
+    }
+  },
+  {
+    "arguments": [
+      "run",
+      "ble://BD-BT26",
+      "step",
+      "--condition",
+      "target=120",
+      "--condition",
+      "samples=16",
+      "--condition",
+      "period_ms=20",
+      "--goal",
+      "final_error:le:0.01",
+      "--note",
+      "confirmation"
+    ],
+    "exit": 0,
+    "result": {
+      "id": "08baa4b2e89e4381ae1111e24c98f6e0",
+      "status": "completed",
+      "source": "ble://device",
+      "action": "step",
+      "conditions": {
+        "target": 120,
+        "samples": 16,
+        "period_ms": 20
+      },
+      "parameters": {
+        "gain": 8
+      },
+      "device_state": {
+        "state": "verified",
+        "values": {
+          "gain": 8
+        }
+      },
+      "samples": 16,
+      "metrics": {
+        "final_response": 119.999,
+        "final_error": 0.0010000000000047748,
+        "mean_absolute_error": 7.499562500000001
+      },
+      "checks": {
+        "goals": [
+          {
+            "metric": "final_error",
+            "op": "le",
+            "limit": 0.01,
+            "value": 0.0010000000000047748,
+            "passed": true
+          }
+        ],
+        "constraints": []
+      },
+      "passed": true,
+      "record": "runs/08baa4b2e89e4381ae1111e24c98f6e0/record.json"
+    }
+  },
+  {
+    "arguments": [
+      "review",
+      "08baa4b2e89e4381ae1111e24c98f6e0"
+    ],
+    "exit": 0,
+    "result": {
+      "id": "08baa4b2e89e4381ae1111e24c98f6e0",
+      "status": "completed",
+      "samples": 16,
+      "samples_sha256": "a98663f1bc84f39ebe0563488cb345f91fae537bacad32bbd855e86e7d318a3c",
+      "parameters": {
+        "gain": 8
+      },
+      "device_state": {
+        "state": "verified",
+        "values": {
+          "gain": 8
+        }
+      },
+      "recomputed": true,
+      "metrics": {
+        "final_response": 119.999,
+        "final_error": 0.0010000000000047748,
+        "mean_absolute_error": 7.499562500000001
+      },
+      "checks": {
+        "goals": [
+          {
+            "metric": "final_error",
+            "op": "le",
+            "limit": 0.01,
+            "value": 0.0010000000000047748,
+            "passed": true
+          }
+        ],
+        "constraints": []
+      },
+      "passed": true
+    }
+  },
+  {
+    "arguments": [
+      "apply",
+      "serial://<USB-port>",
+      "gain=7"
+    ],
+    "exit": 0,
+    "result": {
+      "time": "2026-11-22T06:13:19.740+00:00",
+      "device": "bluepill-step",
+      "source": "serial://device",
+      "before": {
+        "gain": 8
+      },
+      "requested": {
+        "gain": 7
+      },
+      "persistence": "temporary",
+      "state": "verified",
+      "applied": {
+        "gain": 7
+      },
+      "verified": {
+        "gain": 7
+      }
+    }
+  },
+  {
+    "arguments": [
+      "read",
+      "ble://BD-BT26"
+    ],
+    "exit": 0,
+    "result": {
+      "device": "bluepill-step",
+      "version": "0.1.0",
+      "verified": {
+        "gain": 7
+      },
+      "source": "ble://device"
+    }
+  },
+  {
+    "arguments": [
+      "apply",
+      "ble://BD-BT26",
+      "gain=2"
+    ],
+    "exit": 0,
+    "result": {
+      "time": "2026-11-22T06:13:29.432+00:00",
+      "device": "bluepill-step",
+      "source": "ble://device",
+      "before": {
+        "gain": 7
+      },
+      "requested": {
+        "gain": 2
+      },
+      "persistence": "temporary",
+      "state": "verified",
+      "applied": {
+        "gain": 2
+      },
+      "verified": {
+        "gain": 2
+      }
+    }
+  },
+  {
+    "arguments": [
+      "read",
+      "serial://<USB-port>"
+    ],
+    "exit": 0,
+    "result": {
+      "device": "bluepill-step",
+      "version": "0.1.0",
+      "verified": {
+        "gain": 2
+      },
+      "source": "serial://device"
+    }
+  }
+]

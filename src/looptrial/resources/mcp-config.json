@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "looptrial": {
+      "command": "looptrial-mcp",
+      "args": []
+    }
+  }
+}

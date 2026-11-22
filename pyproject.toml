@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=77", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "looptrial"
+version = "0.1.0"
+description = "Record and compare bounded experiments on embedded devices via CLI or MCP"
+readme = "README.md"
+requires-python = ">=3.11"
+license = "GPL-3.0-or-later"
+license-files = ["LICENSE", "THIRD_PARTY.md"]
+dependencies = ["mcp>=1.12,<2", "pyserial==3.5", "bleak>=1,<4", "filelock>=3.13,<4"]
+
+[project.urls]
+Source = "https://github.com/yuheng-null/LoopTrial"
+
+[project.scripts]
+looptrial = "looptrial.cli:main"
+looptrial-mcp = "looptrial.server:main"
+looptrial-client = "looptrial.client:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+looptrial = ["resources/*", "resources/pressure_adapter/*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

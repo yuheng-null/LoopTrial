@@ -1,0 +1,43 @@
+# LoopTrial 0.1.0
+
+从 [v0.1.0 发布页](https://github.com/yuheng-null/LoopTrial/releases/tag/v0.1.0) 下载。标签固定用于构建的源码。SHA256SUMS.txt 列出主机 wheel、完整源码分发包、板端 BIN、ELF 和实验资料包的 SHA-256。release-audit.json 记录构建提交、平台、包外安装、标准 MCP 调用与离线核验结果。
+
+## 发布物和入口
+
+| 文件 | 用途 |
+| --- | --- |
+| looptrial-0.1.0-py3-none-any.whl | Python 3.11+ 主机包。按 README 安装后有三个命令：looptrial、looptrial-mcp、looptrial-client。Windows 实测用 CPython 3.12。首次安装需要获取依赖。 |
+| looptrial-0.1.0.tar.gz | 对应主机程序、固件源码、实验示例、测试、依赖清单及许可证，可用于重建。 |
+| looptrial-bluepill-0.1.0.bin、looptrial-bluepill-0.1.0.elf | STM32F103C8T6、Cortex-M3，64 KiB Flash 的双 UART 示例。BIN 的起始地址为 0x08000000。 |
+| looptrial-evidence-0.1.0.zip | 公开的对话与调用、原始 CSV、记录摘要、曲线和板卡测试说明。保留相邻 CSV 与 record.json，按编号复核。 |
+
+## 从源码重建
+
+以下在 Windows PowerShell 执行。安装 Python 3.12。编译 Blue Pill 需要 GNU Arm Embedded GCC（验收版 14.3.1）；在 PATH 中提供 arm-none-eabi-gcc，或给固件构建脚本传入 `--toolchain-bin <bin目录>`。运行两种传输的故障回归还需要 PATH 中的本机 C 编译器 gcc 或 cc，用于把同一份 C 协议代码编译成主机动态库。
+
+```powershell
+git clone --branch v0.1.0 --depth 1 https://github.com/yuheng-null/LoopTrial.git
+cd LoopTrial
+git rev-parse HEAD
+py -3.12 -m venv .venv
+.\.venv\Scripts\python -m pip install -r requirements/build.txt
+.\.venv\Scripts\python -m pip install -c requirements/windows-py312.txt .
+.\.venv\Scripts\python -m pytest -q -rs
+$env:SOURCE_DATE_EPOCH = "1704067200"
+.\.venv\Scripts\python -m build --no-isolation --outdir dist
+.\.venv\Scripts\python firmware/build.py --output dist
+Get-FileHash dist\*
+```
+
+Windows 的 CPython 3.12 运行依赖快照在 requirements/windows-py312.txt；其他平台由 pyproject.toml 声明的依赖解析。SOURCE_DATE_EPOCH 固定 wheel 打包时间。发布清单的哈希用于检验下载到的实际文件。工具链、解压格式或打包程序变化后应另行核对。包外安装、MCP、离线复核命令见 [README](../README.md)。
+
+## 验证范围
+
+- **主机仿真**包含传感器、压力标定、热过程、轮速和小角度直立。温控可从相同初态重跑。传感器可以重放相同种子或更换噪声种子复测。仿真时间和实际耗时分别计量。示例中的阈值只适用于给定工况。
+- **旧记录回放**使用可独立安装的压力记录器插件。原始计数、采样率、单位映射和峰峰值均可检查。使用自己的 CSV 时应提供实际尺度和参考标准。
+- **Blue Pill** 在板内运行一阶离散软件对象，USB 串口与 BD-BT26 GATT 共用一个固件身份、RAM 参数和采样缓存。板端缓冲上限 64 点。实物连接、恢复及复验步骤在 [硬件指南](HARDWARE.md) 中。
+- **实物性能**方面，本次台架仅有开发板和通信模块。外部电机、温控装置、压力传感器和两轮车均待实体试验。将工具接入实际执行器前，项目固件负责具体动作许可、物理限值、独立超时与回退。
+- **并发与状态**方面，同一 LOOPTRIAL_HOME 由本机锁和目录索引协调。两个客户端访问一块板时应共用这个目录。串口或 BLE 参数变更只写 RAM。中断后的状态、超出预算的搜索及缺少独立参考的标定，依记录中最后一次有效读数解释。跨上电保存需要设备另行实现持久化动作。
+- **平台**方面，本版实际发布验收在 Windows x64、Python 3.12 上执行。其他 Python / OS 组合和型号可按对应后端运行回归后确认。
+
+原创建模、工具代码和示例固件采用 GPL-3.0-or-later。各依赖及复用说明见 [第三方声明](../THIRD_PARTY.md)。

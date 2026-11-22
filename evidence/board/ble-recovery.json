@@ -1,0 +1,35 @@
+{
+  "arguments": [
+    "apply",
+    "ble://BD-BT26",
+    "gain=8"
+  ],
+  "exit": 2,
+  "result": {
+    "ok": false,
+    "error": {
+      "code": "link_error",
+      "message": "Device I/O failed (OSError).",
+      "receipt": {
+        "time": "2026-11-22T06:09:25.252+00:00",
+        "device": "bluepill-step",
+        "source": "ble://device",
+        "before": {
+          "gain": 2
+        },
+        "requested": {
+          "gain": 8
+        },
+        "persistence": "temporary",
+        "state": "restored",
+        "error": {
+          "code": "link_error",
+          "message": "Device I/O failed (OSError)."
+        },
+        "last_readback": {
+          "gain": 2
+        }
+      }
+    }
+  }
+}
