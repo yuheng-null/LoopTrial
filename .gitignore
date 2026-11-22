@@ -1,0 +1,14 @@
+# Local environments and generated build output
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+build/
+dist/
+*.egg-info/
+
+# Local device data, bench captures and machine-specific settings
+.local/
+.env
+.env.*
+!.env.example
