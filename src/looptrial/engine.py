@@ -49,6 +49,12 @@ def now():
     return datetime.now(timezone.utc).isoformat(timespec="milliseconds")
 
 
+def publish_samples(uri, rows):
+    """Optional observation of the same bounded acquisition, independent from recording."""
+    if runtime is not None and rows:
+        runtime.trial_samples(uri, rows)
+
+
 def home():
     return Path(os.environ.get("LOOPTRIAL_HOME", Path.home() / ".looptrial")).expanduser().resolve()
 
@@ -617,6 +623,8 @@ def compare(first, second):
         differences.append("unknown physical instance")
     if differences or any(r["status"] != "completed" for r in (a,b)):
         raise Problem("incomparable", "requires completed trials with matching identity, version, action and conditions", differences=differences)
+    if a.get("action") == "lap" and any(r["metrics"].get("valid_lap") != 1 for r in (a,b)):
+        raise Problem("incomparable", "An invalid lap has no finish time. Review its trajectory and stop event.")
     return dict(first=a["id"], second=b["id"], parameters=[a["parameters"], b["parameters"]],
                 changed_parameters={k: [v,b["parameters"].get(k)] for k,v in a["parameters"].items() if b["parameters"].get(k) != v},
                 last_parameter_writes=[a.get("last_parameter_write"), b.get("last_parameter_write")],

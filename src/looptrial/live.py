@@ -153,6 +153,7 @@ class LiveSession:
     def accept(self, batch):
         with self.lock:
             host = time.monotonic()
+            arrival = engine.now()
             fresh = 0
             for row in batch:
                 seq = row["seq"]
@@ -165,7 +166,7 @@ class LiveSession:
                 else:
                     self.first_device = row["t"]
                     self.first_seq = seq
-                self.rows.append(dict(row))
+                self.rows.append({**row, "received_at": arrival})
                 self.last_seq = seq
                 fresh += 1
             if fresh:
@@ -176,6 +177,16 @@ class LiveSession:
                 if self.first_host is None:
                     self.first_host = host
                 self.last_host = host
+
+    def trial_samples(self, uri, rows):
+        with self.lock:
+            if uri != self.uri or not self.connected:
+                return
+            if self.rows and rows[0]["t"] <= self.rows[-1]["t"]:
+                self.reset_stats()
+                self.session_id = uuid.uuid4().hex
+            start = self.last_seq + 1 if self.last_seq is not None else 0
+            self.accept([{"seq": start+i, **row} for i, row in enumerate(rows)])
 
     def snapshot(self):
         with self.lock:
