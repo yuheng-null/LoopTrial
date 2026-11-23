@@ -1,6 +1,6 @@
 # LoopTrial
 
-[简体中文](README.md) · **English** · [Download v0.2.0](https://github.com/yuheng-null/LoopTrial/releases/tag/v0.2.0)
+[简体中文](README.md) · **English** · [Download v0.2.1](https://github.com/yuheng-null/LoopTrial/releases/tag/v0.2.1)
 
 LoopTrial is an embedded experiment workbench for engineers and their AI agents. Keep live signals on screen and describe a symptom to your own agent. In the bundled whole-car simulator, a request like “This car is slow through bends. Speed it up” can start an experiment. Its CLI or MCP calls share the device connection, read effective settings, test candidates and confirm results on the same timeline. A diagnosis can end after a single capture.
 
@@ -12,7 +12,7 @@ On Windows with Python 3.12 and the Python Launcher installed, open PowerShell i
 
 ```powershell
 py -3.12 -m venv .venv
-.\.venv\Scripts\python -m pip install https://github.com/yuheng-null/LoopTrial/releases/download/v0.2.0/looptrial-0.2.0-py3-none-any.whl
+.\.venv\Scripts\python -m pip install https://github.com/yuheng-null/LoopTrial/releases/download/v0.2.1/looptrial-0.2.1-py3-none-any.whl
 $env:PATH = "$PWD\.venv\Scripts;$env:PATH"
 $env:LOOPTRIAL_HOME = "$PWD\lab"
 looptrial studio

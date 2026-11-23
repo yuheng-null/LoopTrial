@@ -243,7 +243,7 @@ def apply_parameters(uri, values):
         validate(values, info["parameters"])
         before = _read(adapter, uri, info)
         target = before | values
-        event = dict(time=now(), actor=actor.get(), device=info["id"], source=source(uri), before=before,
+        event = dict(time=now(), actor=actor.get(), device=info["id"], version=info["version"], source=source(uri), before=before,
                      requested=values, persistence="temporary", state="write_attempted")
         if "instance" in info:
             event["instance"] = info["instance"]
@@ -411,7 +411,7 @@ def run_experiment(uri, action, conditions=None, goals=None, constraints=None, n
             return get_run(run_id)
         options = {"creationflags": subprocess.CREATE_NO_WINDOW | subprocess.CREATE_NEW_PROCESS_GROUP} if os.name == "nt" else {"start_new_session": True}
         try:
-            subprocess.Popen([sys.executable, "-m", "looptrial.worker", run_id], env=os.environ | {"LOOPTRIAL_HOME": str(home())},
+            subprocess.Popen([sys.executable, "-m", "looptrial.worker", run_id, actor.get()], env=os.environ | {"LOOPTRIAL_HOME": str(home())},
                              stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, **options)
         except OSError:
             _finish_interrupted(_job(run_id))
@@ -494,11 +494,18 @@ def work(run_id):
                 begin = observe(uri, "run_started", {"id": run_id, "action": action, "values": params})
                 record.update(conditions=conditions, parameters=params, device_state={"state": "verified", "values": params},
                               actor=actor.get(), started=begin["time"], timeline_start=begin["seq"])
-                with database() as db:
-                    previous = db.execute("SELECT seq,time,actor,details FROM timeline WHERE uri=? AND kind='verified' AND seq<? ORDER BY seq DESC LIMIT 1",
-                                          (uri, begin["seq"])).fetchone()
-                if previous:
-                    record["last_parameter_write"] = {"time": previous["time"], "actor": previous["actor"], **json.loads(previous["details"])}
+                # Writes are indexed by device instance across both transports.
+                # Only attach a receipt that matches this trial's actual readback.
+                history = writes(uri, 1)
+                if history:
+                    receipt = history[0]
+                    if (receipt["state"] == "verified" and receipt.get("verified") == params
+                            and receipt.get("device") == info["id"] and receipt.get("version") == info["version"]):
+                        record["last_parameter_write"] = {
+                            "time": receipt["verified_at"], "actor": receipt["actor"],
+                            "values": receipt["verified"], "command_id": receipt["command_id"],
+                            "confirm_ms": receipt["confirm_ms"],
+                        }
                 records.write_json(directory / "acquiring.json", record)
                 until = time.monotonic() + request["pace"]
                 while time.monotonic() < until:

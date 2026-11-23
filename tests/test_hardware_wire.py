@@ -4,6 +4,7 @@ import os
 from pathlib import Path
 import shutil
 import subprocess
+import time
 from types import SimpleNamespace
 
 import pytest
@@ -51,6 +52,7 @@ class Board:
         self.frame = bytearray()
         self.commands = []
         self.drop = self.disconnect = self.bad_read = self.swap = self.gap = False
+        self.legacy = False
         self.reboot_image = None
 
     def feed(self, data):
@@ -67,6 +69,8 @@ class Board:
                 continue
             cmd = words[1]
             self.commands.append(words[1:])
+            if self.legacy and cmd == "H":
+                response[:] = response.replace(b"0.2.0", b"0.1.0")
             if cmd == "S" and self.drop:
                 self.drop = False
                 response.clear()
@@ -243,6 +247,41 @@ def test_wired_and_radio_report_same_private_alias(endpoint):
     assert hw.read(other) == {"gain": 7}
     assert hw.describe(other)["instance"] == first["instance"]
     assert first["instance"] != "17"
+
+
+def test_legacy_workbench_can_capture_without_streaming(endpoint, monkeypatch):
+    from looptrial import engine
+    from looptrial.live import LiveSession
+    uri, board = endpoint
+    board.legacy = True
+    session = LiveSession()
+    monkeypatch.setattr(engine, "runtime", session)
+    try:
+        session.connect(uri)
+        # The legacy device has no telemetry stream. It can still report gain.
+        read_count = board.commands.count(["R"])
+        deadline = time.monotonic() + 3
+        while session.connected and board.commands.count(["R"]) <= read_count and time.monotonic() < deadline:
+            time.sleep(.02)
+        assert session.connected and board.commands.count(["R"]) > read_count
+        assert engine.apply_parameters(uri, {"gain": 6})["verified"] == {"gain": 6}
+        trial = engine.run_experiment(uri, "step", conditions={"samples": 4})
+        assert trial["status"] == "completed" and engine.review(trial["id"])["samples"] == 4
+        assert not any(cmd[0] == "T" for cmd in board.commands)
+    finally:
+        session.close()
+
+
+def test_write_attribution_follows_the_board_and_effective_values(endpoint):
+    from looptrial import engine
+    uri, _ = endpoint
+    other = "serial://test" if uri.startswith("ble:") else "ble://BD-BT26?write=ffe2"
+    write = engine.apply_parameters(uri, {"gain": 7})
+    trial = engine.run_experiment(other, "step", conditions={"samples": 4})
+    assert trial["last_parameter_write"]["command_id"] == write["command_id"]
+    hw.apply(uri, {"gain": 3})  # An out-of-band adjustment has no LoopTrial receipt.
+    trial = engine.run_experiment(uri, "step", conditions={"samples": 4})
+    assert trial["parameters"]["gain"] == 3 and "last_parameter_write" not in trial
 
 
 def test_board_rejects_stale_parameter_snapshot_and_duplicate_conflict(firmware):

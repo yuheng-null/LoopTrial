@@ -6,6 +6,8 @@ import threading
 import time
 import uuid
 
+from filelock import Timeout
+
 from . import engine, models
 
 
@@ -128,6 +130,16 @@ class LiveSession:
     def poll(self):
         token = engine.actor.set("device")
         try:
+            if self.board is not None and not self.info.get("telemetry"):
+                # Earlier LT1 firmware supports readback and bounded captures.
+                # Skip the idle read while a command or capture holds the board.
+                while not self.stop.wait(1.0):
+                    try:
+                        with engine.lock_for("device/" + engine.resource(self.uri)):
+                            self.confirm(self.uri, self.board.read(self.uri))
+                    except Timeout:
+                        continue
+                return
             started = time.monotonic()
             i = 0
             if self.board is None:

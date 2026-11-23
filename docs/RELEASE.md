@@ -1,24 +1,30 @@
-# LoopTrial 0.2.0
+# LoopTrial 0.2.1
 
 **简体中文** · [English](RELEASE.en.md)
 
-从 [v0.2.0 发布页](https://github.com/yuheng-null/LoopTrial/releases/tag/v0.2.0) 下载。标签固定用于构建的源码。SHA256SUMS.txt 列出主机 wheel、完整源码分发包、板端 BIN、ELF 和实验资料包的 SHA-256。release-audit.json 记录构建提交、平台、包外安装、标准 MCP 调用与离线核验结果。
+从 [v0.2.1 发布页](https://github.com/yuheng-null/LoopTrial/releases/tag/v0.2.1) 下载。标签固定用于构建的源码。SHA256SUMS.txt 列出主机 wheel、完整源码分发包、板端 BIN、ELF 和实验资料包的 SHA-256。release-audit.json 记录构建提交、平台、包外安装、标准 MCP 调用与离线核验结果。
+
+## 0.2.1 主机修订
+
+旧版 LT1 0.1.0 固件可在工作台上读写参数并做定长采集。空闲时主机约每秒回读一次参数，读失败后显示状态未知。持续遥测需要 0.2.0 固件。后台 MCP 试验保留发起客户端身份。新记录按设备实例关联 USB 和 BLE 写入回执，只有固件版本和本轮实际读回值都匹配才标注写入者。升级前的回执仍可查询，历史实验原件保持原貌。
+
+本修订重建并核对了原 0.2.0 固件。旧固件兼容性在主机协议台架上复测，USB/BLE 实物性能取自 0.2.0 的同一固件。更新本机虚拟环境可再运行首页的 wheel 安装命令，沿用原实验目录。
 
 ## 发布物和入口
 
 | 文件 | 用途 |
 | --- | --- |
-| looptrial-0.2.0-py3-none-any.whl | Python 3.11+ 主机包。按 README 安装后有四个入口：looptrial、looptrial-studio、looptrial-mcp、looptrial-client。Windows 实测用 CPython 3.12。首次安装需要获取依赖。 |
-| looptrial-0.2.0.tar.gz | 对应主机程序、固件源码、实验示例、测试、依赖清单及许可证，可用于重建。 |
+| looptrial-0.2.1-py3-none-any.whl | Python 3.11+ 主机包。按 README 安装后有四个入口：looptrial、looptrial-studio、looptrial-mcp、looptrial-client。Windows 实测用 CPython 3.12。首次安装需要获取依赖。 |
+| looptrial-0.2.1.tar.gz | 对应主机程序、固件源码、实验示例、测试、依赖清单及许可证，可用于重建。 |
 | looptrial-bluepill-0.2.0.bin、looptrial-bluepill-0.2.0.elf | STM32F103C8T6、Cortex-M3，64 KiB Flash 的双 UART 示例。BIN 的起始地址为 0x08000000。 |
-| looptrial-evidence-0.2.0.zip | 公开的对话与调用、原始 CSV、记录摘要、曲线和板卡测试说明。保留相邻 CSV 与 record.json，按编号复核。 |
+| looptrial-evidence-0.2.1.zip | 公开的对话与调用、原始 CSV、记录摘要、曲线和板卡测试说明。保留相邻 CSV 与 record.json，按编号复核。 |
 
 ## 从源码重建
 
 以下在 Windows PowerShell 执行。安装 Python 3.12。编译 Blue Pill 需要 GNU Arm Embedded GCC（验收版 14.3.1）；在 PATH 中提供 arm-none-eabi-gcc，或给固件构建脚本传入 `--toolchain-bin <bin目录>`。运行两种传输的故障回归还需要 PATH 中的本机 C 编译器 gcc 或 cc，用于把同一份 C 协议代码编译成主机动态库。
 
 ```powershell
-git clone --branch v0.2.0 --depth 1 https://github.com/yuheng-null/LoopTrial.git
+git clone --branch v0.2.1 --depth 1 https://github.com/yuheng-null/LoopTrial.git
 cd LoopTrial
 git rev-parse HEAD
 py -3.12 -m venv .venv
@@ -44,6 +50,6 @@ Windows 的 CPython 3.12 运行依赖快照在 requirements/windows-py312.txt；
 
 原创建模、工具代码和示例固件采用 GPL-3.0-or-later。各依赖及复用说明见 [第三方声明](../THIRD_PARTY.md)。
 
-## v0.2.0 工作台与整车
+## 工作台与整车
 
 `looptrial studio` 提供本机工作台和共享连接。界面与 CLI/MCP 共用同一个数据目录。随 wheel 提供浏览器页面、Three.js r128、固定提交的雷霆之车算法和自绘赛道，整车试跑需本机已安装支持 WebGL 的 Edge 或 Chromium。使用 `LOOPTRIAL_BROWSER` 可指定可执行文件。首次安装下载依赖后，模拟器、波形、复核均可在本机完成。验收与证据见[本版报告](ACCEPTANCE-0.2.md)和[物理链路记录](../evidence/v02/board/README.md)。

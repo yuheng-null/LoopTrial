@@ -1,24 +1,30 @@
-# LoopTrial 0.2.0
+# LoopTrial 0.2.1
 
 [简体中文](RELEASE.md) · **English**
 
-Download the files from the [v0.2.0 release](https://github.com/yuheng-null/LoopTrial/releases/tag/v0.2.0). The tag identifies the source used for the build. `SHA256SUMS.txt` lists the host wheel, source distribution, board BIN and ELF, and evidence archive. `release-audit.json` records the build commit, platform, installation outside the checkout, standard MCP calls and offline checks.
+Download the files from the [v0.2.1 release](https://github.com/yuheng-null/LoopTrial/releases/tag/v0.2.1). The tag identifies the source used for the build. `SHA256SUMS.txt` lists the host wheel, source distribution, board BIN and ELF, and evidence archive. `release-audit.json` records the build commit, platform, installation outside the checkout, standard MCP calls and offline checks.
+
+## Host patch 0.2.1
+
+The workbench supports parameter edits and bounded captures on legacy LT1 0.1.0 firmware. It checks parameters about once per second while idle and reports an unknown state if readback fails. Continuous telemetry requires board firmware 0.2.0. Detached MCP experiments retain their originating client. New runs find write receipts across USB and BLE by device instance, attributing a write only when the firmware version and effective values match. Earlier receipts remain available in parameter history.
+
+This patch rebuilds and verifies the existing 0.2.0 firmware. Legacy compatibility was tested on the host protocol bench. Physical USB/BLE measurements come from 0.2.0 using the same board image. To upgrade, install the wheel shown in the README in the existing environment and reuse the experiment directory.
 
 ## Release files
 
 | File | Purpose |
 | --- | --- |
-| looptrial-0.2.0-py3-none-any.whl | Host package for Python 3.11+. Installing it provides `looptrial`, `looptrial-studio`, `looptrial-mcp` and `looptrial-client`. The release was tested on Windows with CPython 3.12. The first installation fetches dependencies. |
-| looptrial-0.2.0.tar.gz | Sources for the host and firmware, experiments, tests, dependency lists and licenses needed to rebuild. |
+| looptrial-0.2.1-py3-none-any.whl | Host package for Python 3.11+. Installing it provides `looptrial`, `looptrial-studio`, `looptrial-mcp` and `looptrial-client`. The release was tested on Windows with CPython 3.12. The first installation fetches dependencies. |
+| looptrial-0.2.1.tar.gz | Sources for the host and firmware, experiments, tests, dependency lists and licenses needed to rebuild. |
 | looptrial-bluepill-0.2.0.bin, looptrial-bluepill-0.2.0.elf | Dual-UART example for the STM32F103C8T6 (Cortex-M3, 64 KiB Flash). The BIN starts at 0x08000000. |
-| looptrial-evidence-0.2.0.zip | Public conversations, tool calls, raw CSVs, run records, plots and board test notes. Keep each CSV beside its `record.json` to review the run by ID. |
+| looptrial-evidence-0.2.1.zip | Public conversations, tool calls, raw CSVs, run records, plots and board test notes. Keep each CSV beside its `record.json` to review the run by ID. |
 
 ## Rebuild from source
 
 Run the following in Windows PowerShell with Python 3.12 installed. The Blue Pill build needs GNU Arm Embedded GCC (14.3.1 for acceptance). Put `arm-none-eabi-gcc` on PATH or pass `--toolchain-bin <directory>` to the firmware build script. Transport fault regression tests also need a native `gcc` or `cc` on PATH to build the C protocol code as a host shared library.
 
 ```powershell
-git clone --branch v0.2.0 --depth 1 https://github.com/yuheng-null/LoopTrial.git
+git clone --branch v0.2.1 --depth 1 https://github.com/yuheng-null/LoopTrial.git
 cd LoopTrial
 git rev-parse HEAD
 py -3.12 -m venv .venv

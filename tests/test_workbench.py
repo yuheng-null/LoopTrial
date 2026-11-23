@@ -87,3 +87,23 @@ def test_stop_active_job_and_restrict_browser_inputs(workbench):
     with pytest.raises(HTTPError) as exc:
         post("disconnect", {}, origin="https://foreign.invalid")
     assert exc.value.code == 403
+
+
+def test_detached_mcp_run_keeps_submitter_after_client_exit(tmp_path, monkeypatch):
+    from looptrial import engine
+    monkeypatch.setenv("LOOPTRIAL_HOME", str(tmp_path / "store"))
+    uri = "sim://sensor"
+    args = tmp_path / "request.json"
+    args.write_text(json.dumps({"uri":uri, "action":"capture", "background":True, "pace":1}))
+    reply = subprocess.check_output([sys.executable, "-m", "looptrial.client", "--tool",
+                                     "run_experiment", "--arguments", str(args)], encoding="utf-8")
+    run_id = json.loads(reply)["id"]
+    deadline = time.monotonic() + 15
+    while time.monotonic() < deadline:
+        result = engine.get_run(run_id)
+        if result["status"] == "completed":
+            break
+        time.sleep(.05)
+    assert result["status"] == "completed" and result["actor"] == "mcp"
+    events = [e for e in engine.timeline(uri) if e["details"].get("id") == run_id]
+    assert [(e["kind"], e["actor"]) for e in events] == [("run_started","mcp"), ("run_completed","mcp")]
