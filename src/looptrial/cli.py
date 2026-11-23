@@ -6,7 +6,7 @@ from importlib.resources import files
 import json
 import sys
 
-from . import __version__, engine
+from . import __version__, api, engine
 
 
 def pairs(items):
@@ -38,6 +38,13 @@ def parser():
         epilog="For a tuning request: carry over conversation conditions, measure a baseline, choose measurable goals, constraints, a finite trial budget and confirmation count. Verify each change, inspect the trace, then keep, revise or restore. Confirm success with new run IDs. For diagnosis alone, capture without changing parameters.")
     cli.add_argument("--version", action="version", version=__version__)
     commands = cli.add_subparsers(dest="command", required=True)
+    for name in ("connect", "timeline"):
+        commands.add_parser(name, help="select the workbench device" if name == "connect" else "inspect shared events and their authors").add_argument("uri")
+    commands.add_parser("live", help="inspect current workbench session, effective settings, device samples and events")
+    commands.add_parser("disconnect", help="close the workbench link and retain last confirmed values")
+    studio = commands.add_parser("studio", help="launch the live workbench; existing CLI and MCP calls share its session")
+    studio.add_argument("--port", type=int, default=0)
+    studio.add_argument("--no-browser", action="store_true")
     commands.add_parser("devices", help="list simulator URIs, serial candidates and BLE preset")
     for name, help_text in (("describe","discover identity, units, actions, metrics and bounds"),
                             ("read","read effective parameter values"), ("writes","inspect parameter write and recovery receipts")):
@@ -72,21 +79,27 @@ def parser():
 
 
 def dispatch(a):
+    def invoke(fn, *args):
+        return api.from_engine(fn, args, "cli")
     match a.command:
-        case "devices": return engine.devices()
-        case "describe": return engine.describe(a.uri)
-        case "read": return engine.read_parameters(a.uri)
-        case "apply": return engine.apply_parameters(a.uri, pairs(a.values))
-        case "writes": return engine.writes(a.uri)
+        case "connect": return api.call("connect", {"uri": a.uri})
+        case "live": return api.call("snapshot", {})
+        case "disconnect": return api.call("disconnect", {})
+        case "timeline": return api.call("timeline", {"uri": a.uri})
+        case "devices": return invoke(engine.devices)
+        case "describe": return invoke(engine.describe, a.uri)
+        case "read": return invoke(engine.read_parameters, a.uri)
+        case "apply": return invoke(engine.apply_parameters, a.uri, pairs(a.values))
+        case "writes": return invoke(engine.writes, a.uri)
         case "run":
-            return engine.run_experiment(a.uri, a.action, pairs(a.condition), rules(a.goal),
+            return invoke(engine.run_experiment, a.uri, a.action, pairs(a.condition), rules(a.goal),
                                          rules(a.constraint), a.note, a.key, a.background, a.pace, a.fault)
-        case "status": return engine.get_run(a.id)
-        case "records": return engine.list_runs(a.limit)
-        case "review": return engine.review(a.record)
-        case "cancel": return engine.cancel_run(a.id)
-        case "wave": return engine.waveform(a.record, a.start, a.count)
-        case "compare": return engine.compare(a.first, a.second)
+        case "status": return invoke(engine.get_run, a.id)
+        case "records": return invoke(engine.list_runs, a.limit)
+        case "review": return invoke(engine.review, a.record)
+        case "cancel": return invoke(engine.cancel_run, a.id)
+        case "wave": return invoke(engine.waveform, a.record, a.start, a.count)
+        case "compare": return invoke(engine.compare, a.first, a.second)
         case "resources":
             root = files("looptrial")
             dist = distribution("looptrial")
@@ -100,6 +113,9 @@ def main():
     if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(encoding="utf-8")
     args = parser().parse_args()
+    if args.command == "studio":
+        from . import studio
+        return studio.main(["--port", str(args.port)] + (["--no-browser"] if args.no_browser else []))
     try:
         result = dispatch(args)
     except engine.OPERATION_ERRORS as error:

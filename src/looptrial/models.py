@@ -247,6 +247,16 @@ def _balance(c, p, dt, stamps):
 _GENERATORS = {"sim://thermal": _thermal, "sim://sensor": _sensor, "sim://motor": _motor, "sim://balance": _balance}
 
 
+def live_samples(uri, parameters):
+    """Observe the default model continuously; the mutable effective settings apply at the next tick."""
+    from itertools import count
+    action = next(iter(_DEVICES[uri]["actions"]))
+    _, spec, conditions = _action(uri, action, {})
+    period = spec["sample_period_s"]
+    stamps = (round(i * period, 9) for i in count())
+    return period, _GENERATORS[uri](conditions, parameters, period, stamps)
+
+
 def _count(action, conditions, period):
     if action == "calibrate":
         return 150

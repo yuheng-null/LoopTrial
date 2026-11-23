@@ -4,7 +4,7 @@ import asyncio
 
 from mcp.server.fastmcp import FastMCP
 
-from . import engine
+from . import api, engine
 
 mcp = FastMCP("LoopTrial", instructions=(
     "Use existing conversation conditions and discover the selected device. Read effective parameters. "
@@ -16,7 +16,7 @@ mcp = FastMCP("LoopTrial", instructions=(
 
 async def call(fn, *args):
     try:
-        return await asyncio.to_thread(fn, *args)
+        return await asyncio.to_thread(api.from_engine, fn, args, "mcp")
     except engine.OPERATION_ERRORS as error:
         return engine.failure(error)
 
@@ -99,6 +99,24 @@ async def review(record: str):
 async def compare(first: str, second: str):
     """Compare metrics of two completed experiments with matching device, version, action and conditions."""
     return await call(engine.compare, first, second)
+
+
+@mcp.tool()
+async def session_status():
+    """Inspect the shared workbench's device, telemetry, events and last confirmed values."""
+    try:
+        snapshot = await asyncio.to_thread(api.call, "snapshot", {}, "mcp")
+        snapshot["stream"] = snapshot["stream"][-8:]
+        snapshot["events"] = snapshot["events"][-16:]
+        return snapshot
+    except engine.OPERATION_ERRORS as error:
+        return engine.failure(error)
+
+
+@mcp.tool()
+async def session_timeline(uri: str, limit: int = 30):
+    """Read timestamped human/CLI/MCP changes, write stages, run IDs and failures."""
+    return await call(engine.timeline, uri, limit)
 
 
 def main():

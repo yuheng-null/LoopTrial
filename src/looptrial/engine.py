@@ -1,6 +1,7 @@
 """Shared experiment service for the CLI and stdio MCP server."""
 
 import contextlib
+from contextvars import ContextVar, copy_context
 import hashlib
 import hmac
 import importlib
@@ -13,12 +14,18 @@ import sqlite3
 import subprocess
 import sys
 import time
+import threading
 import uuid
 from datetime import datetime, timezone
 
 from filelock import FileLock, Timeout
 
 from . import __version__, records
+
+
+# Only the workbench process installs a runtime. Other clients use the public RPC.
+runtime = None
+actor = ContextVar("looptrial_actor", default="cli")
 
 
 class Problem(RuntimeError):
@@ -65,6 +72,10 @@ def database():
                 seq INTEGER PRIMARY KEY, resource TEXT NOT NULL, event TEXT NOT NULL);
             CREATE TABLE IF NOT EXISTS local_settings (name TEXT PRIMARY KEY, value TEXT NOT NULL);
             CREATE TABLE IF NOT EXISTS endpoints (uri TEXT PRIMARY KEY, alias TEXT NOT NULL);
+            CREATE TABLE IF NOT EXISTS timeline (
+                seq INTEGER PRIMARY KEY, uri TEXT NOT NULL, time TEXT NOT NULL,
+                actor TEXT NOT NULL, kind TEXT NOT NULL, details TEXT NOT NULL);
+            CREATE INDEX IF NOT EXISTS timeline_endpoint ON timeline(uri,seq);
         """)
         with db:
             yield db
@@ -77,7 +88,13 @@ def backend(uri):
     if not sep or not endpoint:
         raise ValueError("device URI must include scheme://endpoint; discover devices first")
     if scheme in ("serial", "ble"):
+        if runtime is not None:
+            board = runtime.board_for(uri)
+            if board is not None:
+                return board
         return importlib.import_module(".hardware", __package__)
+    if scheme == "race":
+        return importlib.import_module(".race", __package__)
     if scheme == "sim":
         return importlib.import_module(".models", __package__)
     matches = list(entry_points(group="looptrial.devices", name=scheme))
@@ -88,7 +105,7 @@ def backend(uri):
 
 def source(uri):
     scheme = uri.partition("://")[0]
-    return uri if scheme == "sim" else scheme + "://device"
+    return uri if scheme in ("sim", "race") else scheme + "://device"
 
 
 def instance_alias(tag):
@@ -132,7 +149,7 @@ def device_lock(uri, timeout=0):
 def devices():
     from serial.tools import list_ports
 
-    return {"simulated": ["sim://thermal", "sim://sensor", "sim://motor", "sim://balance"],
+    return {"simulated": ["sim://thermal", "sim://sensor", "sim://motor", "sim://balance", "race://yali"],
             "serial_candidates": ["serial://" + port.device for port in list_ports.comports()],
             "ble": "ble://BD-BT26 (GATT discovery and firmware handshake on describe)",
             "adapter_schemes": sorted(e.name for e in entry_points(group="looptrial.devices")),
@@ -181,14 +198,33 @@ def read_parameters(uri):
     with device_lock(uri):
         adapter = backend(uri)
         info = identify(adapter, uri)
+        values = _read(adapter, uri, info)
+        if runtime is not None:
+            runtime.confirm(uri, values)
         return {"device": info["id"], "version": info["version"],
-                "verified": _read(adapter, uri, info), "source": source(uri),
+                "verified": values, "source": source(uri),
                 **({"instance":info["instance"]} if "instance" in info else {})}
 
 
 def _event(uri, event):
     with database() as db:
         db.execute("INSERT INTO writes(resource,event) VALUES (?,?)", (event.get("instance", uri), records.encode(event)))
+
+
+def observe(uri, kind, details):
+    stamp = now()
+    with database() as db:
+        seq = db.execute("INSERT INTO timeline(uri,time,actor,kind,details) VALUES(?,?,?,?,?)",
+                         (uri, stamp, actor.get(), kind, records.encode(details))).lastrowid
+    return {"seq": seq, "time": stamp, "actor": actor.get(), "kind": kind, "details": details}
+
+
+def timeline(uri, limit=100):
+    with database() as db:
+        rows = db.execute("SELECT * FROM timeline WHERE uri=? ORDER BY seq DESC LIMIT ?",
+                          (uri, bounded_limit(limit))).fetchall()
+    return [{"seq": r["seq"], "time": r["time"], "actor": r["actor"], "kind": r["kind"],
+             "details": json.loads(r["details"])} for r in reversed(rows)]
 
 
 def apply_parameters(uri, values):
@@ -201,16 +237,27 @@ def apply_parameters(uri, values):
         validate(values, info["parameters"])
         before = _read(adapter, uri, info)
         target = before | values
-        event = dict(time=now(), device=info["id"], source=source(uri), before=before,
+        event = dict(time=now(), actor=actor.get(), device=info["id"], source=source(uri), before=before,
                      requested=values, persistence="temporary", state="write_attempted")
         if "instance" in info:
             event["instance"] = info["instance"]
+        started = time.perf_counter()
+        command_id = uuid.uuid4().hex
+        event["command_id"] = command_id
+        def stage(kind, fields):
+            return observe(uri, kind, {"command_id": command_id, **fields})
         try:
+            event["sent_at"] = stage("sent", {"requested": values})["time"]
             event["applied"] = _write(adapter, uri, target)
+            event["applied_at"] = stage("applied", {"values": event["applied"]})["time"]
             event["verified"] = _read(adapter, uri, info)
             if event["verified"] != target:
                 raise Problem("readback_mismatch", "effective values differ from requested configuration")
             event["state"] = "verified"
+            event["confirm_ms"] = round((time.perf_counter() - started) * 1000, 3)
+            event["verified_at"] = stage("verified", {"values": event["verified"], "confirm_ms": event["confirm_ms"]})["time"]
+            if runtime is not None:
+                runtime.confirm(uri, event["verified"], event["verified_at"])
         except Exception as error:
             event["error"] = failure(error)["error"]
             event["state"] = "unknown"
@@ -220,6 +267,12 @@ def apply_parameters(uri, values):
                 event["state"] = "restored" if event["last_readback"] == before else "restore_mismatch"
             except Exception as restore_error:
                 event["restore_error"] = failure(restore_error)["error"]
+            stage(event["state"], {"error": event["error"], "values": event.get("last_readback")})
+            if runtime is not None:
+                if event["state"] == "restored":
+                    runtime.confirm(uri, before)
+                else:
+                    runtime.unknown(uri, "Effective settings could not be confirmed.")
             _event(uri, event)
             raise Problem(event["error"]["code"], str(error), receipt=event) from error
         _event(uri, event)
@@ -341,6 +394,10 @@ def run_experiment(uri, action, conditions=None, goals=None, constraints=None, n
             return existing
         raise Problem("device_busy", "device has an active experiment") from error
     if background:
+        if runtime is not None:
+            context = copy_context()
+            threading.Thread(target=context.run, args=(work, run_id), daemon=True).start()
+            return get_run(run_id)
         options = {"creationflags": subprocess.CREATE_NO_WINDOW | subprocess.CREATE_NEW_PROCESS_GROUP} if os.name == "nt" else {"start_new_session": True}
         try:
             subprocess.Popen([sys.executable, "-m", "looptrial.worker", run_id], env=os.environ | {"LOOPTRIAL_HOME": str(home())},
@@ -370,7 +427,8 @@ def new_record(row, request):
 
 def finish(record):
     summary = {k:record[k] for k in ("id", "status", "source", "action", "conditions", "parameters",
-               "device_state", "samples", "metrics", "checks", "passed", "error", "warnings", "instance") if k in record}
+               "device_state", "samples", "metrics", "checks", "passed", "error", "warnings", "instance",
+               "actor", "last_parameter_write", "started", "finished", "device") if k in record}
     summary["record"] = "runs/" + record["id"] + "/record.json"
     with database() as db:
         db.execute("UPDATE jobs SET status=?,summary=? WHERE id=?",
@@ -422,7 +480,14 @@ def work(run_id):
                 conditions = defaults(spec["conditions"]) | request["conditions"]
                 validate(conditions, spec["conditions"])
                 params = _read(adapter, uri, info)
-                record.update(conditions=conditions, parameters=params, device_state={"state": "verified", "values": params})
+                begin = observe(uri, "run_started", {"id": run_id, "action": action, "values": params})
+                record.update(conditions=conditions, parameters=params, device_state={"state": "verified", "values": params},
+                              actor=actor.get(), started=begin["time"], timeline_start=begin["seq"])
+                with database() as db:
+                    previous = db.execute("SELECT seq,time,actor,details FROM timeline WHERE uri=? AND kind='verified' AND seq<? ORDER BY seq DESC LIMIT 1",
+                                          (uri, begin["seq"])).fetchone()
+                if previous:
+                    record["last_parameter_write"] = {"time": previous["time"], "actor": previous["actor"], **json.loads(previous["details"])}
                 records.write_json(directory / "acquiring.json", record)
                 until = time.monotonic() + request["pace"]
                 while time.monotonic() < until:
@@ -465,7 +530,8 @@ def work(run_id):
                     except OPERATION_ERRORS as recovery_error:
                         record["device_state"]["recovery_error"] = failure(recovery_error)["error"]
             record.pop("passed", None)
-        record.update(finished=now(), samples=len(rows), samples_sha256=records.write_samples(directory, rows))
+        end = observe(uri, "run_" + record["status"], {"id": run_id, "state": record["device_state"], "error": record.get("error")})
+        record.update(finished=end["time"], timeline_end=end["seq"], samples=len(rows), samples_sha256=records.write_samples(directory, rows))
         records.write_json(directory / "record.json", record)
         try:
             records.plot(directory, rows, record.get("signals", {}))
@@ -514,7 +580,8 @@ def review(ref):
     if record["status"] != "completed":
         return result | {"error": record.get("error"), "recomputed": False}
     records.check_rows(rows)
-    adapter = backend(record["source"])
+    adapter = (importlib.import_module(".hardware", __package__)
+               if record["source"].startswith(("ble://", "serial://")) else backend(record["source"]))
     metrics = adapter.metrics(record["source"], record["action"], record["conditions"], rows)
     checks = {k:records.check_rules(metrics, record[k], record.get("requires_event")) for k in ("goals", "constraints")}
     if not matches_evaluation(record, metrics, checks):
@@ -551,4 +618,6 @@ def compare(first, second):
     if differences or any(r["status"] != "completed" for r in (a,b)):
         raise Problem("incomparable", "requires completed trials with matching identity, version, action and conditions", differences=differences)
     return dict(first=a["id"], second=b["id"], parameters=[a["parameters"], b["parameters"]],
+                changed_parameters={k: [v,b["parameters"].get(k)] for k,v in a["parameters"].items() if b["parameters"].get(k) != v},
+                last_parameter_writes=[a.get("last_parameter_write"), b.get("last_parameter_write")],
                 delta={k:b["metrics"][k]-v for k,v in a["metrics"].items()})

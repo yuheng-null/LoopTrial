@@ -7,5 +7,7 @@ recursive-include examples *.py
 recursive-include tests *.py
 recursive-include evidence *.md *.json *.jsonl *.zip *.csv *.svg
 recursive-include src/looptrial/resources *
+recursive-include src/looptrial/web *
+recursive-include src/looptrial/race_assets *
 global-exclude *.py[cod]
 prune build
