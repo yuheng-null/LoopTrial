@@ -133,6 +133,7 @@ class LiveSession:
             if self.board is None:
                 period, stream = models.live_samples(self.uri, self.values)
             while not self.stop.is_set():
+                poll_started = time.monotonic()
                 if self.board:
                     batch = self.board.telemetry()
                 else:
@@ -143,7 +144,12 @@ class LiveSession:
                         i += 1
                 if batch:
                     self.accept(batch)
-                self.stop.wait(.1)
+                # A full LT1 telemetry page can mean more rows are waiting.
+                # In other cases, pace poll starts rather than adding 100 ms
+                # after a slow GATT transaction. The transport lock is released
+                # per frame, including between consecutive page requests.
+                if not (self.board and len(batch) == 4):
+                    self.stop.wait(max(0.0, .1 - (time.monotonic() - poll_started)))
         except Exception as error:
             if not self.stop.is_set():
                 self.unknown(self.uri, str(error))
