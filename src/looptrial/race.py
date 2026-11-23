@@ -3,11 +3,13 @@ import json
 import math
 import mimetypes
 import os
+from queue import SimpleQueue
 import secrets
 import shutil
 import subprocess
 import sys
 import tempfile
+import threading
 import time
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
@@ -152,6 +154,14 @@ def metrics(uri, action, conditions, rows):
     for index, row in enumerate(rows, 1):
         if row["t"] != index/100 or judge.event >= 2:
             raise ValueError("trajectory timestamps or terminal position inconsistent")
+        # The upstream 10 ms pose integration is independent evidence for path
+        # continuity. A skipped section cannot be hidden by renumbering rows.
+        px, pz = judge.previous
+        step = row["speed_m_s"] / 100
+        expected_x = px - math.sin(row["yaw_rad"]) * step
+        expected_z = pz - math.cos(row["yaw_rad"]) * step
+        if math.hypot(row["x_m"]-expected_x, row["z_m"]-expected_z) > 1e-8:
+            raise ValueError("position disagrees with wheel-driven motion")
         proof = judge.observe(row)
         if any(not math.isclose(row[key], value, abs_tol=1e-9) for key,value in proof.items()):
             raise ValueError("reported event disagrees with recorded trajectory")
@@ -164,12 +174,16 @@ def metrics(uri, action, conditions, rows):
 
 
 def acquire(uri, action, conditions, params, cancelled):
+    from .engine import publish_samples
+
     if action != "lap":
         raise ValueError("race://yali supports lap")
     executable = _browser()
     judge = Judge(conditions)
     config = {"course":{"radius":judge.radius*10,"half_straight":judge.half*10}, "settings":params, "conditions":conditions}
     rows, errors = [], []
+    finished = threading.Event()
+    batches = SimpleQueue()
     prefix = "/" + secrets.token_urlsafe(24) + "/"
     files = {p.relative_to(ASSETS).as_posix(): p for p in ASSETS.rglob("*") if p.is_file()}
 
@@ -204,14 +218,27 @@ def acquire(uri, action, conditions, params, cancelled):
                 return
             raw = self.rfile.read(length)
             if self.path == prefix+"error":
-                errors.append(raw.decode("utf-8","replace")[:500])
+                errors.append(raw.decode("utf-8","replace").splitlines()[0][:500])
             else:
-                for row in json.loads(raw):
-                    row.update(judge.observe(row))
-                    rows.append(row)
-                    if judge.event >= 2:
-                        break
-            self.reply(json.dumps({"more":judge.event < 2 and not errors}).encode())
+                try:
+                    start = len(rows)
+                    for row in json.loads(raw):
+                        if finished.is_set():
+                            break
+                        row.update(judge.observe(row))
+                        rows.append(row)
+                        if judge.event >= 2:
+                            break
+                    if start < len(rows):
+                        batches.put(rows[start:])
+                except (ValueError, TypeError, KeyError) as error:
+                    errors.append("Invalid browser telemetry: " + str(error))
+            more = judge.event < 2 and not errors
+            try:
+                self.reply(json.dumps({"more":more}).encode())
+            finally:
+                if not more:
+                    finished.set()
 
     with tempfile.TemporaryDirectory(prefix="yali-",ignore_cleanup_errors=True) as profile, ThreadingHTTPServer(("127.0.0.1",0),Handler) as http:
         http.timeout = .15
@@ -224,14 +251,23 @@ def acquire(uri, action, conditions, params, cancelled):
                                 creationflags=getattr(subprocess,"CREATE_NO_WINDOW",0))
         try:
             deadline = time.monotonic()+120
-            while judge.event < 2 and not errors:
+            while not finished.is_set():
+                while not batches.empty():
+                    publish_samples(uri, batches.get())
                 if cancelled():
-                    raise InterruptedError("Whole-car trial cancelled")
+                    raise InterruptedError("Whole-car trial cancelled by caller")
                 if proc.poll() is not None or time.monotonic() >= deadline:
                     raise ValueError(f"Browser ended or timed out with {len(rows)} trajectory samples; check Chromium/WebGL")
                 http.handle_request()
+            while not batches.empty():
+                publish_samples(uri, batches.get())
             if errors:
                 raise ValueError("Race browser: "+errors[0])
+        except (InterruptedError, ValueError) as error:
+            finished.set()
+            error.rows = rows.copy()
+            error.state_unknown = False
+            raise
         finally:
             if proc.poll() is None:
                 if sys.platform == "win32":
