@@ -2,7 +2,7 @@
 
 [简体中文](README.md) · **English** · [Download v0.2.0](https://github.com/yuheng-null/LoopTrial/releases/tag/v0.2.0)
 
-LoopTrial is an embedded experiment workbench for engineers and their AI agents. Keep live signals on screen and tell your own agent, “This car is slow through bends. Speed it up.” Its CLI or MCP calls share the device connection, read effective settings, test candidates and confirm results on the same timeline. A diagnosis can end after a single capture.
+LoopTrial is an embedded experiment workbench for engineers and their AI agents. Keep live signals on screen and describe a symptom to your own agent. In the bundled whole-car simulator, a request like “This car is slow through bends. Speed it up” can start an experiment. Its CLI or MCP calls share the device connection, read effective settings, test candidates and confirm results on the same timeline. A diagnosis can end after a single capture.
 
 ![LoopTrial workbench with live signals, effective parameters and the shared experiment timeline](docs/media/workbench.png)
 
@@ -36,7 +36,7 @@ looptrial review $r.id
 looptrial-client
 ```
 
-## Run a whole-car trial
+## Drive a full lap in the YALI simulator
 
 ```powershell
 looptrial describe race://yali
@@ -51,7 +51,7 @@ From a stationary reset the YALI camera, line follower, steering and wheel contr
 ## Integration and reproducible experiments
 
 - **Measurement and control.** Examples cover pressure measurement and filtering, two-point calibration with a held-out reference, heater response, wheel speed and small-angle balance. Compare fresh trials from matching conditions and inspect raw CSV, units, amplitude and delay. [Experiments and legacy logger adapter](docs/EXPERIMENTS.en.md)
-- **Physical devices.** Real-time control, limits and independent timeouts run on the device. The Blue Pill example supports USB-to-UART and BLE GATT. Continuous observations and on-board transient captures share the connection. Python adapters can wrap other protocols. [Wiring and integration](docs/HARDWARE.en.md) · [Current bench results](evidence/v02/board/README.en.md)
-- **Portable records.** Each trial has a directory in `lab/runs/<id>` with timestamped `samples.csv`, conditions and settings in `record.json`, and a `plot.svg`. Copy the complete directory to another computer with the corresponding version and adapter to recalculate offline. [Release, checksums and source builds](docs/RELEASE.en.md)
+- **Physical devices.** Real-time control, limits and independent timeouts run on the device. The Blue Pill example supports USB-to-UART and BLE GATT. Continuous observations and on-board transient captures share the connection. Python adapters can wrap other protocols. For physical lap tuning, expose timestamped feedback, effective parameter readback, repeatable starts, and finish and off-course detection. [Wiring and integration](docs/HARDWARE.en.md) · [Current bench results](evidence/v02/board/README.en.md)
+- **Portable records.** Each trial has a directory in `lab/runs/<id>` with timestamped `samples.csv`, conditions and settings in `record.json`, and a `plot.svg` for traces of at least two samples. Copy the complete directory to another computer with the corresponding version and adapter to recalculate offline. [Release, checksums and source builds](docs/RELEASE.en.md)
 
 LoopTrial is **GPL-3.0-or-later**. Bundled components retain their own licenses. [License](LICENSE) · [Third-party notices](THIRD_PARTY.md) · [Release goals](docs/GOAL-0.2.en.md) · [Upstream design references](docs/REUSE.en.md)

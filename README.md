@@ -2,7 +2,7 @@
 
 **简体中文** · [English](README.en.md) · [下载 v0.2.0](https://github.com/yuheng-null/LoopTrial/releases/tag/v0.2.0)
 
-LoopTrial 是给嵌入式工程师和 AI Agent 共用的实验上位机。你可以开着实时波形看设备，只对自己的 Agent 说「这辆车过弯太慢，帮我调快一点」。Agent 通过 CLI 或 MCP 使用同一次连接，读生效参数、试候选、复测，并把结果留在你能看到的时间轴上。一次诊断也可以只采一段波形。
+LoopTrial 是给嵌入式工程师和 AI Agent 共用的实验上位机。你可以开着实时波形看设备，对自己的 Agent 描述症状。在随包的整车仿真里，一句「这辆车过弯太慢，帮我调快一点」就可以开始实验。Agent 通过 CLI 或 MCP 使用同一次连接，读生效参数、试候选、复测，并把结果留在你能看到的时间轴上。一次诊断也可以只采一段波形。
 
 ![LoopTrial 工作台中的实时设备波形、参数和共享实验时间轴](docs/media/workbench.png)
 
@@ -36,7 +36,7 @@ looptrial review $r.id
 looptrial-client
 ```
 
-## 跑一次完整赛车实验
+## 在雷霆之车仿真中跑完一圈
 
 ```powershell
 looptrial describe race://yali
@@ -51,7 +51,7 @@ looptrial review ".\lap-$($lap.id)"
 ## 接入与可复现实验
 
 - **仪器与控制器。** 内置压力测量和滤波、两点标定及第三点验证、温控、轮速和小角度直立。使用相同初态比较候选，查看原始 CSV、单位、幅度与响应延迟。[实验与旧记录器适配](docs/EXPERIMENTS.md)
-- **真实设备。** 实时控制、限幅和超时留在设备侧。Blue Pill 示例支持 USB 转 UART 和 BLE GATT，持续观测与板端瞬态采集可共用连接。其他协议可通过 Python 适配器接入。[固件、接线与既有工程](docs/HARDWARE.md) · [本版台架](evidence/v02/board/README.md)
-- **可移植记录。** 每轮独立存入 `lab/runs/<id>`，含带时间戳的 `samples.csv`、记录工况和参数的 `record.json` 以及 `plot.svg`。整目录复制到装有相应版本和适配器的电脑可离线重算。[发布、校验和源码构建](docs/RELEASE.md)
+- **真实设备。** 实时控制、限幅和超时留在设备侧。Blue Pill 示例支持 USB 转 UART 和 BLE GATT，持续观测与板端瞬态采集可共用连接。其他协议可通过 Python 适配器接入。要让 Agent 在实车上优化圈速，固件或适配器还需提供带时间戳的反馈、生效参数回读、可重复起跑、有效完赛和出界判定。[固件、接线与既有工程](docs/HARDWARE.md) · [本版台架](evidence/v02/board/README.md)
+- **可移植记录。** 每轮独立存入 `lab/runs/<id>`，含带时间戳的 `samples.csv`、记录工况和参数的 `record.json`；至少有两个采样点时还会生成 `plot.svg`。整目录复制到装有相应版本和适配器的电脑可离线重算。[发布、校验和源码构建](docs/RELEASE.md)
 
 LoopTrial 采用 **GPL-3.0-or-later**，随包组件附各自许可。[完整许可](LICENSE) · [第三方声明](THIRD_PARTY.zh-CN.md) · [本版任务书](docs/GOAL-0.2.md) · [开源复用](docs/REUSE.md)
