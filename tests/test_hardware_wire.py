@@ -155,6 +155,32 @@ def test_ack_loss_fragmented_fetch_and_reconnect(endpoint):
     assert any(cmd[0] == "H" for cmd in board.commands[board.commands.index(starts[-1])+2:])
 
 
+def test_persistent_link_and_continuous_sampling(endpoint):
+    uri, board = endpoint
+    device = hw.LiveBoard(uri)
+    try:
+        assert device.describe(uri)["telemetry"]["period_s"] == .05
+        assert device.apply(uri, {"gain": 6}) == device.read(uri) == {"gain": 6}
+        first = device.telemetry()
+        for _ in range(250):
+            board.lib.lt_tick()
+        next_page = device.telemetry()
+        assert len(next_page) == 4 and next_page[0]["seq"] == first[-1]["seq"] + 1
+        assert all(row["gain"] == 6 and row["target"] == 20 for row in next_page)
+        assert next_page[-1]["t"] - next_page[0]["t"] == pytest.approx(.15)
+        captured = device.acquire(uri, "step", {"samples": 4, "period_ms": 20, "target": 100},
+                                  {"gain": 6})
+        assert len(captured) == 4 and captured[0]["response"] == 37.5
+        assert board.commands.count(["H"]) == 1
+        for _ in range(2200):
+            board.lib.lt_tick()
+        assert device.telemetry()[0]["seq"] > next_page[-1]["seq"] + 1
+    finally:
+        device.close()
+    with pytest.raises(hw.HardwareError, match="closed"):
+        device.read(uri)
+
+
 def test_lost_start_ack_followed_by_board_reboot(endpoint, firmware_image, tmp_path):
     uri, board = endpoint
     second = tmp_path / ("rebooted" + firmware_image.suffix)

@@ -20,7 +20,7 @@ def build(output: Path, bin_dir: Path | None = None):
             bin_dir = installed[-1].parent
     output = output.resolve()
     output.mkdir(parents=True, exist_ok=True)
-    base = output / "looptrial-bluepill-0.1.0.elf"
+    base = output / "looptrial-bluepill-0.2.0.elf"
     subprocess.run([str(bin_dir / "arm-none-eabi-gcc"), "-std=c11", "-mcpu=cortex-m3",
                     "-mthumb", "-Os", "-Wall", "-Wextra", "-Werror", "-ffreestanding",
                     "-fno-builtin", "-ffunction-sections", "-fdata-sections", "-nostdlib",

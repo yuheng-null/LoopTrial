@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import asyncio
+from concurrent.futures import CancelledError as FutureCancelled
 from contextlib import asynccontextmanager, AsyncExitStack, contextmanager
 import secrets
 import threading
@@ -21,7 +22,7 @@ def _integer(low, high, default, unit):
 
 
 SPEC = {
-    "id": "bluepill-step", "version": "0.1.0", "source": "board-software-model",
+    "id": "bluepill-step", "version": "0.2.0", "source": "board-software-model",
     "description": "Two UART bridges reach one RAM-only, deterministic first-order plant on the MCU.",
     "signals": {"t": {"unit": "s", "description": "Time since board-side start, from SysTick."},
                 "target": {"unit": "count"}, "response": {"unit": "count"}},
@@ -122,8 +123,16 @@ class _Peer:
         self.write, self.read = write, read
         self.seq = secrets.randbelow(1000000)
         self.pending = bytearray()
+        self.wire = asyncio.Lock()
+        self.version = None
 
     async def rpc(self, command, attempts=2):
+        # A request and its complete reply own the byte stream. Buffered captures
+        # release it between polls so a live observer can read concurrently.
+        async with self.wire:
+            return await self._rpc(command, attempts)
+
+    async def _rpc(self, command, attempts):
         self.seq += 1
         prefix = f"@{self.seq} ".encode()
         wire = b"\n" + prefix + command.encode("ascii") + b"\n"
@@ -154,8 +163,10 @@ class _Peer:
 
     async def identify(self):
         fields = await self.rpc("H")
-        if len(fields) != 4 or fields[:3] != ["LT1", SPEC["id"], SPEC["version"]] or not fields[3].isdigit():
-            raise HardwareError("wrong_device", "Expected the LT1 bluepill-step 0.1.0 firmware.")
+        if (len(fields) != 4 or fields[:2] != ["LT1", SPEC["id"]]
+                or fields[2] not in ("0.1.0", SPEC["version"]) or not fields[3].isdigit()):
+            raise HardwareError("wrong_device", "Expected LT1 bluepill-step firmware 0.1.0 or 0.2.0.")
+        self.version = fields[2]
         return fields[3]
 
 
@@ -255,19 +266,29 @@ def _ints(fields, n):
 async def _operation(uri, operation, params=None):
     async with _connect(uri) as (peer, tag):
         if operation == "describe":
-            from .engine import instance_alias
-            return SPEC | {"instance": instance_alias("bluepill-step:" + tag)}
+            return _description(peer, tag)
         if operation == "apply":
             if not params:
                 raise HardwareError("invalid_input", "Specify gain to update volatile RAM.")
             gain = _validate(params, SPEC["parameters"])["gain"]
-            _ints(await peer.rpc(f"W {gain}"), 1)
+            _ints(await peer.rpc(f"W {gain}", attempts=1), 1)
         current = _ints(await peer.rpc("R"), 1)[0]
         if not 1 <= current <= 16:
             raise HardwareError("bad_frame", "Board reported a gain outside its declared range.")
         if operation == "apply" and current != gain:
             raise HardwareError("readback_mismatch", f"Requested {gain}, board now reports {current}.")
         return {"gain": current}
+
+
+def _description(peer, tag):
+    from .engine import instance_alias
+    info = SPEC | {"version": peer.version, "instance": instance_alias("bluepill-step:" + tag)}
+    if peer.version == "0.2.0":
+        info["telemetry"] = {"period_s": .05, "signals": {
+            "target": {"unit": "count"}, "response": {"unit": "count"},
+            "gain": {"unit": "1/16 per sample"}
+        }}
+    return info
 
 
 def describe(uri):
@@ -352,6 +373,125 @@ async def _acquire(uri, action, conditions, params, cancelled):
 
 def acquire(uri, action, conditions, params, cancelled=lambda: False):
     return _run(uri, _acquire(uri, action, conditions, params, cancelled))
+
+
+class LiveBoard:
+    """One physical link shared by synchronous session clients and their sampler."""
+
+    def __init__(self, uri):
+        self.uri = uri
+        self._cursor = 0
+        self._closed = False
+        self._lifecycle = threading.Lock()
+        self._ready = threading.Event()
+        self._thread = threading.Thread(target=self._serve, name="looptrial-board", daemon=True)
+        self._thread.start()
+        self._ready.wait()
+        try:
+            self._submit(self._connect())
+        except BaseException:
+            self.close()
+            raise
+
+    def _serve(self):
+        with asyncio.Runner() as runner:
+            self._loop = runner.get_loop()
+            self._stack = AsyncExitStack()
+            self._sample_lock = asyncio.Lock()
+            self._ready.set()
+            self._loop.run_forever()
+
+    async def _connect(self):
+        self._peer, self._tag = await self._stack.enter_async_context(_open(self.uri))
+
+    def _submit(self, operation):
+        with self._lifecycle:
+            if self._closed:
+                operation.close()
+                raise HardwareError("disconnected", "Board session was closed.", state_unknown=True)
+            future = asyncio.run_coroutine_threadsafe(operation, self._loop)
+        try:
+            return future.result()
+        except HardwareError:
+            raise
+        except (UnicodeError, ValueError, IndexError) as exc:
+            raise HardwareError("bad_frame", "Malformed board response.", state_unknown=True) from exc
+        except FutureCancelled as exc:
+            raise HardwareError("disconnected", "Session closed during an operation.", state_unknown=True) from exc
+        except Exception as exc:
+            raise HardwareError("link_error", f"Board I/O failed ({type(exc).__name__}).", state_unknown=True) from exc
+
+    def close(self):
+        with self._lifecycle:
+            if self._closed:
+                return
+            self._closed = True
+            closing = asyncio.run_coroutine_threadsafe(self._stack.aclose(), self._loop)
+        try:
+            closing.result()
+        finally:
+            self._loop.call_soon_threadsafe(self._loop.stop)
+            self._thread.join()
+
+    def describe(self, uri):
+        return _description(self._peer, self._tag)
+
+    def read(self, uri):
+        gain, = _ints(self._submit(self._peer.rpc("R")), 1)
+        return _validate({"gain": gain}, SPEC["parameters"])
+
+    def apply(self, uri, values):
+        requested = _validate(values, SPEC["parameters"])["gain"]
+        applied, = _ints(self._submit(self._peer.rpc(f"W {requested}", attempts=1)), 1)
+        return _validate({"gain": applied}, SPEC["parameters"])
+
+    def telemetry(self):
+        return self._submit(self._telemetry())
+
+    async def _telemetry(self):
+        if self._peer.version != "0.2.0":
+            raise HardwareError("unsupported", "Continuous telemetry requires the 0.2.0 board example.")
+        async with self._sample_lock:
+            fields = await self._peer.rpc(f"T {self._cursor}")
+            first, n = _ints(fields[:2], 2)
+            data = _ints(fields[2:], n*3)
+            if n > 4 or (n and first <= self._cursor) or (not n and first):
+                raise HardwareError("bad_frame", "Unexpected continuous sample page.", state_unknown=True)
+            rows = []
+            for i in range(n):
+                target, milli, gain = data[3*i:3*i+3]
+                seq = first + i
+                rows.append({"seq": seq, "t": seq * 50 / 1000, "target": target,
+                             "response": milli / 1000, "gain": gain})
+            if rows:
+                self._cursor = rows[-1]["seq"]
+            return rows
+
+    def acquire(self, uri, action, conditions, params, cancelled=lambda: False):
+        if action != "step":
+            raise HardwareError("unknown_action", "Board exposes the step action.")
+        c = _validate(conditions, SPEC["actions"]["step"]["conditions"])
+        expected = params["gain"]
+        token = secrets.randbelow(2**32-1) + 1
+        rows = []
+
+        async def run():
+            try:
+                await self._peer.rpc(f"S {token} {c['target']} {c['period_ms']} {c['samples']} {expected}", attempts=1)
+            except HardwareError as err:
+                if err.code != "timeout":
+                    raise
+            await _collect(self._peer, token, expected, c, rows, cancelled)
+
+        try:
+            self._submit(run())
+        except HardwareError as err:
+            err.rows = rows
+            raise
+        return rows
+
+    def metrics(self, uri, action, conditions, rows):
+        return metrics(uri, action, conditions, rows)
 
 
 def metrics(uri, action, conditions, rows):
