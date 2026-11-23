@@ -1,0 +1,671 @@
+{
+  "capture": {
+    "date": "2026-11-23",
+    "platform": "Windows x64",
+    "host": "CPython 3.12",
+    "agent": "Codex CLI 0.167.2, existing user login, standard stdio MCP",
+    "wheel": "looptrial-0.2.0-py3-none-any.whl",
+    "wheel_sha256": "f0dac2bd1215fbb04c3c69439576760ba560c6bb5445a875e5dff6feddf7e1ea",
+    "source_commit": "f326f200b61e05e548e8bc94fd7fecccf9dc7ee3",
+    "upstream_commit": "a7237f925f43aabab47ce10a30241184779a3b5d",
+    "fixture": "Connected synthetic device race://yali; one fresh data store per conversation. Preauthorized only the software bench tools in these sessions.",
+    "public_log": "UTF-8 JSONL. User prompt from the subprocess stdin file, visible replies and application-level LoopTrial MCP calls/results from the Codex JSON event stream. Local thread IDs, usage and private runtime diagnostics omitted."
+  },
+  "cases": {
+    "wide": {
+      "transcript": "wide.jsonl",
+      "runs": [
+        {
+          "id": "5358efc28360483aa8d45cb6cb9ebd63",
+          "conditions": {
+            "course": 1.0,
+            "lane_half_width_m": 0.055,
+            "timeout_s": 25.0,
+            "seed": 17.0
+          },
+          "parameters": {
+            "drive_speed": 250,
+            "steer_gain": 10.85
+          },
+          "metrics": {
+            "valid_lap": 1,
+            "lap_time_s": 5.5,
+            "gates_passed": 8,
+            "bend_time_s": 3.66,
+            "max_offset_m": 0.024994050585666394,
+            "stop_event": 2,
+            "peak_pwm": 6203.511490844946
+          },
+          "note": "Baseline. Budget 12 laps total; course1, ordered 8 gates, lane half width 0.055m; optimize valid lap time and bend time. Temporary parameter tuning within declared bounds; reserve fresh seed confirmations.",
+          "samples": 550,
+          "samples_sha256": "5a9184a3205654cec1c44495e07693f1e7804547761b30ed113fb98f6ef063f6",
+          "passed": true
+        },
+        {
+          "id": "a397694de7eb4c98972b91b0c479239d",
+          "conditions": {
+            "course": 1.0,
+            "lane_half_width_m": 0.055,
+            "timeout_s": 25.0,
+            "seed": 17.0
+          },
+          "parameters": {
+            "drive_speed": 320.0,
+            "steer_gain": 10.85
+          },
+          "metrics": {
+            "valid_lap": 1,
+            "lap_time_s": 4.39,
+            "gates_passed": 8,
+            "bend_time_s": 2.92,
+            "max_offset_m": 0.01854353140250553,
+            "stop_event": 2,
+            "peak_pwm": 7346.007520688404
+          },
+          "note": "",
+          "samples": 439,
+          "samples_sha256": "ee663ac10169204fac6cf7254a795229cc21e1c2ae5c14412fcd08ab267a03ee",
+          "passed": true
+        },
+        {
+          "id": "7e7ffaa1d8ec4bc2b2ae8f97111f92fc",
+          "conditions": {
+            "course": 1.0,
+            "lane_half_width_m": 0.055,
+            "timeout_s": 25.0,
+            "seed": 17.0
+          },
+          "parameters": {
+            "drive_speed": 400.0,
+            "steer_gain": 10.85
+          },
+          "metrics": {
+            "valid_lap": 1,
+            "lap_time_s": 3.61,
+            "gates_passed": 8,
+            "bend_time_s": 2.4,
+            "max_offset_m": 0.04481769331101293,
+            "stop_event": 2,
+            "peak_pwm": 8427.42206466835
+          },
+          "note": "",
+          "samples": 361,
+          "samples_sha256": "953c037499b472e4cc2593f43ec9a93e5ef3f15163816f30e165805a7f492643",
+          "passed": true
+        },
+        {
+          "id": "fcf71f8ac66e4074bdd7a2ffb0739d44",
+          "conditions": {
+            "course": 1.0,
+            "lane_half_width_m": 0.055,
+            "timeout_s": 25.0,
+            "seed": 17.0
+          },
+          "parameters": {
+            "drive_speed": 440.0,
+            "steer_gain": 13.0
+          },
+          "metrics": {
+            "valid_lap": 1,
+            "lap_time_s": 3.29,
+            "gates_passed": 8,
+            "bend_time_s": 2.16,
+            "max_offset_m": 0.03435450969721199,
+            "stop_event": 2,
+            "peak_pwm": 8962.462511490758
+          },
+          "note": "",
+          "samples": 329,
+          "samples_sha256": "4c2ffd2afe869ebbc248b2a9ce895879c5df25e36641e8914e6d97003715d398",
+          "passed": true
+        },
+        {
+          "id": "28a03f2af86642c4bc7d9035a74fae62",
+          "conditions": {
+            "course": 1.0,
+            "lane_half_width_m": 0.055,
+            "timeout_s": 25.0,
+            "seed": 17.0
+          },
+          "parameters": {
+            "drive_speed": 440.0,
+            "steer_gain": 16.0
+          },
+          "metrics": {
+            "valid_lap": 1,
+            "lap_time_s": 3.24,
+            "gates_passed": 8,
+            "bend_time_s": 2.11,
+            "max_offset_m": 0.01738568983602573,
+            "stop_event": 2,
+            "peak_pwm": 8962.462511490758
+          },
+          "note": "",
+          "samples": 324,
+          "samples_sha256": "8e5adb938cb5328bbc582a8123cfc4130841b0181851fef783bd1639f4f23cd2",
+          "passed": true
+        },
+        {
+          "id": "a35b8d70cb8346ef9b20082afb97cea6",
+          "conditions": {
+            "course": 1.0,
+            "lane_half_width_m": 0.055,
+            "timeout_s": 25.0,
+            "seed": 17.0
+          },
+          "parameters": {
+            "drive_speed": 440.0,
+            "steer_gain": 20.0
+          },
+          "metrics": {
+            "valid_lap": 1,
+            "lap_time_s": 3.22,
+            "gates_passed": 8,
+            "bend_time_s": 2.09,
+            "max_offset_m": 0.02906939749053261,
+            "stop_event": 2,
+            "peak_pwm": 8962.462511490758
+          },
+          "note": "",
+          "samples": 322,
+          "samples_sha256": "3b8ec91b3f40892c66cd2898d6064cd7f11fb2043511aca04df47f600f925fad",
+          "passed": true
+        },
+        {
+          "id": "43b11ae02c7146cc979712d306f88f96",
+          "conditions": {
+            "course": 1.0,
+            "lane_half_width_m": 0.055,
+            "timeout_s": 25.0,
+            "seed": 17.0
+          },
+          "parameters": {
+            "drive_speed": 440.0,
+            "steer_gain": 25.0
+          },
+          "metrics": {
+            "valid_lap": 0,
+            "lap_time_s": 2.15,
+            "gates_passed": 5,
+            "bend_time_s": 1.24,
+            "max_offset_m": 0.05625933867323718,
+            "stop_event": 3,
+            "peak_pwm": 9100.740874279163
+          },
+          "note": "",
+          "samples": 215,
+          "samples_sha256": "3b8d1f4f1453b3fc554bdb09e23b371c467b83006b284a19269524b1cd7edc11",
+          "passed": false
+        },
+        {
+          "id": "bd9a0e345472422985088b16fec08b5c",
+          "conditions": {
+            "course": 1.0,
+            "lane_half_width_m": 0.055,
+            "timeout_s": 25.0,
+            "seed": 29.0
+          },
+          "parameters": {
+            "drive_speed": 440.0,
+            "steer_gain": 20.0
+          },
+          "metrics": {
+            "valid_lap": 1,
+            "lap_time_s": 3.22,
+            "gates_passed": 8,
+            "bend_time_s": 2.08,
+            "max_offset_m": 0.029780135213815284,
+            "stop_event": 2,
+            "peak_pwm": 8962.462511490758
+          },
+          "note": "Fresh independent confirmation, frozen candidate 440/20.",
+          "samples": 322,
+          "samples_sha256": "216caf91c6d4df8ca865096f5f1d0242d4b3e84a7d48675f146dff8710a3bb27",
+          "passed": true
+        },
+        {
+          "id": "0db0b96dd82f4bb78b9ef2b006cd92bf",
+          "conditions": {
+            "course": 1.0,
+            "lane_half_width_m": 0.055,
+            "timeout_s": 25.0,
+            "seed": 43.0
+          },
+          "parameters": {
+            "drive_speed": 440.0,
+            "steer_gain": 20.0
+          },
+          "metrics": {
+            "valid_lap": 1,
+            "lap_time_s": 3.22,
+            "gates_passed": 8,
+            "bend_time_s": 2.09,
+            "max_offset_m": 0.02768716947609018,
+            "stop_event": 2,
+            "peak_pwm": 8962.462511490758
+          },
+          "note": "Fresh independent confirmation, frozen candidate 440/20.",
+          "samples": 322,
+          "samples_sha256": "275657106a00eabe84dfffa8b6832f9226ac99bad23377ae2923a3d87c7f79ab",
+          "passed": true
+        },
+        {
+          "id": "4a0943e8276d414a8c733715cb5fd1a0",
+          "conditions": {
+            "course": 1.0,
+            "lane_half_width_m": 0.055,
+            "timeout_s": 25.0,
+            "seed": 71.0
+          },
+          "parameters": {
+            "drive_speed": 440.0,
+            "steer_gain": 20.0
+          },
+          "metrics": {
+            "valid_lap": 1,
+            "lap_time_s": 3.22,
+            "gates_passed": 8,
+            "bend_time_s": 2.08,
+            "max_offset_m": 0.029714339519400612,
+            "stop_event": 2,
+            "peak_pwm": 8962.462511490758
+          },
+          "note": "Third fresh independent confirmation, frozen candidate 440/20.",
+          "samples": 322,
+          "samples_sha256": "2039da5be05eebf48568e4e1221d95224d34a14d5ebe12d3cb6343af6823e2e8",
+          "passed": true
+        }
+      ],
+      "after_session_readback": {
+        "device": "yali-whole-car",
+        "version": "0.2.0+a7237f92",
+        "verified": {
+          "drive_speed": 440.0,
+          "steer_gain": 20.0
+        },
+        "source": "race://yali"
+      }
+    },
+    "tight": {
+      "transcript": "tight.jsonl",
+      "runs": [
+        {
+          "id": "8d7092efeca84e378bf72c8f018b14a5",
+          "conditions": {
+            "course": 2.0,
+            "lane_half_width_m": 0.055,
+            "timeout_s": 25.0,
+            "seed": 17.0
+          },
+          "parameters": {
+            "drive_speed": 250,
+            "steer_gain": 10.85
+          },
+          "metrics": {
+            "valid_lap": 1,
+            "lap_time_s": 4.54,
+            "gates_passed": 8,
+            "bend_time_s": 2.7,
+            "max_offset_m": 0.026063654693759153,
+            "stop_event": 2,
+            "peak_pwm": 6203.511490844946
+          },
+          "note": "Baseline; budget <=12 laps; course 2, ordered 8 gates, width .055m and timeout 25s fixed. Tune only drive_speed [60,440], steer_gain [2,25]. Goal lower valid lap and bend times; confirm with fresh seeds.",
+          "samples": 454,
+          "samples_sha256": "7ca9c4a7ddb7c95fc2acb995897331f854574bb8520d5d51aa6f0d0ef22b9c90",
+          "passed": true
+        },
+        {
+          "id": "ff50e1b1873640848d61fb601c3f70e0",
+          "conditions": {
+            "course": 2.0,
+            "lane_half_width_m": 0.055,
+            "timeout_s": 25.0,
+            "seed": 17.0
+          },
+          "parameters": {
+            "drive_speed": 300.0,
+            "steer_gain": 10.85
+          },
+          "metrics": {
+            "valid_lap": 0,
+            "lap_time_s": 2.43,
+            "gates_passed": 4,
+            "bend_time_s": 1.24,
+            "max_offset_m": 0.06181884333889154,
+            "stop_event": 3,
+            "peak_pwm": 7068.920768586808
+          },
+          "note": "",
+          "samples": 243,
+          "samples_sha256": "704489253a13f59876bc7968720168ce417a8ac53351907dc8c2fc4b6a0d1a33",
+          "passed": false
+        },
+        {
+          "id": "0dd2d13c4c9844a3b263a39d759bc540",
+          "conditions": {
+            "course": 2.0,
+            "lane_half_width_m": 0.055,
+            "timeout_s": 25.0,
+            "seed": 17.0
+          },
+          "parameters": {
+            "drive_speed": 300.0,
+            "steer_gain": 15.0
+          },
+          "metrics": {
+            "valid_lap": 1,
+            "lap_time_s": 3.78,
+            "gates_passed": 8,
+            "bend_time_s": 2.22,
+            "max_offset_m": 0.043216483902567604,
+            "stop_event": 2,
+            "peak_pwm": 7068.920768586808
+          },
+          "note": "",
+          "samples": 378,
+          "samples_sha256": "36fe1779e7562723efd18992d025645bfcdd630fa569c4ad474a410a87e59414",
+          "passed": true
+        },
+        {
+          "id": "ab429dd6b11048139a22dc9501f5e295",
+          "conditions": {
+            "course": 2.0,
+            "lane_half_width_m": 0.055,
+            "timeout_s": 25.0,
+            "seed": 17.0
+          },
+          "parameters": {
+            "drive_speed": 340.0,
+            "steer_gain": 19.0
+          },
+          "metrics": {
+            "valid_lap": 0,
+            "lap_time_s": 1.25,
+            "gates_passed": 2,
+            "bend_time_s": 0.83,
+            "max_offset_m": 0.05631879202865542,
+            "stop_event": 3,
+            "peak_pwm": 7619.475979431876
+          },
+          "note": "",
+          "samples": 125,
+          "samples_sha256": "319b67179eb357095958bea0bfd869d0410aede9ae2b9491082ad1d3f2ebe115",
+          "passed": false
+        },
+        {
+          "id": "a0668b29c27146848d9f165b303e8a00",
+          "conditions": {
+            "course": 2.0,
+            "lane_half_width_m": 0.055,
+            "timeout_s": 25.0,
+            "seed": 17.0
+          },
+          "parameters": {
+            "drive_speed": 320.0,
+            "steer_gain": 17.0
+          },
+          "metrics": {
+            "valid_lap": 1,
+            "lap_time_s": 3.54,
+            "gates_passed": 8,
+            "bend_time_s": 2.06,
+            "max_offset_m": 0.05012560202106808,
+            "stop_event": 2,
+            "peak_pwm": 7346.007520688404
+          },
+          "note": "",
+          "samples": 354,
+          "samples_sha256": "1587d1eb7bd9c8f5fd328cbbb0ab90778e9bb1288daa9737b1349bbd684a0e0a",
+          "passed": true
+        },
+        {
+          "id": "5796cacd75e24c3aa4e63e384991e70a",
+          "conditions": {
+            "course": 2.0,
+            "lane_half_width_m": 0.055,
+            "timeout_s": 25.0,
+            "seed": 17.0
+          },
+          "parameters": {
+            "drive_speed": 320.0,
+            "steer_gain": 22.0
+          },
+          "metrics": {
+            "valid_lap": 0,
+            "lap_time_s": 0.51,
+            "gates_passed": 0,
+            "bend_time_s": 0.06,
+            "max_offset_m": 0.05578190856879828,
+            "stop_event": 3,
+            "peak_pwm": 7346.007520688404
+          },
+          "note": "",
+          "samples": 51,
+          "samples_sha256": "2800260cdea6aded793f420a80c9f20b1d35868b6957d6c3df713dd7c20df4f3",
+          "passed": false
+        },
+        {
+          "id": "74a708f1bb984f95ac5c4db81ee0e0e6",
+          "conditions": {
+            "course": 2.0,
+            "lane_half_width_m": 0.055,
+            "timeout_s": 25.0,
+            "seed": 17.0
+          },
+          "parameters": {
+            "drive_speed": 330.0,
+            "steer_gain": 17.0
+          },
+          "metrics": {
+            "valid_lap": 1,
+            "lap_time_s": 3.44,
+            "gates_passed": 8,
+            "bend_time_s": 2.0,
+            "max_offset_m": 0.05016729533280617,
+            "stop_event": 2,
+            "peak_pwm": 7346.007520688404
+          },
+          "note": "",
+          "samples": 344,
+          "samples_sha256": "cbf2b40d0aaf12009ae33b8d9900b34ea6d8a5c3f81bdef6f2f1fae03d6a375b",
+          "passed": true
+        },
+        {
+          "id": "61d4a79ca8c74ca4b14c3456168f3365",
+          "conditions": {
+            "course": 2.0,
+            "lane_half_width_m": 0.055,
+            "timeout_s": 25.0,
+            "seed": 17.0
+          },
+          "parameters": {
+            "drive_speed": 340.0,
+            "steer_gain": 17.0
+          },
+          "metrics": {
+            "valid_lap": 0,
+            "lap_time_s": 2.14,
+            "gates_passed": 4,
+            "bend_time_s": 1.07,
+            "max_offset_m": 0.05803544851583897,
+            "stop_event": 3,
+            "peak_pwm": 7619.475979431876
+          },
+          "note": "",
+          "samples": 214,
+          "samples_sha256": "0077aaa87caa98aed0bedf1227c3d8c6ab9566d8b53bd8da0e934d15a5fb1edf",
+          "passed": false
+        },
+        {
+          "id": "62929b10f3c940d394c169ea54844a4b",
+          "conditions": {
+            "course": 2.0,
+            "lane_half_width_m": 0.055,
+            "timeout_s": 25.0,
+            "seed": 29.0
+          },
+          "parameters": {
+            "drive_speed": 330.0,
+            "steer_gain": 17.0
+          },
+          "metrics": {
+            "valid_lap": 1,
+            "lap_time_s": 3.44,
+            "gates_passed": 8,
+            "bend_time_s": 2.0,
+            "max_offset_m": 0.05130133967401174,
+            "stop_event": 2,
+            "peak_pwm": 7346.007520688404
+          },
+          "note": "",
+          "samples": 344,
+          "samples_sha256": "b16a8e78711f35571e5413d0ed06f9f6b3d00d0416b0f7f5e0a2a158999a5885",
+          "passed": true
+        },
+        {
+          "id": "4990087112e74eccbfef928f51eaa9ff",
+          "conditions": {
+            "course": 2.0,
+            "lane_half_width_m": 0.055,
+            "timeout_s": 25.0,
+            "seed": 43.0
+          },
+          "parameters": {
+            "drive_speed": 330.0,
+            "steer_gain": 17.0
+          },
+          "metrics": {
+            "valid_lap": 1,
+            "lap_time_s": 3.44,
+            "gates_passed": 8,
+            "bend_time_s": 2.0,
+            "max_offset_m": 0.049573994256253084,
+            "stop_event": 2,
+            "peak_pwm": 7346.007520688404
+          },
+          "note": "",
+          "samples": 344,
+          "samples_sha256": "7b9db094ddeafde64ff6b3ab3fb22f8fa45c13e2088e3f81f5d4edbe913dc87d",
+          "passed": true
+        },
+        {
+          "id": "c5ba545c399648a9978ef8f3c9a27c39",
+          "conditions": {
+            "course": 2.0,
+            "lane_half_width_m": 0.055,
+            "timeout_s": 25.0,
+            "seed": 71.0
+          },
+          "parameters": {
+            "drive_speed": 330.0,
+            "steer_gain": 17.0
+          },
+          "metrics": {
+            "valid_lap": 1,
+            "lap_time_s": 3.45,
+            "gates_passed": 8,
+            "bend_time_s": 2.01,
+            "max_offset_m": 0.048376394751550866,
+            "stop_event": 2,
+            "peak_pwm": 7346.007520688404
+          },
+          "note": "",
+          "samples": 345,
+          "samples_sha256": "42253a680d3c676442c9563e5c6617bc0665c625a4923d6a7c11c5cdeb388dbe",
+          "passed": true
+        },
+        {
+          "id": "fc0638ca99ab4e488d16c12758bfcbe5",
+          "conditions": {
+            "course": 2.0,
+            "lane_half_width_m": 0.055,
+            "timeout_s": 25.0,
+            "seed": 101.0
+          },
+          "parameters": {
+            "drive_speed": 330.0,
+            "steer_gain": 17.0
+          },
+          "metrics": {
+            "valid_lap": 1,
+            "lap_time_s": 3.44,
+            "gates_passed": 8,
+            "bend_time_s": 2.0,
+            "max_offset_m": 0.04985999265045149,
+            "stop_event": 2,
+            "peak_pwm": 7346.007520688404
+          },
+          "note": "",
+          "samples": 344,
+          "samples_sha256": "ae3b428c709c07c0ae39756a4c787daed9015f4caeba62cb6ac9f4c5c34a9884",
+          "passed": true
+        }
+      ],
+      "after_session_readback": {
+        "device": "yali-whole-car",
+        "version": "0.2.0+a7237f92",
+        "verified": {
+          "drive_speed": 330.0,
+          "steer_gain": 17.0
+        },
+        "source": "race://yali"
+      }
+    },
+    "short": {
+      "transcript": "short.jsonl",
+      "runs": [
+        {
+          "id": "af7553c08848427a859d10c7483b97cd",
+          "conditions": {
+            "course": 1.0,
+            "lane_half_width_m": 0.055,
+            "timeout_s": 1.0,
+            "seed": 17.0
+          },
+          "parameters": {
+            "drive_speed": 250,
+            "steer_gain": 10.85
+          },
+          "metrics": {
+            "valid_lap": 0,
+            "lap_time_s": 1,
+            "gates_passed": 1,
+            "bend_time_s": 0.48,
+            "max_offset_m": 0.024160967851324044,
+            "stop_event": 5,
+            "peak_pwm": 6203.511490844946
+          },
+          "note": "Baseline under user constraints: course 1, rest start, strict 1 second window, all 8 ordered gates required. Diagnostic budget one baseline; tune only if valid lap evidence permits comparison.",
+          "samples": 100,
+          "samples_sha256": "53e606602ad9eda53866df51e865efc54c3fa0fcb608a3486fe8dbbdd2e82bc4",
+          "passed": false
+        }
+      ],
+      "after_session_readback": {
+        "device": "yali-whole-car",
+        "version": "0.2.0+a7237f92",
+        "verified": {
+          "drive_speed": 250,
+          "steer_gain": 10.85
+        },
+        "source": "race://yali"
+      }
+    }
+  },
+  "records_sha256": "48cc35f4e27a47ca62df02a9b5d25ba637a09e99e6339d291d7031aee00389c8",
+  "offline_verification": {
+    "samples": 7146,
+    "runs": 23,
+    "valid_laps": 17,
+    "out_of_bounds": 5,
+    "timeouts": 1,
+    "independent_program": "examples/verify_yali_laps.py",
+    "methods": [
+      "CSV SHA-256 and pose/speed/heading continuity",
+      "Per-tick route sector change independent of gate-plane intersections",
+      "LoopTrial portable review with the updated v0.2 evaluator"
+    ],
+    "v02_evaluator_source_sha256_normalized_lf": "b89da86457446ed3ecc96ca811ac394a990a81d7174663ce67163e3bd8294ba4"
+  }
+}
