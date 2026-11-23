@@ -54,3 +54,21 @@ Register the installed `looptrial-mcp` executable in your client's stdio configu
 ```
 
 `looptrial-client` starts a local server, discovers tools, runs a thermal experiment and retrieves the result. To request a single tool call, use `looptrial-client --tool describe --arguments device.json` with a UTF-8 JSON file containing `{"uri":"sim://thermal"}`.
+
+## Share an open workbench
+
+Run `looptrial studio` to open the local workbench. It listens on loopback. Use `--no-browser` to open the printed URL manually or `--port` to select a port. Other terminals, agents and standalone MCP clients using the same absolute `LOOPTRIAL_HOME` delegate existing reads, writes, captures and cancellations to this process. Without the workbench, clients can still operate independently.
+
+| Operation | CLI | MCP |
+| --- | --- | --- |
+| Select or switch the workbench device | `looptrial connect sim://sensor` | `session_connect` |
+| Inspect connection, recent samples and confirmed state | `looptrial live` | `session_status` returns a compact summary |
+| See who dispatched an operation and when it was acknowledged and confirmed | `looptrial timeline URI` | `session_timeline` |
+| Inspect write receipts and dispatch-to-confirm milliseconds | `looptrial writes URI` | `parameter_history` |
+| Close the link after active runs finish or stop | `looptrial disconnect` | `session_disconnect` |
+
+Parameters can change during continuous observation. A bounded capture holds the device until completion and conflicting changes return `device_busy`. Compare completed, matched trials to inspect the changed parameters and each run's last writer. If multiple parameters changed, a difference alone cannot isolate one cause. Use new IDs for fresh confirmations. An invalid lap cannot enter a finish-time comparison.
+
+`sent` means the host dispatched a write to the adapter. `applied` reports the adapter's returned values. `verified` follows a matching independent read. Live batches carry a host arrival timestamp alongside the device or model sampling clock. On disconnect, the last confirmed values and time remain visible and current state becomes unknown. Reconnect repeats the handshake and effective readback. The service is designed for a trusted local bench with device-enforced limits.
+
+On the four built-in control and sensor simulators, live preview advances continuously under default conditions and reflects parameter writes on the next sample. A bounded experiment resets the model and uses the conditions recorded for that run. Use the comparison view for these trial waveforms. In a YALI trial, the live trajectory comes directly from the graded run. On the Blue Pill, the continuous telemetry buffer and the bounded transient buffer each use their own acquisition timing.

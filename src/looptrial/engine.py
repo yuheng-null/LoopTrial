@@ -385,7 +385,12 @@ def run_experiment(uri, action, conditions=None, goals=None, constraints=None, n
             return existing
     run_id = uuid.uuid4().hex
     try:
-        with lock_for("schedule/" + resource(uri), timeout=15):
+        # Connection switches inspect the active job under the same transition lock.
+        # Publish the queued job before a switch may close the device it needs.
+        connection = runtime.transition if runtime is not None else contextlib.nullcontext()
+        with connection, lock_for("schedule/" + resource(uri), timeout=15):
+            if runtime is not None and uri.startswith(("serial://", "ble://")):
+                runtime.board_for(uri)
             if key is not None:
                 existing = keyed(key, payload)
                 if existing:
@@ -516,6 +521,8 @@ def work(run_id):
                 record["passed"] = verdict(checks)
                 effective = _read(adapter, uri, info)
                 record["device_state"] = {"state": "verified", "values": effective}
+                if runtime is not None:
+                    runtime.confirm(uri, effective)
                 if effective != params:
                     raise Problem("readback_mismatch", "effective configuration changed during acquisition", observed=effective)
                 record["status"] = "completed"

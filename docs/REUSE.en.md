@@ -2,6 +2,8 @@
 
 [简体中文](REUSE.md) · **English**
 
+Version 0.2 runs the camera, line follower and vehicle dynamics from a [pinned YALI revision](https://github.com/18439114865a-beep/leitingzhiche/tree/a7237f925f43aabab47ce10a30241184779a3b5d). Seven upstream modules ship in the package. [F1TENTH Gym](https://github.com/f1tenth/f1tenth_gym) provides a reference for repeatable resets, stepping and termination. DiCAR-LAB illustrates wireless parameter readback and response metrics. LoopTrial uses original test courses, eight directed gates and independent trajectory grading to measure valid finishes and tracking margins at higher speeds. [Integration and reproduction](RACE.en.md)
+
 These sources and official documents were reviewed at project inception. Start by testing the smallest component that can replace work. Depending on target MCU resources, integration cost and the first two examples, reuse may mean taking a dependency, reusing code or supporting an existing protocol. Record adopted projects, versions and purposes in release documentation. When copying upstream source, check licenses of the individual files and any bundled components, and preserve copyright and license notices.
 
 | Need | Implementation to evaluate | Fit and differences |

@@ -1,24 +1,24 @@
-# LoopTrial 0.1.0
+# LoopTrial 0.2.0
 
 [简体中文](RELEASE.md) · **English**
 
-Download the files from the [v0.1.0 release](https://github.com/yuheng-null/LoopTrial/releases/tag/v0.1.0). The tag identifies the source used for the build. `SHA256SUMS.txt` lists the host wheel, source distribution, board BIN and ELF, and evidence archive. `release-audit.json` records the build commit, platform, installation outside the checkout, standard MCP calls and offline checks.
+Download the files from the [v0.2.0 release](https://github.com/yuheng-null/LoopTrial/releases/tag/v0.2.0). The tag identifies the source used for the build. `SHA256SUMS.txt` lists the host wheel, source distribution, board BIN and ELF, and evidence archive. `release-audit.json` records the build commit, platform, installation outside the checkout, standard MCP calls and offline checks.
 
 ## Release files
 
 | File | Purpose |
 | --- | --- |
-| looptrial-0.1.0-py3-none-any.whl | Host package for Python 3.11+. Installing it provides `looptrial`, `looptrial-mcp` and `looptrial-client`. The release was tested on Windows with CPython 3.12. The first installation fetches dependencies. |
-| looptrial-0.1.0.tar.gz | Sources for the host and firmware, experiments, tests, dependency lists and licenses needed to rebuild. |
-| looptrial-bluepill-0.1.0.bin, looptrial-bluepill-0.1.0.elf | Dual-UART example for the STM32F103C8T6 (Cortex-M3, 64 KiB Flash). The BIN starts at 0x08000000. |
-| looptrial-evidence-0.1.0.zip | Public conversations, tool calls, raw CSVs, run records, plots and board test notes. Keep each CSV beside its `record.json` to review the run by ID. |
+| looptrial-0.2.0-py3-none-any.whl | Host package for Python 3.11+. Installing it provides `looptrial`, `looptrial-studio`, `looptrial-mcp` and `looptrial-client`. The release was tested on Windows with CPython 3.12. The first installation fetches dependencies. |
+| looptrial-0.2.0.tar.gz | Sources for the host and firmware, experiments, tests, dependency lists and licenses needed to rebuild. |
+| looptrial-bluepill-0.2.0.bin, looptrial-bluepill-0.2.0.elf | Dual-UART example for the STM32F103C8T6 (Cortex-M3, 64 KiB Flash). The BIN starts at 0x08000000. |
+| looptrial-evidence-0.2.0.zip | Public conversations, tool calls, raw CSVs, run records, plots and board test notes. Keep each CSV beside its `record.json` to review the run by ID. |
 
 ## Rebuild from source
 
 Run the following in Windows PowerShell with Python 3.12 installed. The Blue Pill build needs GNU Arm Embedded GCC (14.3.1 for acceptance). Put `arm-none-eabi-gcc` on PATH or pass `--toolchain-bin <directory>` to the firmware build script. Transport fault regression tests also need a native `gcc` or `cc` on PATH to build the C protocol code as a host shared library.
 
 ```powershell
-git clone --branch v0.1.0 --depth 1 https://github.com/yuheng-null/LoopTrial.git
+git clone --branch v0.2.0 --depth 1 https://github.com/yuheng-null/LoopTrial.git
 cd LoopTrial
 git rev-parse HEAD
 py -3.12 -m venv .venv
@@ -43,3 +43,7 @@ The Windows CPython 3.12 runtime dependency snapshot is in `requirements/windows
 - **Platforms.** Release acceptance used Windows x64 and Python 3.12. Verify other OS, Python and device combinations with the corresponding backend tests.
 
 Original models, host tools and example firmware are GPL-3.0-or-later. See the [third-party notices](../THIRD_PARTY.md) for dependencies and upstream references.
+
+## Workbench and whole-car additions
+
+`looptrial studio` runs the local workbench and owns the shared connection. Use the same data directory across UI, CLI and MCP. The wheel contains the browser interface, Three.js r128, pinned YALI algorithms and original test courses. Whole-car trials need an installed WebGL-capable Edge or Chromium browser. Set `LOOPTRIAL_BROWSER` for a custom executable. After dependency installation, simulations, plots and record review operate locally. See the [release acceptance report](ACCEPTANCE-0.2.en.md) and [physical link records](../evidence/v02/board/README.en.md).

@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "looptrial"
 version = "0.2.0"
-description = "Record and compare bounded experiments on embedded devices via CLI or MCP"
+description = "A live embedded tuning workbench with a shared device session for people and agents"
 readme = "README.md"
 requires-python = ">=3.11"
 license = "GPL-3.0-or-later"

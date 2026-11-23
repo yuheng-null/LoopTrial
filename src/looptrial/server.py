@@ -101,16 +101,32 @@ async def compare(first: str, second: str):
     return await call(engine.compare, first, second)
 
 
-@mcp.tool()
-async def session_status():
-    """Inspect the shared workbench's device, telemetry, events and last confirmed values."""
+async def shared_session(operation, **arguments):
     try:
-        snapshot = await asyncio.to_thread(api.call, "snapshot", {}, "mcp")
+        snapshot = await asyncio.to_thread(api.call, operation, arguments, "mcp")
         snapshot["stream"] = snapshot["stream"][-8:]
         snapshot["events"] = snapshot["events"][-16:]
         return snapshot
     except engine.OPERATION_ERRORS as error:
         return engine.failure(error)
+
+
+@mcp.tool()
+async def session_status():
+    """Inspect the shared workbench's device, telemetry, events and last confirmed values."""
+    return await shared_session("snapshot")
+
+
+@mcp.tool()
+async def session_connect(uri: str):
+    """Connect the running workbench to this device, or return the existing shared connection."""
+    return await shared_session("connect", uri=uri)
+
+
+@mcp.tool()
+async def session_disconnect():
+    """Release the workbench connection. A running experiment must first finish or be cancelled."""
+    return await shared_session("disconnect")
 
 
 @mcp.tool()

@@ -11,7 +11,7 @@ for pattern in (
     "src/looptrial/resources/*.md", "src/looptrial/resources/mcp-config.json",
     "requirements/*.txt", "firmware/*.py", "firmware/*.c", "firmware/*.h", "firmware/*.ld",
     "evidence/**/*.md", "evidence/**/*.json", "evidence/**/*.jsonl",
-    "evidence/**/*.zip", "evidence/**/*.csv", "evidence/**/*.svg",
+    "evidence/**/*.zip", "evidence/**/*.csv", "evidence/**/*.svg", "evidence/**/*.png",
 ):
     for path in sorted(Path(".").glob(pattern)):
         destination = (Path("share/looptrial") / path.parent).as_posix()

@@ -54,3 +54,21 @@ Blue Pill 的参数在 RAM 中生效直至复位。模拟器将生效设置保�
 ```
 
 运行 `looptrial-client` 会启动本地服务、发现工具、做一次温控实验并取回结果。要单独调用工具，可建立内容为 `{"uri":"sim://thermal"}` 的 UTF-8 JSON 文件 `device.json`，再运行 `looptrial-client --tool describe --arguments device.json`。
+
+## 与已打开的工作台共用设备
+
+在一个终端执行 `looptrial studio`，浏览器会打开本机工作台。服务器只监听环回地址。使用 `--no-browser` 可自行打开输出的 URL，`--port` 可指定本地端口。另一个终端、Agent 或独立 MCP 客户端只要使用同一绝对路径 `LOOPTRIAL_HOME`，原有读、写、采集与取消命令就会交给该进程。CLI 或 MCP 独立运行时也能访问设备。
+
+| 操作 | CLI | MCP |
+| --- | --- | --- |
+| 在工作台选择或切换设备 | `looptrial connect sim://sensor` | `session_connect` |
+| 查看连接、最近样本和最后确认值 | `looptrial live` | `session_status` 返回紧凑摘要 |
+| 查看谁在什么时间发出命令、收到应答和独立回读 | `looptrial timeline URI` | `session_timeline` |
+| 查询参数回执和写入到独立确认的时间（毫秒） | `looptrial writes URI` | `parameter_history` |
+| 实验完成或取消后关闭连接 | `looptrial disconnect` | `session_disconnect` |
+
+持续观察时可以随时改参数。一个有界实验占用设备直至采集结束，中途冲突会返回 `device_busy`。用 `compare` 比较同工况完整试验，可以看到改变的参数以及两轮开始前最后一次写入的发起方；多项同时改变时，差值并不能归因于其中一项。独立复测应另起实验编号。轨迹无效的圈不能参与完赛用时比较。
+
+`sent` 表示主机已将写入提交给适配器，`applied` 表示适配器返回了生效值，`verified` 表示独立读取匹配。每批样本带主机收取时间，原始波形横轴使用设备或模型的采样时间。断线时保留最后确认值及其时间，新状态显示未知；重新连接会重新握手、核对身份并读回。工作台运行在受信本地实验环境，主机进程与板端限幅一起界定可执行操作。
+
+四个内置测量和控制模拟器按默认工况连续预览，写入参数后从下一采样点生效。每次有界实验会从初态重新开始，采用记录中指定的工况；比较页可以叠加这些实验波形。雷霆之车的实时轨迹直接来自本轮裁判使用的采样。Blue Pill 的持续遥测与有界瞬态分别使用各自的采集时序和缓冲区。

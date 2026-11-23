@@ -51,6 +51,10 @@ def local(name, arguments, who):
             args["ref"] = args.pop("run_id")
         if name == "review":
             args["ref"] = args.pop("record")
+        if engine.runtime is not None and name in ("describe", "read_parameters", "apply_parameters"):
+            # Keep an endpoint open for the entire write/acknowledge/readback sequence.
+            with engine.runtime.transition:
+                return getattr(engine, name)(**args)
         return getattr(engine, name)(**args)
     finally:
         engine.actor.reset(token)
