@@ -1,10 +1,10 @@
 # LoopTrial
 
-[简体中文](README.md) · **English** · [Download v0.2.1](https://github.com/yuheng-null/LoopTrial/releases/tag/v0.2.1)
+[简体中文](README.md) · **English** · [Download v0.2.2](https://github.com/yuheng-null/LoopTrial/releases/tag/v0.2.2)
 
 LoopTrial is an embedded experiment workbench for engineers and their AI agents. Keep live signals on screen and describe a symptom to your own agent. In the bundled whole-car simulator, a request like “This car is slow through bends. Speed it up” can start an experiment. Its CLI or MCP calls share the device connection, read effective settings, test candidates and confirm results on the same timeline. A diagnosis can end after a single capture.
 
-![LoopTrial workbench with live signals, effective parameters and the shared experiment timeline](docs/media/workbench.png)
+![LoopTrial workbench with live signals, effective parameters and the shared experiment timeline](docs/media/workbench.en.png)
 
 ## Install and open the workbench
 
@@ -12,13 +12,15 @@ On Windows with Python 3.12 and the Python Launcher installed, open PowerShell i
 
 ```powershell
 py -3.12 -m venv .venv
-.\.venv\Scripts\python -m pip install https://github.com/yuheng-null/LoopTrial/releases/download/v0.2.1/looptrial-0.2.1-py3-none-any.whl
+.\.venv\Scripts\python -m pip install https://github.com/yuheng-null/LoopTrial/releases/download/v0.2.2/looptrial-0.2.2-py3-none-any.whl
 $env:PATH = "$PWD\.venv\Scripts;$env:PATH"
 $env:LOOPTRIAL_HOME = "$PWD\lab"
 looptrial studio
 ```
 
 In the browser, connect the default **sim://sensor**. Select raw and filtered pressure to watch the traces and units. Run **capture** for a baseline, change the current-sample weight **alpha** to **0.2**, apply it and check the confirmation. Capture again and select both IDs on the comparison page to overlay the traces. Leave the workbench open. For USB serial or BD-BT26 BLE, identify the board before connecting. [Hardware guide](docs/HARDWARE.en.md)
+
+On a narrow screen, open the device controls from the connection button in the top bar. The waveform stays in view, with Run or Stop at the bottom. Each channel shows its last displayed reading. Freeze holds the trace while acquisition continues. Discard restores the editor to the latest device readback. Filter the timeline by Operator, CLI or MCP to follow who changed a setting.
 
 ## Start with your agent
 

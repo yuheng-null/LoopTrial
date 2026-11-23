@@ -1,6 +1,6 @@
 # LoopTrial
 
-**简体中文** · [English](README.en.md) · [下载 v0.2.1](https://github.com/yuheng-null/LoopTrial/releases/tag/v0.2.1)
+**简体中文** · [English](README.en.md) · [下载 v0.2.2](https://github.com/yuheng-null/LoopTrial/releases/tag/v0.2.2)
 
 LoopTrial 是给嵌入式工程师和 AI Agent 共用的实验上位机。你可以开着实时波形看设备，对自己的 Agent 描述症状。在随包的整车仿真里，一句「这辆车过弯太慢，帮我调快一点」就可以开始实验。Agent 通过 CLI 或 MCP 使用同一次连接，读生效参数、试候选、复测，并把结果留在你能看到的时间轴上。一次诊断也可以只采一段波形。
 
@@ -12,13 +12,15 @@ LoopTrial 是给嵌入式工程师和 AI Agent 共用的实验上位机。你可
 
 ```powershell
 py -3.12 -m venv .venv
-.\.venv\Scripts\python -m pip install https://github.com/yuheng-null/LoopTrial/releases/download/v0.2.1/looptrial-0.2.1-py3-none-any.whl
+.\.venv\Scripts\python -m pip install https://github.com/yuheng-null/LoopTrial/releases/download/v0.2.2/looptrial-0.2.2-py3-none-any.whl
 $env:PATH = "$PWD\.venv\Scripts;$env:PATH"
 $env:LOOPTRIAL_HOME = "$PWD\lab"
 looptrial studio
 ```
 
 浏览器打开后，连接默认的 **sim://sensor**。选择原始压力和滤后压力可看到带单位的波形。运行一次 **capture** 作为基线，把当前样本权重 **alpha** 改成 **0.2**、写入并查看确认，再采一次。在比较页选这两个编号，即可叠图。工作台保持运行。USB 串口和 BD-BT26 BLE 可在设备选择器中选择，连接前按[硬件指南](docs/HARDWARE.md)核对目标。
+
+窄屏上从顶栏的连接按钮打开设备面板，开始和停止实验在底栏。每个通道都显示当前画面的最后一个读数。冻结波形时采集仍在继续。撤销修改可让输入框回到设备最近的回读值。时间轴可以按操作员、CLI 或 MCP 筛选，追查一次参数变更。
 
 ## 给 Agent 的入口
 

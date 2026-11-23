@@ -13,7 +13,11 @@
   <header class="mast">
     <a class="brand" href="#live" aria-label="LoopTrial"><span class="mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span>LoopTrial</a>
     <span class="product" data-i="workbench">Workbench</span>
-    <div class="top-tools"><span id="connection-badge" class="badge"><i></i><span>—</span></span><button id="language" class="lang" type="button">中文</button></div>
+    <nav class="tabs" aria-label="View" data-ia="view">
+      <a href="#live" id="live-tab" aria-current="page" data-i="monitor">Live monitor</a>
+      <a href="#compare" id="compare-tab" data-i="compare">Run comparison</a>
+    </nav>
+    <div class="top-tools"><button type="button" id="connection-badge" class="badge" data-ia="deviceControls"><i></i><span>—</span></button><button id="language" class="lang" type="button">中文</button></div>
   </header>
   <div class="workspace">
     <aside class="rail" aria-label="Device controls" data-ia="deviceControls">
@@ -29,7 +33,7 @@
       <section>
         <div class="section-heading"><h2 data-i="parameters">Parameters</h2><span id="params-state" class="minor"></span></div>
         <div id="confirmed-at" class="subtle"></div>
-        <form id="param-form"><div id="params"></div><button id="apply" class="secondary full" type="submit" data-i="apply" hidden>Apply changes</button></form>
+        <form id="param-form"><div id="params"></div><div class="button-row"><button id="apply" class="secondary grow" type="submit" data-i="apply" hidden>Apply changes</button><button id="undo" type="button" class="secondary" data-i="undo" hidden>Discard</button></div></form>
         <p id="params-empty" class="hint"></p>
       </section>
       <section>
@@ -47,16 +51,13 @@
     </aside>
     <main>
       <div id="alert" class="alert" role="alert" hidden><span></span><button id="dismiss" type="button" data-ia="dismiss" aria-label="Dismiss">×</button></div>
-      <nav class="tabs" aria-label="View" data-ia="view">
-        <a href="#live" id="live-tab" aria-current="page" data-i="monitor">Live monitor</a>
-        <a href="#compare" id="compare-tab" data-i="compare">Run comparison</a>
-      </nav>
       <div id="live-panel">
         <div class="page-heading"><div><h1 data-i="liveHeading">Signal monitor</h1><p id="device-caption" class="caption"></p></div>
-          <button id="freeze" type="button" class="secondary" disabled></button></div>
+          </div>
         <section class="plot-card" aria-label="Live waveform" data-ia="livePlot">
-          <div class="plot-head"><h2 data-i="waveform">Waveform</h2><label class="window-label"><span data-i="window">Window</span>
-            <select id="window"><option value="5">5 s</option><option value="15" selected>15 s</option><option value="30">30 s</option><option value="60">60 s</option></select></label></div>
+          <div class="plot-head"><div class="plot-title"><h2 data-i="waveform">Waveform</h2><span class="plot-state" id="plot-state"></span></div><div class="plot-tools"><label class="window-label"><span data-i="window">Window</span>
+            <select id="window"><option value="5">5 s</option><option value="15" selected>15 s</option><option value="30">30 s</option><option value="60">60 s</option></select></label>
+            <button id="freeze" type="button" class="secondary" disabled></button></div></div>
           <div id="live-plot" class="plot"></div>
           <div id="signals" class="signals"></div>
           <p id="alignment" class="alignment" data-i="alignment" hidden>Event markers use the nearest host-received batch. The horizontal axis shows device time.</p>
@@ -85,10 +86,12 @@
         <section class="metrics-block" id="metrics-block" hidden><h2 data-i="metrics">Metric changes</h2><p id="changed-params" class="comparison-details"></p><div class="table-wrap"><table><thead><tr><th data-i="metric">Metric</th><th data-i="baseline">Baseline</th><th data-i="candidate">Candidate</th><th data-i="change">Change</th></tr></thead><tbody id="metrics"></tbody></table></div></section>
       </div>
       <section class="timeline">
-        <div class="section-heading"><h2 data-i="timeline">Session timeline</h2><span class="mono minor" id="event-count"></span></div>
+        <div class="section-heading"><h2 data-i="timeline">Session timeline</h2><div class="event-tools"><span class="mono minor" id="event-count"></span><select id="actor-filter" aria-label="Filter by source" data-ia="filterSource"><option value="" data-i="allSources">All sources</option></select></div></div>
         <p id="events-empty" class="hint"></p><ol id="events"></ol>
       </section>
     </main>
   </div>
+  <dialog id="device-sheet" aria-labelledby="sheet-heading"><header><h2 id="sheet-heading" data-i="deviceControls">Device controls</h2><button type="button" class="secondary" id="close-sheet" data-i="done">Done</button></header></dialog>
+  <div class="mobile-trial"><div><strong id="mobile-action"></strong><span id="mobile-device" class="mono"></span></div><button id="mobile-run" class="ink" type="button" disabled></button></div>
 </body>
 </html>

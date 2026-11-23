@@ -7,6 +7,7 @@ const overlayPlot = new TracePlot($("compare-plot"));
 let snap = {};
 let appliedSession = null;
 let liveSignals = [], liveSelection = new Set();
+let liveRows = [];
 let overlay = null, overlaySignals = [], overlaySelection = new Set();
 let frozenRows = null;
 let selectedEvent = null;
@@ -15,13 +16,25 @@ let refreshing = false, serviceLost = false, knownRecords = [], latestRun = "", 
 let recordSignature = "", eventSignature = "", eventContainerSession = null;
 let view = "live";
 
-const controlsToggle = document.createElement("button");
-controlsToggle.type = "button";
-controlsToggle.className = "mobile-controls";
-document.querySelector(".rail").append(controlsToggle);
-controlsToggle.addEventListener("click", () => {
-  document.querySelector(".rail").classList.toggle("open");
-  updateControlsToggle();
+const rail = document.querySelector(".rail");
+const sheet = $("device-sheet");
+const narrow = matchMedia("(max-width: 730px)");
+$("connection-badge").addEventListener("click", () => {
+  if (narrow.matches) {
+    sheet.append(rail);
+    sheet.showModal();
+    $("close-sheet").focus();
+  } else {
+    $("device-uri").focus();
+    $("device-uri").select();
+  }
+});
+$("close-sheet").addEventListener("click", () => sheet.close());
+sheet.addEventListener("close", () => document.querySelector(".workspace").prepend(rail));
+narrow.addEventListener("change", () => { if (sheet.open && !narrow.matches) sheet.close(); });
+$("mobile-run").addEventListener("click", () => {
+  if (snap.active_run) $("stop").click();
+  else $("run").click();
 });
 
 function node(tag, value, className) {
@@ -63,12 +76,6 @@ function stamp(raw) {
 }
 function displayNumber(value, digits = 6) { return Number.isFinite(value) ? formatNumber(value,digits) : "—"; }
 
-function updateControlsToggle() {
-  const on = document.querySelector(".rail").classList.contains("open");
-  controlsToggle.textContent = tr(on ? "hideControls" : "controls");
-  controlsToggle.setAttribute("aria-expanded", String(on));
-}
-
 async function scan() {
   const devices = await api("devices");
   const candidates = [...(devices.simulated || []), ...(devices.serial_candidates || [])];
@@ -107,6 +114,10 @@ function renderChips(target, keys, selected, schema, redraw) {
     button.type = "button";
     button.title = schema[key]?.description || key;
     button.style.setProperty("--chip-color",colors[i % colors.length]);
+    if (target.id === "signals") {
+      button.dataset.signal = key;
+      button.append(node("span","—","signal-value"));
+    }
     button.setAttribute("aria-pressed",String(selected.has(key)));
     button.addEventListener("click",()=> {
       if (selected.has(key)) selected.delete(key);
@@ -121,7 +132,11 @@ function renderChips(target, keys, selected, schema, redraw) {
 
 function drawLive() {
   const schema = liveSchema();
-  const rows = frozenRows || snap.stream || [];
+  const rows = frozenRows || liveRows;
+  const last = rows.at(-1);
+  for (const button of $("signals").children) {
+    button.lastElementChild.textContent = displayNumber(last?.[button.dataset.signal], 4);
+  }
   const msg = !snap.uri ? "disconnectedPlot" : liveSignals.length && !liveSelection.size ? "chooseSignals" :
         snap.state === "unknown" || serviceLost ? "unknown" : snap.uri.startsWith("race://") ? "racePreview" :
         !snap.uri.startsWith("sim://") && !snap.info?.telemetry ? "noPreview" : "waiting";
@@ -161,7 +176,7 @@ function makeField(key, spec, value, prefix, includeEffective) {
     head.append(actual);
     input.dataset.dirty = "false";
     input.addEventListener("input",()=>{
-      input.dataset.dirty = "true";
+      input.dataset.dirty = String(input.valueAsNumber !== snap.values?.[key]);
       syncControls();
     });
   }
@@ -196,11 +211,12 @@ function syncControls() {
   const connected = !!snap.connected && !serviceLost;
   const verified = connected && snap.state === "verified";
   const values = snap.values || snap.last_confirmed?.values || {};
-  let changed = false;
+  let changed = false, dirty = false;
   for (const input of $("params").querySelectorAll("input")) {
     const value = values[input.name];
     if (input.dataset.dirty !== "true" && Number.isFinite(value)) input.value = value;
     if (input.dataset.dirty === "true" && Number.isFinite(input.valueAsNumber) && input.valueAsNumber !== value) changed = true;
+    dirty ||= input.dataset.dirty === "true";
     input.disabled = pendingWrite || !verified;
     input.closest(".form-field").querySelector(".actual").textContent =
       tr(verified ? "value":"stale") + " " + displayNumber(value);
@@ -208,9 +224,17 @@ function syncControls() {
   $("params-state").textContent = snap.uri ? tr(verified ? "verified" : "unknown") : "";
   $("confirmed-at").textContent = snap.last_confirmed?.time ? tr("lastConfirmed")+" · "+stamp(snap.last_confirmed.time) : "";
   $("apply").disabled = !verified || pendingWrite || !changed;
+  $("undo").hidden = !dirty;
+  $("undo").disabled = pendingWrite;
   $("action").disabled = !verified || !Object.keys(snap.info?.actions || {}).length;
   $("run").disabled = $("action").disabled || pendingRun || !!snap.active_run;
   $("stop").disabled = !snap.active_run || pendingStop || serviceLost;
+  $("mobile-action").textContent = snap.active_run ? tr("running") : $("action").value || tr("experiment");
+  $("mobile-device").textContent = snap.uri || tr("noDevice");
+  $("mobile-run").textContent = tr(snap.active_run ? pendingStop ? "stopping" : "stop" : "run");
+  $("mobile-run").disabled = snap.active_run ? $("stop").disabled : $("run").disabled;
+  $("mobile-run").classList.toggle("stoppable", !!snap.active_run);
+  $("stop").classList.toggle("stoppable", !!snap.active_run);
   const selectedConnected = connected && $("device-uri").value.trim() === snap.uri;
   $("connect").disabled = pendingConnect || selectedConnected;
   $("connect").textContent = tr(pendingConnect ? "connecting" : selectedConnected ? "online" : snap.uri && !connected ? "reconnect":"connect");
@@ -222,14 +246,27 @@ function syncControls() {
     latestRun ? tr("runId")+" · "+latestRun : "";
   const badge = $("connection-badge");
   const warn = serviceLost || !!snap.uri && !verified;
+  const plot = $("live-panel");
+  const hasStream = !!snap.stream?.length;
+  const trialPreview = snap.uri?.startsWith("race://");
+  const state = warn ? "unknown" : frozenRows ? "frozen" : !hasStream ? "idle" :
+    trialPreview && !snap.active_run ? "captured" : "live";
+  plot.dataset.state = state;
+  $("plot-state").textContent = tr(state);
+  $("plot-state").hidden = state === "idle";
+  $("freeze").setAttribute("aria-pressed", String(!!frozenRows));
+  $("params-state").dataset.verified = String(verified);
+  $("apply").classList.toggle("has-changes", changed && verified);
   badge.className = "badge" + (warn ? " warn" : verified ? " on" : "");
-  badge.lastElementChild.textContent = tr(serviceLost ? "serviceLost" : warn ? "unknown" : verified ? "online" : "offline");
+  badge.lastElementChild.textContent = tr(serviceLost ? "serviceLost" : warn ? "unknown" : verified ? "online" : "connect");
+  badge.setAttribute("aria-label", tr("deviceControls") + " · " + badge.lastElementChild.textContent);
   document.body.classList.toggle("connected",connected);
 }
 function displayStats() {
   const stats = snap.stats || {};
   for (const [id,key,unit] of [["sample-rate","sample_hz","Hz"],["update-rate","update_hz","Hz"],["missing","missing",""],["sample-age","age_s","s"]]) {
-    const value = stats[key];
+    const measured = key === "update_hz" ? stats.updates >= 2 : key === "sample_hz" ? stats.samples >= 2 : stats.samples > 0;
+    const value = measured ? stats[key] : null;
     const el = $(id);
     el.textContent = !serviceLost && Number.isFinite(value) ? formatNumber(value) : "—";
     if (!serviceLost && Number.isFinite(value) && unit) el.append(node("small",unit));
@@ -256,7 +293,14 @@ function renderTimeline(force = false) {
     [...$("events").querySelectorAll("details[open]")].map(el=>el.dataset.seq) : []);
   eventContainerSession = snap.session_id;
   eventSignature = signature;
-  const ordered = [...events].sort((a,b)=>b.seq-a.seq);
+  const filter = $("actor-filter");
+  const source = filter.value;
+  const actors = new Set(events.map(event => event.actor || "system"));
+  if (source) actors.add(source);
+  const label = actor => actor === "human" ? tr("human") : ["cli","mcp"].includes(actor) ? actor.toUpperCase() : actor;
+  filter.replaceChildren(option("",tr("allSources")),...[...actors].sort().map(a=>option(a,label(a))));
+  filter.value = source;
+  const ordered = events.filter(e=>!source || (e.actor || "system") === source).sort((a,b)=>b.seq-a.seq);
   const fragment = document.createDocumentFragment();
   for (const event of ordered.slice(0,100)) {
     const li=node("li"), details=node("details"), summary=node("summary");
@@ -270,24 +314,36 @@ function renderTimeline(force = false) {
       (extra.run_id || extra.id || extra.message || "");
     const title = node("span",null,"event-text");
     title.append(node("span","#"+event.seq,"event-id"),document.createTextNode(eventName(event.kind)+(context ? " · "+String(context) : "")));
-    summary.append(node("time",stamp(event.time)),node("span",actor==="human" ? tr("human") : actor,"actor"),title);
+    const actorLabel = node("span",label(actor),"actor");
+    actorLabel.dataset.actor = actor;
+    li.dataset.kind = event.kind;
+    summary.append(node("time",stamp(event.time)),actorLabel,title);
     summary.addEventListener("click",()=>{selectedEvent = details.open ? null : String(event.seq); drawLive();});
     details.append(summary,node("pre",JSON.stringify(event,null,2)));
     li.append(details); fragment.append(li);
   }
   $("events").replaceChildren(fragment);
-  $("event-count").textContent = events.length ? events.length+" "+tr(events.length===1?"event":"events") : "";
-  $("events-empty").textContent = tr("noEvents");
-  $("events-empty").hidden = !!events.length;
+  $("event-count").textContent = events.length ? ordered.length+" "+tr(ordered.length===1?"event":"events") : "";
+  $("events-empty").textContent = tr(source ? "noMatchingEvents" : "noEvents");
+  $("events-empty").hidden = !!ordered.length;
 }
+$("actor-filter").addEventListener("change", () => renderTimeline(true));
 function applySnapshot(data,force = false) {
   const prev = snap, token = (data.session_id||"") + "|" + (data.uri||"") + "|" + (data.info?.id||"");
   const same = appliedSession === token;
   snap = data;
   if (!same) {
     appliedSession = token;
-    frozenRows = null; latestRun = ""; selectedEvent=null; eventSignature="";
+    liveRows = []; frozenRows = null; latestRun = ""; selectedEvent=null; eventSignature="";
     if (snap.uri) $("device-uri").value = snap.uri;
+  }
+  // Snapshots overlap. Keep the selected instrument's history for the longest
+  // display window, independently of the server's shorter transport buffer.
+  const lastSeq = liveRows.at(-1)?.seq ?? -1;
+  const fresh = (snap.stream || []).filter(row => row.seq > lastSeq);
+  if (fresh.length) {
+    const cutoff = fresh.at(-1).t - 60;
+    liveRows = liveRows.concat(fresh).filter(row => row.t >= cutoff);
   }
   const signals = deriveSignals(liveSchema(), snap.stream || []);
   if (!same || JSON.stringify(signals) !== JSON.stringify(liveSignals)) {
@@ -295,10 +351,13 @@ function applySnapshot(data,force = false) {
     liveSelection = initialSelection(signals);
     renderChips($("signals"),liveSignals,liveSelection,liveSchema(),drawLive);
   }
-  if (!same || force) {
+  if (!same) {
     buildParameters(); buildActions();
     $("device-detail").textContent = [snap.info?.source,snap.info?.version].filter(Boolean).join("  /  ");
     $("device-detail").hidden = !snap.info;
+  } else if (force) {
+    $("params-empty").textContent = tr(snap.uri ? "readOnly" : "noParams");
+    if (!$("action").value) $("action").selectedOptions[0].textContent = tr("noAction");
   }
   if (prev.active_run && !snap.active_run && same) { latestRun = prev.active_run; if (view==="compare") refreshRuns().catch(showError); }
   $("device-caption").textContent = snap.uri || tr("noDevice");
@@ -338,7 +397,11 @@ $("disconnect").addEventListener("click",async()=>{
 });
 $("scan").addEventListener("click",()=>scan().catch(showError));
 $("device-uri").addEventListener("input",syncControls);
-$("action").addEventListener("change",buildConditions);
+$("action").addEventListener("change",()=>{ buildConditions(); syncControls(); });
+$("undo").addEventListener("click",()=>{
+  for (const field of $("params").querySelectorAll("input")) field.dataset.dirty = "false";
+  syncControls();
+});
 $("param-form").addEventListener("submit",async event=>{
   event.preventDefault(); clearError();
   const values = {};
@@ -376,7 +439,7 @@ $("stop").addEventListener("click",async()=>{
 });
 $("window").addEventListener("change",drawLive);
 $("freeze").addEventListener("click",()=>{
-  frozenRows = frozenRows ? null : (snap.stream || []).slice();
+  frozenRows = frozenRows ? null : liveRows.slice();
   syncControls(); drawLive();
 });
 
@@ -412,7 +475,8 @@ function showOverlay() {
   if(!overlay){drawOverlay();return;}
   renderChips($("overlay-signals"),overlaySignals,overlaySelection,overlay.schema,drawOverlay);
   $("overlay-legend").hidden=false; $("metrics-block").hidden=false;
-  $("overlay-count").textContent=overlay.counts.join(" / ")+" "+tr("points");
+  const counts = overlay.counts.map((total,i) => overlay.tracks[i].length === total ? String(total) : overlay.tracks[i].length+" / "+total);
+  $("overlay-count").textContent=tr("baseline")+" "+counts[0]+" · "+tr("candidate")+" "+counts[1]+" "+tr("points");
   const [a,b]=overlay.records;
   const changed = Object.entries(overlay.comparison.changed_parameters || {});
   const [firstWrite,secondWrite] = overlay.comparison.last_parameter_writes || [];
@@ -461,12 +525,12 @@ function navigate() {
   else drawLive();
 }
 $("language").addEventListener("click",()=>{
-  switchLanguage(); localize(); updateControlsToggle();
+  switchLanguage(); localize();
   applySnapshot(snap,true); showOverlay();
   if(view==="compare") refreshRuns(true).catch(showError);
 });
 window.addEventListener("hashchange",navigate);
-localize(); updateControlsToggle(); applySnapshot({}); navigate();
+localize(); applySnapshot({}); navigate();
 scan().catch(showError); refresh();
 setInterval(refresh,450);
 setInterval(()=>{if(view==="compare" && !document.hidden)refreshRuns().catch(showError);},4000);

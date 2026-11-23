@@ -1,4 +1,6 @@
 const strings = {
+  live:["Live","实时"], frozen:["Frozen","已冻结"], captured:["Captured","已采集"],
+  undo:["Discard edits","撤销修改"], done:["Done","完成"], filterSource:["Filter by source","按操作来源筛选"], allSources:["All sources","全部来源"], noMatchingEvents:["No events from this source.","此来源尚无事件。"],
   devices:["Discovered devices","已发现设备"],
   sameParams:["Parameters match","两轮生效参数一致"], changedParams:["Parameter changes","生效参数变化"], racePreview:["Start a trial to see the vehicle signals","开始整车试跑后将显示车辆信号"],
   alignment:["Event markers use the nearest host-received batch. The horizontal axis shows device time.","事件标记对齐到主机收包时间最接近的一批样本，横轴为设备时间。"],

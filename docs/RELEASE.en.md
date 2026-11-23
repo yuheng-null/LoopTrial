@@ -1,8 +1,14 @@
-# LoopTrial 0.2.1
+# LoopTrial 0.2.2
 
 [简体中文](RELEASE.md) · **English**
 
-Download the files from the [v0.2.1 release](https://github.com/yuheng-null/LoopTrial/releases/tag/v0.2.1). The tag identifies the source used for the build. `SHA256SUMS.txt` lists the host wheel, source distribution, board BIN and ELF, and evidence archive. `release-audit.json` records the build commit, platform, installation outside the checkout, standard MCP calls and offline checks.
+Download the files from the [v0.2.2 release](https://github.com/yuheng-null/LoopTrial/releases/tag/v0.2.2). The tag identifies the source used for the build. `SHA256SUMS.txt` lists the host wheel, source distribution, board BIN and ELF, and evidence archive. `release-audit.json` records the build commit, platform, installation outside the checkout, standard MCP calls and offline checks.
+
+## Workbench 0.2.2
+
+On narrow screens, open the connection and parameter sheet from the top bar and start or stop a trial from the bottom bar. Channels show their last displayed readings. The chart identifies a frozen view or an unknown device state. Operators can discard unsubmitted edits and switch language while editing parameters or trial conditions. The timeline can be filtered by Operator, CLI or MCP.
+
+The browser merges overlapping batches from the same session and retains samples actually received in the last 60 seconds. A new session or a page reload starts accumulating again. The horizontal axis shows the observed interval and the trace breaks at missing sequence numbers.
 
 ## Host patch 0.2.1
 
@@ -14,17 +20,17 @@ This patch rebuilds and verifies the existing 0.2.0 firmware. Legacy compatibili
 
 | File | Purpose |
 | --- | --- |
-| looptrial-0.2.1-py3-none-any.whl | Host package for Python 3.11+. Installing it provides `looptrial`, `looptrial-studio`, `looptrial-mcp` and `looptrial-client`. The release was tested on Windows with CPython 3.12. The first installation fetches dependencies. |
-| looptrial-0.2.1.tar.gz | Sources for the host and firmware, experiments, tests, dependency lists and licenses needed to rebuild. |
+| looptrial-0.2.2-py3-none-any.whl | Host package for Python 3.11+. Installing it provides `looptrial`, `looptrial-studio`, `looptrial-mcp` and `looptrial-client`. The release was tested on Windows with CPython 3.12. The first installation fetches dependencies. |
+| looptrial-0.2.2.tar.gz | Sources for the host and firmware, experiments, tests, dependency lists and licenses needed to rebuild. |
 | looptrial-bluepill-0.2.0.bin, looptrial-bluepill-0.2.0.elf | Dual-UART example for the STM32F103C8T6 (Cortex-M3, 64 KiB Flash). The BIN starts at 0x08000000. |
-| looptrial-evidence-0.2.1.zip | Public conversations, tool calls, raw CSVs, run records, plots and board test notes. Keep each CSV beside its `record.json` to review the run by ID. |
+| looptrial-evidence-0.2.2.zip | Public conversations, tool calls, raw CSVs, run records, plots and board test notes. Keep each CSV beside its `record.json` to review the run by ID. |
 
 ## Rebuild from source
 
 Run the following in Windows PowerShell with Python 3.12 installed. The Blue Pill build needs GNU Arm Embedded GCC (14.3.1 for acceptance). Put `arm-none-eabi-gcc` on PATH or pass `--toolchain-bin <directory>` to the firmware build script. Transport fault regression tests also need a native `gcc` or `cc` on PATH to build the C protocol code as a host shared library.
 
 ```powershell
-git clone --branch v0.2.1 --depth 1 https://github.com/yuheng-null/LoopTrial.git
+git clone --branch v0.2.2 --depth 1 https://github.com/yuheng-null/LoopTrial.git
 cd LoopTrial
 git rev-parse HEAD
 py -3.12 -m venv .venv
