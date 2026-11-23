@@ -22,7 +22,19 @@ def digest(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def validate_rules(rules):
+    if not isinstance(rules, dict):
+        raise ValueError("rules must be an object keyed by metric")
+    for name, bounds in rules.items():
+        if not name or not isinstance(bounds, dict) or not bounds or set(bounds) - {"le", "ge"}:
+            raise ValueError("rules use {metric: {le: maximum, ge: minimum}}")
+        for value in bounds.values():
+            if isinstance(value, bool) or not isinstance(value, (float, int)) or not math.isfinite(value):
+                raise ValueError("metric bounds must be finite numbers")
+
+
 def check_rules(metrics, rules, requires_event=None):
+    validate_rules(rules)
     checks = []
     for name, bounds in rules.items():
         if name not in metrics:

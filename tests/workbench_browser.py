@@ -70,6 +70,11 @@ def main():
             errors = []
             page.on("pageerror", lambda error: errors.append(str(error)))
             page.goto(url)
+            assert page.evaluate("""async () => {
+                const {tickLabel} = await import('./plot.js');
+                return tickLabel(10000, .625) !== tickLabel(10000.625, .625)
+                    && tickLabel(101325.1, .01) !== tickLabel(101325.11, .01);
+            }""")
             page.locator("#choose-device").click()
             page.locator("#devices button", has_text="sim://sensor").click()
             page.locator("#connect").click()
@@ -135,7 +140,7 @@ def main():
             page.locator("#window").select_option("60")
             def visible_seconds():
                 label = page.locator("#live-plot canvas").get_attribute("aria-label") or ""
-                match = re.search(r"· ([\d.]+)–([\d.]+) s", label)
+                match = re.search(r"· ([\d.eE+-]+)–([\d.eE+-]+) s", label)
                 return float(match[2]) - float(match[1]) if match else 0
             wait_for_cli(lambda: visible_seconds() > 13, timeout=18)
             summary["observed_history_seconds"] = visible_seconds()
@@ -165,6 +170,9 @@ def main():
             summary["incompatible_overlay_refused"] = True
 
             page.locator("#live-tab").click()
+            page.locator("#window").select_option("60")
+            wait_for_cli(lambda: visible_seconds() >= 59.8, timeout=65)
+            summary["full_window_seconds"] = visible_seconds()
             job = cli("run","sim://sensor","capture","--background","--pace","6")["id"]
             page.locator("#stop").click()
             wait_for_cli(lambda: cli("status",job,allow_cancel=True)["status"] == "cancelled")

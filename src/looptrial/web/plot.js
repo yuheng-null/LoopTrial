@@ -7,6 +7,13 @@ export function formatNumber(value, digits = 3) {
   return String(Number(value.toPrecision(digits)));
 }
 
+// Retain enough decimals to distinguish adjacent ticks even on an offset axis.
+export function tickLabel(value, spacing) {
+  if (!(spacing > 0)) return String(value);
+  const digits = Math.max(0, 1 - Math.floor(Math.log10(spacing)));
+  return digits <= 14 ? String(Number(value.toFixed(digits))) : String(value);
+}
+
 function element(tag, className) {
   const el = document.createElement(tag);
   el.className = className;
@@ -103,7 +110,7 @@ export class TracePlot {
     ctx.fillStyle = "#0e2431";
     ctx.fillRect(0, 0, width, height);
     ctx.font = "11px Consolas, monospace";
-    const left = width < 480 ? 46 : 55, right = width - 16;
+    const left = width < 480 ? 60 : 72, right = width - 16;
     const markers = this.options.markers || [];
     const top = markers.length ? 28 : 13, bottom = height - 33;
     let first = Infinity, last = -Infinity;
@@ -123,8 +130,8 @@ export class TracePlot {
       ctx.beginPath(); ctx.moveTo(xx, top); ctx.lineTo(xx, bottom);
       ctx.strokeStyle = "#28414c"; ctx.lineWidth = 1; ctx.stroke();
       if (hasTime) {
-        ctx.fillStyle = "#9cb6be"; ctx.textAlign = "center";
-        ctx.fillText(formatNumber(start + span * tick / count, 4), xx, bottom + 15);
+        ctx.fillStyle = "#9cb6be"; ctx.textAlign = tick === count ? "right" : tick === 0 ? "left" : "center";
+        ctx.fillText(tickLabel(start + span * tick / count, span / count), xx, bottom + 15);
       }
     }
     const groupsToDraw = groupList.length ? groupList : [["", []]];
@@ -156,7 +163,7 @@ export class TracePlot {
         ctx.strokeStyle = "#29404d"; ctx.lineWidth = 1; ctx.stroke();
         if (hasValues) {
           ctx.fillStyle="#a3bcc4"; ctx.textAlign="right";
-          ctx.fillText(formatNumber(value), left-6, yy+3);
+          ctx.fillText(tickLabel(value, (max-min)/ticks), left-6, yy+3, left-9);
         }
       }
       ctx.save();
@@ -181,7 +188,7 @@ export class TracePlot {
       }
       ctx.restore();
     }
-    this.canvas.setAttribute("aria-label", timeLabel + (hasTime ? " · " + formatNumber(start) + "–" + formatNumber(end) + " s · " + [...selection].join(", ") : ""));
+    this.canvas.setAttribute("aria-label", timeLabel + (hasTime ? " · " + start + "–" + end + " s · " + [...selection].join(", ") : ""));
     ctx.textAlign = "right"; ctx.fillStyle = "#9cb6be"; ctx.fillText(timeLabel, right, height-3);
     const visibleMarkers = markers.filter(m => m.t >= start && m.t <= end).sort((a,b) => a.t-b.t);
     const clusters = [];

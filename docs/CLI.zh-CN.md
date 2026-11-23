@@ -25,7 +25,7 @@ CLI 输出 JSON。MCP 工具使用同一组设备适配器和实验记录。运�
 looptrial run sim://thermal step --condition target_c=50 --goal rise_s:le:45 --constraint overshoot_c:le:1
 ```
 
-需要多个工况、目标或约束时，分别重复 `--condition`、`--goal` 和 `--constraint`。比较运算支持 `le`（≤）和 `ge`（≥）。用 `--note` 记录候选参数或阈值的依据。一次采集正常完成也可能没达到指标。`passed` 为 true 或 false 表示是否达标，未设判据时为 null。CLI 的 `run` 和 `status` 对失败或取消的运行返回退出码 1，正常完成的测量返回 0。参数无效或操作出错返回 2。MCP 操作错误包含 `error.code`。
+需要多个工况、目标或约束时，分别重复 `--condition`、`--goal` 和 `--constraint`。比较运算支持 `le`（≤）和 `ge`（≥）。用 `--note` 记录候选参数或阈值的依据。一次采集正常完成也可能没达到指标。`passed` 为 true 或 false 表示是否达标，未设判据时为 null。CLI 的 `run` 和 `status` 对失败或取消的运行返回退出码 1，正常完成的测量返回 0。命令解析或提交前的参数错误返回 2。已分配编号的实验如果被设备能力检查拒绝，返回 1 并保留失败记录。MCP 操作错误包含 `error.code`。
 
 ### 后台运行与重试
 
@@ -40,14 +40,15 @@ Blue Pill 的参数在 RAM 中生效直至复位。模拟器将生效设置保�
 
 ### 第一次使用 MCP
 
-将已安装的 `looptrial-mcp` 注册到客户端的 stdio 配置。下面是常见的格式。GUI 客户端的 PATH 可能与终端不同，这时填写完整可执行文件路径；指定与 CLI 相同的 `LOOPTRIAL_HOME` 绝对路径可共用记录。
+在启动工作台的环境中运行 `looptrial mcp-config`，把输出的 `mcpServers.looptrial` 条目加入图形客户端的 stdio 配置。它包含本次安装的 Python 完整路径和当前实验目录。以下为手填格式示例，路径需替换为实际值。
 
 ```json
 {
   "mcpServers": {
     "looptrial": {
-      "command": "looptrial-mcp",
-      "args": []
+      "command": "C:/LoopTrial/.venv/Scripts/python.exe",
+      "args": ["-m", "looptrial.server"],
+      "env": {"LOOPTRIAL_HOME": "C:/LoopTrial/lab"}
     }
   }
 }

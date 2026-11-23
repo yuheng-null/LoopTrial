@@ -75,6 +75,7 @@ def parser():
     wave.add_argument("--start", type=int, default=0)
     wave.add_argument("--count", type=int, default=8)
     commands.add_parser("resources", help="locate installed examples, client source and documentation")
+    commands.add_parser("mcp-config", help="print a stdio client configuration for this Python environment and lab")
     return cli
 
 
@@ -87,6 +88,9 @@ def dispatch(a):
         case "disconnect": return api.call("disconnect", {})
         case "timeline": return api.call("timeline", {"uri": a.uri})
         case "devices": return invoke(engine.devices)
+        case "mcp-config":
+            return {"mcpServers":{"looptrial":{"command":sys.executable, "args":["-m","looptrial.server"],
+                                               "env":{"LOOPTRIAL_HOME":str(engine.home())}}}}
         case "describe": return invoke(engine.describe, a.uri)
         case "read": return invoke(engine.read_parameters, a.uri)
         case "apply": return invoke(engine.apply_parameters, a.uri, pairs(a.values))

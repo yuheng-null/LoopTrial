@@ -41,6 +41,8 @@ looptrial status $job.id
 
 50 Hz 压力源在 3 s 从 10 kPa 阶跃到 20 kPa。同一 `seed` 和 `noise_std` 产生完全相同的原始输入。在 1 到 3 s 的静止窗口计算滤后总体标准差，用变化后首次连续三个读数达到观测阶跃幅度 90% 的起点计算延迟。两个指标共用一条波形。只需诊断时可在第一条采集后直接查看原始和过滤列。
 
+压力模型 1.1 在正式采样前用独立的种子噪声让滤波器预运行 5 s，便于在 1–3 s 的窗口评价滤后波动。90% 阈值由阶跃前后的已标定输入估计。慢滤波器在短窗口内尚未稳定时也使用同一判据。旧模型 1.0 的记录复核仍使用原有的滤后末段阈值。
+
 ```powershell
 $s0 = looptrial run sim://sensor capture --condition seed=17 | ConvertFrom-Json
 looptrial wave $s0.id --start 148 --count 8

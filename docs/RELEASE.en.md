@@ -8,7 +8,11 @@ Download the files from the [v0.2.2 release](https://github.com/yuheng-null/Loop
 
 On narrow screens, open the connection and parameter sheet from the top bar and start or stop a trial from the bottom bar. Channels show their last displayed readings. The chart identifies a frozen view or an unknown device state. Operators can discard unsubmitted edits and switch language while editing parameters or trial conditions. The timeline can be filtered by Operator, CLI or MCP.
 
-The browser merges overlapping batches from the same session and retains samples actually received in the last 60 seconds. A new session or a page reload starts accumulating again. The horizontal axis shows the observed interval and the trace breaks at missing sequence numbers.
+The browser merges overlapping batches from the same session and retains samples actually received in the last 60 seconds of device time. A new session or a page reload starts accumulating again. The horizontal axis shows the observed interval and the trace breaks at missing sequence numbers.
+
+When board telemetry indicates a gain change, the host reads the register independently. Serial retries use one reader, and legacy idle polls share access with foreground commands. An acknowledged device deadline reports `trial_timeout` and retains the available sample prefix. A change in effective parameters during a trial preserves raw samples and final readback. Only a trial with matching readback publishes evaluated metrics. Offline review validates goal and constraint operators.
+
+Run `looptrial mcp-config` to generate a stdio client entry that shares the workbench's lab. Pressure model 1.1 primes the filter and measures rise delay against the calibrated input step. Model 1.0 records still use the original evaluation for offline review.
 
 ## Host patch 0.2.1
 

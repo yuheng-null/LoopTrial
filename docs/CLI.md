@@ -25,7 +25,7 @@ For a thermal step, this request specifies a 50 °C target, a warm-up time goal,
 looptrial run sim://thermal step --condition target_c=50 --goal rise_s:le:45 --constraint overshoot_c:le:1
 ```
 
-Repeat `--condition`, `--goal` and `--constraint` for additional fields. Bounds accept `le` and `ge`. Use `--note` for the reason behind a candidate or threshold. A completed measurement can miss its goal. Read `passed` for the verdict (true or false), or null for a measurement without criteria. CLI `run` and `status` return exit code 1 for a failed or cancelled run, and 0 for a completed measurement. Invalid arguments or an operation error return 2. MCP operation errors include `error.code`.
+Repeat `--condition`, `--goal` and `--constraint` for additional fields. Bounds accept `le` and `ge`. Use `--note` for the reason behind a candidate or threshold. A completed measurement can miss its goal. Read `passed` for the verdict (true or false), or null for a measurement without criteria. CLI `run` and `status` return exit code 1 for a failed or cancelled run, and 0 for a completed measurement. Argument parsing and pre-submission errors return 2. A trial rejected by the device capability check after receiving an ID returns 1 and retains its failure record. MCP operation errors include `error.code`.
 
 ### Background runs and retries
 
@@ -40,14 +40,15 @@ The Blue Pill applies parameters in RAM until reset. Simulators retain effective
 
 ### First MCP session
 
-Register the installed `looptrial-mcp` executable in your client's stdio configuration. A typical entry is shown below. For a GUI client, use the full executable path if its PATH differs from your shell, and set `LOOPTRIAL_HOME` to the same absolute directory as the CLI.
+Run `looptrial mcp-config` in the environment used to start the workbench. Add the generated `mcpServers.looptrial` entry to the GUI client's stdio configuration. It includes the installed Python executable and the current lab's absolute path. To configure it manually, replace the example paths below.
 
 ```json
 {
   "mcpServers": {
     "looptrial": {
-      "command": "looptrial-mcp",
-      "args": []
+      "command": "C:/LoopTrial/.venv/Scripts/python.exe",
+      "args": ["-m", "looptrial.server"],
+      "env": {"LOOPTRIAL_HOME": "C:/LoopTrial/lab"}
     }
   }
 }

@@ -1,8 +1,9 @@
 {
   "mcpServers": {
     "looptrial": {
-      "command": "looptrial-mcp",
-      "args": []
+      "command": "C:/LoopTrial/.venv/Scripts/python.exe",
+      "args": ["-m", "looptrial.server"],
+      "env": {"LOOPTRIAL_HOME": "C:/LoopTrial/lab"}
     }
   }
 }

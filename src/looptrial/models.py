@@ -148,7 +148,8 @@ _DEVICES = {"sim://thermal": _THERMAL, "sim://sensor": _SENSOR, "sim://motor": _
 def describe(uri):
     if uri not in _DEVICES:
         raise ValueError(f"unknown simulator {uri!r}; available: {', '.join(_DEVICES)}")
-    return dict(id=uri, version="1.0", source="host-simulation", **deepcopy(_DEVICES[uri]))
+    return dict(id=uri, version="1.1" if uri == "sim://sensor" else "1.0",
+                source="host-simulation", **deepcopy(_DEVICES[uri]))
 
 
 def _values(spec, supplied):
@@ -217,6 +218,15 @@ def _sensor(c, p, dt, stamps):
     rng = random.Random(c["seed"])
     filtered = None
     refs = [c["ref_low"], c["ref_high"], c["ref_check"]] if "ref_low" in c else None
+    if refs is None:
+        # Five seconds at 50 Hz settles even alpha=.02. A separate random
+        # stream keeps the acquired raw stimulus identical across settings.
+        prehistory = random.Random(f"static/{c['seed']}")
+        nominal = .8 + 1.08 * 10.
+        filtered = p["scale"] * nominal + p["offset"]
+        for _ in range(250):
+            raw = nominal + prehistory.gauss(0, c["noise_std"])
+            filtered += p["alpha"] * (p["scale"] * raw + p["offset"] - filtered)
     for i, t in enumerate(stamps):
         reference = refs[i // 50] if refs else (10. if t < 3 else 20.)
         raw = .8 + 1.08 * reference + rng.gauss(0, c["noise_std"])
@@ -276,7 +286,7 @@ def acquire(uri, action, conditions, params, cancelled=lambda: False):
     return rows
 
 
-def metrics(uri, action, conditions, rows):
+def metrics(uri, action, conditions, rows, *, version=None):
     device, spec, c = _action(uri, action, conditions)
     dt = spec["sample_period_s"]
     if len(rows) != _count(action, c, dt):
@@ -288,4 +298,6 @@ def metrics(uri, action, conditions, rows):
                 raise ValueError(f"invalid or missing {key} at sample {i}")
         if not math.isclose(row["t"], i * dt, rel_tol=0, abs_tol=1e-8):
             raise ValueError(f"sampling gap or incorrect timestamp at sample {i}")
-    return model_metrics.evaluate(uri, action, c, rows)
+    if uri == "sim://sensor" and version not in (None, "1.0", "1.1"):
+        raise ValueError(f"unsupported sensor evaluator version {version}")
+    return model_metrics.evaluate(uri, action, c, rows, version=version)

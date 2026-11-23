@@ -2,6 +2,8 @@
 
 [简体中文](HARDWARE.md) · **English**
 
+Use one active physical link per lab. The operator and agent share the connection owned by the workbench. To check the other transport, finish the trial, disconnect, then switch. The example firmware polls both UARTs and can drop bytes if independent hosts transmit at the same time.
+
 The STM32F103C8T6 example uses a 64 KiB Flash / 20 KiB SRAM linker layout. Each step resets the first-order software model's output to zero, then updates and buffers it at the requested period. Serial and GATT access the same model. The power-on default is `gain=2`, the range is 1–16, and changes are held in RAM. The example uses two USARTs, SysTick and the reset clock (8 MHz HSI).
 
 | Interface | Blue Pill pins | Wiring and use |

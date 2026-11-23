@@ -65,12 +65,18 @@ async def _transport(uri):
         import serial
         if options:
             raise HardwareError("invalid_input", "Serial profile uses 9600 baud, 8N1.")
-        with serial.Serial(selector, 9600, timeout=0.08, write_timeout=1) as port:
+        with serial.Serial(selector, 9600, timeout=0, write_timeout=1) as port:
             async def write(data):
                 await asyncio.to_thread(port.write, data)
 
             async def read():
-                return await asyncio.to_thread(port.read, max(1, min(256, port.in_waiting)))
+                # No blocking reader can survive a request timeout and consume
+                # the first byte of the next reply.
+                ready = min(256, port.in_waiting)
+                if ready:
+                    return port.read(ready)
+                await asyncio.sleep(.005)
+                return b""
             yield write, read
     elif target.scheme == "ble":
         from bleak import BleakClient, BleakScanner
@@ -305,8 +311,9 @@ def apply(uri, params):
 
 async def _collect(peer, token, expected, c, rows, cancelled):
     deadline = asyncio.get_running_loop().time() + c["period_ms"] * c["samples"] / 1000 + 3
+    expired = False
     while True:
-        cancel = cancelled()
+        cancel = expired or cancelled()
         state, count, captured_gain = _ints(await peer.rpc(f"{'X' if cancel else 'Q'} {token}"), 3)
         if captured_gain != expected:
             raise HardwareError("readback_mismatch", "Trial snapshot differs from requested gain.")
@@ -314,9 +321,11 @@ async def _collect(peer, token, expected, c, rows, cancelled):
             raise HardwareError("bad_frame", "Invalid board acquisition state.")
         if state != 1:
             break
+        if cancel:
+            raise HardwareError("bad_frame", "Board did not confirm cancellation.", state_unknown=True)
         if asyncio.get_running_loop().time() >= deadline:
-            await peer.rpc(f"X {token}")
-            raise HardwareError("timeout", "Board exceeded trial timeout and acknowledged cancel.")
+            expired = True
+            continue
         await asyncio.sleep(0.08)
     while len(rows) < count:
         fields = await peer.rpc(f"F {token} {len(rows)}")
@@ -329,6 +338,8 @@ async def _collect(peer, token, expected, c, rows, cancelled):
                 raise HardwareError("sample_gap", "Device timestamp differs from sample schedule.")
             rows.append({"t": ms/1000, "target": c["target"], "response": milli/1000})
     if state == 3:
+        if expired:
+            raise HardwareError("trial_timeout", "Board exceeded the trial deadline and confirmed cancellation.")
         raise HardwareError("cancelled", "Device acknowledged cancellation.")
     if count != c["samples"]:
         raise HardwareError("sample_gap", "Board finished without the requested sample count.")
@@ -365,7 +376,7 @@ async def _acquire(uri, action, conditions, params, cancelled):
                 await _collect(peer, token, expected, c, rows, cancelled)
         except HardwareError as retry:
             retry.rows = rows
-            if retry.code not in {"cancelled", "sample_gap", "readback_mismatch"}:
+            if retry.code not in {"cancelled", "trial_timeout", "sample_gap", "readback_mismatch"}:
                 retry.state_unknown = True
             raise
     return rows

@@ -36,7 +36,7 @@ MOTOR = {
 SENSOR = {
     "noise_std": _m("kPa", "Population standard deviation of filtered readings over the static window 1 <= t < 3 s."),
     "raw_noise_std": _m("kPa", "Population standard deviation of uncorrected readings over that same static window."),
-    "delay_s": _m("s", "Time from reference step to the first of three consecutive filtered samples at or above 90% of observed level change. If reached=0, time is censored at the last sample.", "reached"),
+    "delay_s": _m("s", "Time from reference step to the first of three consecutive filtered samples at or above 90% of the measured calibrated input step. If reached=0, time is censored at the last sample.", "reached"),
     "reached": _m("0/1", "Observed the sustained 90% crossing."),
 }
 CALIBRATION = {
@@ -103,12 +103,12 @@ def _step(rows, signal, target_signal, initial, target, ceiling):
     return common, overshoot, error, mean, slope
 
 
-def _sensor(rows):
+def _sensor(rows, level_signal):
     for row in rows:
         _matching([row["reference"]], 10. if row["t"] < 3 else 20., "reference waveform")
     static = [r for r in rows if 1 <= r["t"] < 3]
-    low = fmean(r["filtered"] for r in static)
-    high = fmean(r["filtered"] for r in rows if r["t"] >= rows[-1]["t"] - 1)
+    low = fmean(r[level_signal] for r in static)
+    high = fmean(r[level_signal] for r in rows if r["t"] >= rows[-1]["t"] - 1)
     if high <= low:
         raise ValueError("measured levels do not resolve the positive reference step")
     threshold = low + .9 * (high - low)
@@ -151,9 +151,10 @@ def _calibration(c, rows):
 
 def _balance(c, rows):
     kick_time = .5
-    _matching((r["angle_deg"] for r in rows if r["t"] < kick_time), 0., "initial tilt")
-    _matching((r["angle_deg"] for r in rows if r["t"] == kick_time), c["kick_deg"], "angular disturbance")
-    outside = [i for i, r in enumerate(rows) if r["t"] >= kick_time and abs(r["angle_deg"]) > .2]
+    kick_index = round(kick_time / (rows[1]["t"] - rows[0]["t"]))
+    _matching((r["angle_deg"] for r in rows[:kick_index]), 0., "initial tilt")
+    _matching([rows[kick_index]["angle_deg"]], c["kick_deg"], "angular disturbance")
+    outside = [i for i, r in enumerate(rows) if i >= kick_index and abs(r["angle_deg"]) > .2]
     settled = outside[-1] + 1
     recovered = settled < len(rows) and rows[-1]["t"] - rows[settled]["t"] >= .25
     peak = max(abs(r["angle_deg"]) for r in rows)
@@ -166,7 +167,7 @@ def _balance(c, rows):
     }
 
 
-def evaluate(uri, action, c, rows):
+def evaluate(uri, action, c, rows, *, version=None):
     if uri == "sim://thermal":
         common, peak, error, mean, slope = _step(
             rows, "temperature_c", "target_c", c["ambient_c"], c["target_c"], c["heater_limit"]
@@ -176,7 +177,7 @@ def evaluate(uri, action, c, rows):
         common, peak, error, mean, slope = _step(rows, "speed_rpm", "target_rpm", 0, c["target_rpm"], c["drive_limit"])
         return dict(common, overshoot_rpm=peak, steady_error_rpm=error, tail_speed_rpm=mean, tail_slope_rpm_s=slope)
     if uri == "sim://sensor":
-        return _calibration(c, rows) if action == "calibrate" else _sensor(rows)
+        return _calibration(c, rows) if action == "calibrate" else _sensor(rows, "filtered" if version == "1.0" else "calibrated")
     if uri == "sim://balance":
         return _balance(c, rows)
     raise ValueError(f"unknown metric family for {uri}")

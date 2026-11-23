@@ -127,6 +127,22 @@ class LiveSession:
                 self.stop.set()
                 engine.observe(uri, "unknown", {"error": message, "last_confirmed": self.last_confirmed})
 
+    def poll_readback(self):
+        # Public commands take the transition lock first. A command can wait
+        # for this one read to finish; the poll never queues behind a command.
+        if not self.transition.acquire(blocking=False):
+            return
+        try:
+            with engine.lock_for("device/" + engine.resource(self.uri)):
+                values = self.board.read(self.uri)
+                if values != self.values:
+                    engine.observe(self.uri, "readback_changed", {"values": values})
+                self.confirm(self.uri, values)
+        except Timeout:
+            pass  # A capture owns the device. Check again on the next poll.
+        finally:
+            self.transition.release()
+
     def poll(self):
         token = engine.actor.set("device")
         try:
@@ -134,11 +150,7 @@ class LiveSession:
                 # Earlier LT1 firmware supports readback and bounded captures.
                 # Skip the idle read while a command or capture holds the board.
                 while not self.stop.wait(1.0):
-                    try:
-                        with engine.lock_for("device/" + engine.resource(self.uri)):
-                            self.confirm(self.uri, self.board.read(self.uri))
-                    except Timeout:
-                        continue
+                    self.poll_readback()
                 return
             started = time.monotonic()
             i = 0
@@ -156,6 +168,10 @@ class LiveSession:
                         i += 1
                 if batch:
                     self.accept(batch)
+                    # Telemetry may predate a host write. Confirm a changed
+                    # gain against the current register before displaying it.
+                    if self.board and batch[-1]["gain"] != self.values.get("gain"):
+                        self.poll_readback()
                 # A full LT1 telemetry page can mean more rows are waiting.
                 # In other cases, pace poll starts rather than adding 100 ms
                 # after a slow GATT transaction. The transport lock is released

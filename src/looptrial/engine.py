@@ -21,6 +21,7 @@ from datetime import datetime, timezone
 from filelock import FileLock, Timeout
 
 from . import __version__, records
+from .records import validate_rules
 
 
 # Only the workbench process installs a runtime. Other clients use the public RPC.
@@ -348,15 +349,6 @@ def check_idle(uri):
         raise Problem("device_busy", "device has an active experiment", id=row[0])
 
 
-def validate_rules(rules):
-    for name, bounds in rules.items():
-        if not name or not isinstance(bounds, dict) or not bounds or set(bounds) - {"le", "ge"}:
-            raise ValueError("rules use {metric: {le: maximum, ge: minimum}}")
-        for value in bounds.values():
-            if isinstance(value, bool) or not isinstance(value, (float, int)) or not math.isfinite(value):
-                raise ValueError("metric bounds must be finite numbers")
-
-
 def verdict(checks):
     if not any(checks.values()):
         return None
@@ -522,16 +514,14 @@ def work(run_id):
                 metrics = adapter.metrics(uri, action, conditions, rows)
                 if not all(math.isfinite(v) for v in metrics.values()):
                     raise ValueError("evaluator returned nonfinite metrics")
-                record["metrics"] = metrics
-                checks = {k: records.check_rules(metrics, request[k], record.get("requires_event")) for k in ("goals", "constraints")}
-                record["checks"] = checks
-                record["passed"] = verdict(checks)
                 effective = _read(adapter, uri, info)
                 record["device_state"] = {"state": "verified", "values": effective}
                 if runtime is not None:
                     runtime.confirm(uri, effective)
                 if effective != params:
                     raise Problem("readback_mismatch", "effective configuration changed during acquisition", observed=effective)
+                checks = {k: records.check_rules(metrics, request[k], record.get("requires_event")) for k in ("goals", "constraints")}
+                record.update(metrics=metrics, checks=checks, passed=verdict(checks))
                 record["status"] = "completed"
         except Exception as error:
             record["status"] = "cancelled" if isinstance(error, InterruptedError) or getattr(error, "code", "") == "cancelled" else "failed"
@@ -602,7 +592,10 @@ def review(ref):
     records.check_rows(rows)
     adapter = (importlib.import_module(".hardware", __package__)
                if record["source"].startswith(("ble://", "serial://")) else backend(record["source"]))
-    metrics = adapter.metrics(record["source"], record["action"], record["conditions"], rows)
+    # Sensor 1.0 measured delay against the filtered tail; retain its original
+    # evaluator for portable records created before the input-step correction.
+    options = {"version": record["version"]} if record["source"] == "sim://sensor" else {}
+    metrics = adapter.metrics(record["source"], record["action"], record["conditions"], rows, **options)
     checks = {k:records.check_rules(metrics, record[k], record.get("requires_event")) for k in ("goals", "constraints")}
     if not matches_evaluation(record, metrics, checks):
         raise Problem("record_mismatch", "recomputed metrics or verdict differ from saved record", metrics=metrics)

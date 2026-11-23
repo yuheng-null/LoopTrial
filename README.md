@@ -6,6 +6,8 @@ LoopTrial 是给嵌入式工程师和 AI Agent 共用的实验上位机。你可
 
 ![LoopTrial 工作台中的实时设备波形、参数和共享实验时间轴](docs/media/workbench.png)
 
+公开的无人值守整车实验使用 v0.2 候选提交 `f326f20`。记录中可以看到 Agent 的工具调用、失败候选，以及换种子后的新圈次确认。[实验记录和仿真器版本](docs/ACCEPTANCE-0.2.md)
+
 ## 安装并打开工作台
 
 在有 Python 3.12 和 Python Launcher 的 Windows 电脑上，进入空目录，在 PowerShell 中运行。首次安装需联网，安装后工作台、图表、模拟器与原始记录都在本机。整车实验需要本机装有支持 WebGL 的 Microsoft Edge 或 Chromium 系浏览器。
@@ -24,7 +26,7 @@ looptrial studio
 
 ## 给 Agent 的入口
 
-把本页网址和症状发给能使用本地工具的 Agent 即可。克隆仓库后，在 Python 3.11+ 虚拟环境中从根目录执行 `python -m pip install .`。已安装时直接用 CLI，或在支持 stdio 的客户端注册同一环境中的 `looptrial-mcp`。工作台、CLI 和 MCP 使用同一个绝对路径 `LOOPTRIAL_HOME`，独立 MCP 客户端用 `looptrial-client`。已授权的调参可以从发现能力一直做到新试验确认。[Agent 实验指南](src/looptrial/resources/agent-guide.md) · [CLI 与 MCP 配置](docs/CLI.zh-CN.md)
+把本页网址和症状发给能使用本地工具的 Agent 即可。克隆仓库后，在 Python 3.11+ 虚拟环境中从根目录执行 `python -m pip install .`。已安装时直接用 CLI，或在支持 stdio 的客户端注册同一环境中的 `looptrial-mcp`。工作台、CLI 和 MCP 使用同一个绝对路径 `LOOPTRIAL_HOME`，独立 MCP 客户端用 `looptrial-client`。在工作台所在环境运行 `looptrial mcp-config` 即可生成可粘贴的 stdio 配置。已授权的调参可以从发现能力一直做到新试验确认。[Agent 实验指南](src/looptrial/resources/agent-guide.md) · [CLI 与 MCP 配置](docs/CLI.zh-CN.md)
 
 在第二个 PowerShell 中进入同一目录，执行下面的命令。第一项可以看到当前连接和最近的人为改动。后面三项会在无硬件条件下完成一次取样和复核；关闭工作台也可独立使用这些实验命令。
 
@@ -53,7 +55,7 @@ looptrial review ".\lap-$($lap.id)"
 ## 接入与可复现实验
 
 - **仪器与控制器。** 内置压力测量和滤波、两点标定及第三点验证、温控、轮速和小角度直立。使用相同初态比较候选，查看原始 CSV、单位、幅度与响应延迟。[实验与旧记录器适配](docs/EXPERIMENTS.md)
-- **真实设备。** 实时控制、限幅和超时留在设备侧。Blue Pill 示例支持 USB 转 UART 和 BLE GATT，持续观测与板端瞬态采集可共用连接。其他协议可通过 Python 适配器接入。要让 Agent 在实车上优化圈速，固件或适配器还需提供带时间戳的反馈、生效参数回读、可重复起跑、有效完赛和出界判定。[固件、接线与既有工程](docs/HARDWARE.md) · [本版台架](evidence/v02/board/README.md)
+- **真实设备。** 实车的限幅、实时控制和失联回退须由项目固件实现。示例板的临时增益保存在 RAM，断开连接后保留至修改或复位。Blue Pill 示例支持 USB 转 UART 和 BLE GATT，持续观测与板端瞬态采集可共用连接。其他协议可通过 Python 适配器接入。要让 Agent 在实车上优化圈速，固件或适配器还需提供带时间戳的反馈、生效参数回读、可重复起跑、有效完赛和出界判定。[固件、接线与既有工程](docs/HARDWARE.md) · [本版台架](evidence/v02/board/README.md)
 - **可移植记录。** 每轮独立存入 `lab/runs/<id>`，含带时间戳的 `samples.csv`、记录工况和参数的 `record.json`；至少有两个采样点时还会生成 `plot.svg`。整目录复制到装有相应版本和适配器的电脑可离线重算。[发布、校验和源码构建](docs/RELEASE.md)
 
 LoopTrial 采用 **GPL-3.0-or-later**，随包组件附各自许可。[完整许可](LICENSE) · [第三方声明](THIRD_PARTY.zh-CN.md) · [本版任务书](docs/GOAL-0.2.md) · [开源复用](docs/REUSE.md)

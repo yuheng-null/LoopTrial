@@ -1,4 +1,5 @@
 import asyncio
+import json
 import shutil
 import time
 from concurrent.futures import ThreadPoolExecutor
@@ -75,6 +76,32 @@ def test_censored_time_fails_and_numeric_retry_is_idempotent():
     same = engine.run_experiment("sim://thermal", "step", conditions={"duration_s":10.0},
                                  goals={"rise_s":{"le":30.0}}, key="guard")
     assert same["id"] == result["id"]
+
+
+def test_offline_review_rejects_unknown_rule_operator():
+    run = engine.run_experiment("sim://sensor", "capture", goals={"noise_std":{"ge":0}})
+    path = engine.home() / run["record"]
+    record = json.loads(path.read_text(encoding="utf-8"))
+    record["goals"]["noise_std"] = {"gt": 0}
+    record["checks"]["goals"][0]["op"] = "gt"
+    engine.records.write_json(path, record)
+    with pytest.raises(ValueError, match="rules use"):
+        engine.review(str(path))
+
+
+def test_changed_final_readback_retains_samples_without_publishing_a_verdict(monkeypatch):
+    initial_read = engine._read
+    readings = 0
+    def changed_read(adapter, uri, info):
+        nonlocal readings
+        readings += 1
+        values = initial_read(adapter, uri, info)
+        return values if readings == 1 else values | {"alpha":0.2}
+    monkeypatch.setattr(engine, "_read", changed_read)
+    result = engine.run_experiment("sim://sensor", "capture", goals={"noise_std":{"ge":0}})
+    assert result["status"] == "failed" and result["error"]["code"] == "readback_mismatch"
+    assert result["samples"] == 401 and result["device_state"]["values"]["alpha"] == .2
+    assert not result["checks"] and not result["metrics"] and "passed" not in result
 
 
 def test_mcp_bridge_accepts_sync_adapters_with_own_event_loop(monkeypatch):

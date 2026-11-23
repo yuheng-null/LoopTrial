@@ -1,4 +1,5 @@
 """Exercise the normal browser HTTP, CLI and independent MCP entry points together."""
+import asyncio
 import json
 import os
 from pathlib import Path
@@ -63,6 +64,39 @@ def test_shared_session_and_parameter_provenance(workbench, tmp_path):
     again = post("connect", {"uri":uri})
     assert again["state"] == "verified" and again["session_id"] != session["session_id"]
     assert again["values"]["alpha"] == .25
+
+
+def test_generated_mcp_config_shares_lab_from_an_unrelated_client(workbench, tmp_path, monkeypatch):
+    from mcp import ClientSession, StdioServerParameters
+    from mcp.client.stdio import stdio_client
+    post, cli = workbench
+    session = post("connect", {"uri":"sim://sensor"})
+    config = cli("mcp-config")["mcpServers"]["looptrial"]
+    assert Path(config["command"]).is_absolute()
+    assert Path(config["env"]["LOOPTRIAL_HOME"]) == tmp_path
+    monkeypatch.setenv("LOOPTRIAL_HOME", str(tmp_path / "different-lab"))
+    async def read_status():
+        async with stdio_client(StdioServerParameters(**config)) as (reader, writer):
+            async with ClientSession(reader, writer) as client:
+                await client.initialize()
+                result = await client.call_tool("session_status", {})
+                assert not result.isError
+                return json.loads(result.content[0].text)
+    assert asyncio.run(read_status())["session_id"] == session["session_id"]
+
+
+def test_standalone_client_preserves_single_event_lists_and_rejects_list_errors(workbench, tmp_path):
+    post, _ = workbench
+    post("connect", {"uri":"sim://sensor"})
+    path = tmp_path / "arguments.json"
+    def call(tool, arguments):
+        path.write_text(json.dumps(arguments), encoding="utf-8")
+        return subprocess.run([sys.executable, "-m", "looptrial.client", "--tool", tool,
+                               "--arguments", str(path)], capture_output=True, text=True)
+    timeline = call("session_timeline", {"uri":"sim://sensor", "limit":1})
+    assert timeline.returncode == 0 and json.loads(timeline.stdout)[0]["kind"] == "connected"
+    error = call("list_runs", {"limit":0})
+    assert error.returncode == 1 and json.loads(error.stdout)["ok"] is False
 
 
 def test_stop_active_job_and_restrict_browser_inputs(workbench):

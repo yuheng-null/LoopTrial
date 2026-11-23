@@ -24,7 +24,10 @@ async def session(args):
             if result.isError:
                 raise RuntimeError(result.content[0].text)
             parts = [json.loads(item.text) for item in result.content if item.type == "text"]
-            if name in ("list_runs", "parameter_history"):
+            for item in parts:
+                if isinstance(item, dict) and item.get("ok") is False:
+                    return item
+            if name in ("list_runs", "parameter_history", "session_timeline"):
                 return parts
             return parts[0] if len(parts) == 1 else parts
 

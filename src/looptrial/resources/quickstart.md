@@ -23,4 +23,4 @@ looptrial compare $r.id $b.id
 looptrial apply sim://thermal "kp=$($old.kp)"
 ```
 
-Use the [MCP host configuration template](mcp-config.json). Replace the command with the installed looptrial-mcp executable's full path when necessary. Set the same absolute LOOPTRIAL_HOME in both clients to share the catalog. Each run folder is portable by itself. Copy it and pass its path to looptrial review.
+Run `looptrial mcp-config` in the experiment shell for a ready-to-paste client entry. The [manual configuration template](mcp-config.json) shows which two absolute paths to replace. Copy a run folder and pass its path to `looptrial review` for offline review.

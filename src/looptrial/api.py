@@ -35,7 +35,7 @@ def local(name, arguments, who):
             return engine.writes(**args)
         if name in LIVE:
             if engine.runtime is None:
-                raise engine.Problem("workbench_offline", "Start looptrial studio in this LOOPTRIAL_HOME first.")
+                raise engine.Problem("workbench_offline", "Start looptrial studio in the same lab.", store=str(engine.home()))
             if name == "plot_trace":
                 directory, record = engine.load_record(args["run_id"])
                 rows = engine.records.load_samples(directory, record)

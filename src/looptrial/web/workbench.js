@@ -279,6 +279,7 @@ function eventName(kind) {
     write_applied:["Device applied parameters","设备参数已生效"], verified:["Readback confirmed","独立回读已确认"],
     write_verified:["Parameter readback confirmed","参数回读已确认"], connected:["Device connected","已连接设备"],
     disconnected:["Device disconnected","设备已断开"], unknown:["Device state unknown","设备状态未知"],
+    readback_changed:["Device readback changed","设备回读值已变化"],
     restored:["Previous settings restored","原配置已恢复"], run_started:["Trial started","实验已开始"], run_completed:["Trial completed","实验完成"],
     run_cancelled:["Trial cancelled","实验已取消"], run_failed:["Trial failed","实验失败"],
     cancel_requested:["Cancellation requested","已请求取消"], reconnected:["Device reconnected","设备已重连"]

@@ -54,13 +54,15 @@ def test_measured_step_metrics_on_hand_constructed_trace():
     assert (m["sat_longest_start_s"], m["sat_longest_end_s"]) == (5, 7)
 
 
-def test_filter_same_input_exact_noiseless_step_delay():
+@pytest.mark.parametrize("alpha,duration", [(.25, 8), (.02, 6)])
+def test_filter_same_input_exact_noiseless_step_delay(alpha, duration):
     # y[n] = target - amplitude*(1-alpha)**(n+1), including n=0 at the step.
-    params = {"alpha": .25}
-    base, _ = trial("sensor", "capture", {"noise_std": 0})
-    rows, metrics = trial("sensor", "capture", {"noise_std": 0}, params)
+    params = {"alpha": alpha}
+    conditions = {"noise_std": 0, "duration_s": duration}
+    base, _ = trial("sensor", "capture", conditions)
+    rows, metrics = trial("sensor", "capture", conditions, params)
     assert [r["raw"] for r in base] == [r["raw"] for r in rows]
-    n90 = math.ceil(math.log(.1) / math.log(.75)) - 1
+    n90 = math.ceil(math.log(.1) / math.log(1 - alpha)) - 1
     assert metrics["delay_s"] == pytest.approx(n90 * .02)
     assert metrics["noise_std"] == pytest.approx(0)
     assert metrics["reached"] == 1
@@ -117,6 +119,11 @@ def test_balance_joint_metrics_and_disturbance():
     assert m["final_drift_m"] < .001
     crossing = max(r["t"] for r in rows if abs(r["angle_deg"]) > .2) + .01
     assert m["recovery_s"] == pytest.approx(crossing - .5)
+    rows[50]["t"] -= 1e-10
+    assert models.metrics("sim://balance", "disturb", {}, rows) == m
+    rows[50]["angle_deg"] = 0
+    with pytest.raises(ValueError, match="angular disturbance"):
+        models.metrics("sim://balance", "disturb", {}, rows)
     _, clipped = trial("balance", "disturb", {"kick_deg": 7, "accel_limit": .5, "duration_s": 2})
     assert clipped["saturation_fraction"] > 0
     assert clipped["small_angle_valid"] == clipped["recovered"] == 0

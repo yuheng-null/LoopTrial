@@ -41,6 +41,8 @@ looptrial status $job.id
 
 A 50 Hz pressure source steps from 10 to 20 kPa at 3 s. Matching `seed` and `noise_std` values produce identical raw input. The noise metric is the population standard deviation of the filtered signal in the 1–3 s stationary window. Delay is measured to the first of three consecutive readings reaching 90% of the observed step amplitude. Both metrics use the same trace. For a diagnosis, inspect the raw and filtered columns after the first capture.
 
+Pressure model 1.1 primes the filter for five seconds using a separate seeded noise stream before acquisition. Its 90% threshold comes from the calibrated input levels on either side of the step. This also applies when a slow filter has yet to settle at the end of a short capture. Offline review of model 1.0 records uses their original filtered-tail threshold.
+
 ```powershell
 $s0 = looptrial run sim://sensor capture --condition seed=17 | ConvertFrom-Json
 looptrial wave $s0.id --start 148 --count 8

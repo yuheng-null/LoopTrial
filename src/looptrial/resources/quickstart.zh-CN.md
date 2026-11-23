@@ -23,4 +23,4 @@ looptrial compare $r.id $b.id
 looptrial apply sim://thermal "kp=$($old.kp)"
 ```
 
-[MCP 配置模板](mcp-config.json)中的命令可按需替换为 `looptrial-mcp` 可执行文件的绝对路径。在两个客户端设置相同的 `LOOPTRIAL_HOME` 绝对路径即可共用记录。每个实验目录都可以单独复制并将目录路径交给 `looptrial review`。
+在实验终端运行 `looptrial mcp-config` 可生成当前环境的客户端配置。手填时按[配置模板](mcp-config.json)替换 Python 和实验目录这两个绝对路径。复制任一实验目录，将其路径交给 `looptrial review` 即可离线复核。

@@ -1,10 +1,13 @@
 """Exercise both production transports against the actual C protocol, with a virtual clock."""
 import ctypes as ct
+import asyncio
+from concurrent.futures import ThreadPoolExecutor
 import os
 from pathlib import Path
 import shutil
 import subprocess
 import time
+from threading import Event
 from types import SimpleNamespace
 
 import pytest
@@ -53,6 +56,7 @@ class Board:
         self.commands = []
         self.drop = self.disconnect = self.bad_read = self.swap = self.gap = False
         self.legacy = False
+        self.stall_trial = False
         self.reboot_image = None
 
     def feed(self, data):
@@ -84,7 +88,7 @@ class Board:
                 fields = response.split()
                 fields[4] = b"999"
                 response[:] = b" ".join(fields) + b"\n"
-            for _ in range(25):
+            for _ in range(0 if self.stall_trial and cmd in ("Q","X") else 25):
                 self.lib.lt_tick()
             if cmd == "F" and self.disconnect:
                 self.disconnect = False
@@ -143,6 +147,52 @@ def endpoint(request, firmware, monkeypatch, tmp_path):
     monkeypatch.setattr(bleak.BleakScanner, "discover", discover)
     monkeypatch.setattr(bleak, "BleakClient", Client)
     return request.param, board
+
+
+def test_trial_deadline_retains_prefix_and_never_restarts_or_rescans(endpoint):
+    uri, board = endpoint
+    board.stall_trial = True
+    with pytest.raises(hw.HardwareError) as raised:
+        hw.acquire(uri, "step", {"target":80,"period_ms":10,"samples":4}, {"gain":2})
+    assert raised.value.code == "trial_timeout" and not raised.value.state_unknown
+    assert [r["t"] for r in raised.value.rows] == [.01, .02]
+    assert sum(cmd[0] == "S" for cmd in board.commands) == board.commands.count(["H"]) == 1
+
+
+def test_serial_retry_cannot_lose_reply_to_a_previous_reader(monkeypatch):
+    import serial
+    reader_waiting, data_ready, consumed = Event(), Event(), Event()
+    class DelayedSerial:
+        def __init__(self, *args, **kwargs):
+            self.attempts = 0
+            self.reply = bytearray()
+        def __enter__(self): return self
+        def __exit__(self, *args): pass
+        @property
+        def in_waiting(self): return len(self.reply)
+        def write(self, data):
+            self.attempts += 1
+            if self.attempts == 2:
+                self.reply.extend(data.strip().split()[0] + b" OK 6\n")
+                data_ready.set()
+                if reader_waiting.is_set():
+                    assert consumed.wait(1)
+        def read(self, count):
+            if not self.reply:
+                reader_waiting.set()
+                if not data_ready.wait(.3):
+                    return b""
+            part = bytes(self.reply[:count])
+            del self.reply[:count]
+            consumed.set()
+            return part
+
+    monkeypatch.setattr(serial, "Serial", DelayedSerial)
+    monkeypatch.setattr(hw, "_REPLY_TIMEOUT", .06)
+    async def read_register():
+        async with hw._transport("serial://test") as (write, read):
+            return await hw._Peer(write, read).rpc("R")
+    assert asyncio.run(read_register()) == ["6"]
 
 
 def test_ack_loss_fragmented_fetch_and_reconnect(endpoint):
@@ -272,6 +322,36 @@ def test_legacy_workbench_can_capture_without_streaming(endpoint, monkeypatch):
         session.close()
 
 
+def test_public_read_waits_for_legacy_idle_poll(endpoint, monkeypatch):
+    from looptrial import api, engine
+    from looptrial.live import LiveSession
+    uri, board = endpoint
+    board.legacy = True
+    session = LiveSession()
+    monkeypatch.setattr(engine, "runtime", session)
+    entered, release = Event(), Event()
+    try:
+        session.connect(uri)
+        board_read = session.board.read
+        def held_read(target):
+            entered.set()
+            assert release.wait(4)
+            return board_read(target)
+        monkeypatch.setattr(session.board, "read", held_read)
+        assert entered.wait(3)
+        with ThreadPoolExecutor(1) as pool:
+            request = pool.submit(api.local, "read_parameters", {"uri":uri}, "mcp")
+            try:
+                time.sleep(.1)
+                assert not request.done()
+            finally:
+                release.set()
+            assert request.result(timeout=3)["verified"] == {"gain":2}
+    finally:
+        release.set()
+        session.close()
+
+
 def test_write_attribution_follows_the_board_and_effective_values(endpoint):
     from looptrial import engine
     uri, _ = endpoint
@@ -282,6 +362,27 @@ def test_write_attribution_follows_the_board_and_effective_values(endpoint):
     hw.apply(uri, {"gain": 3})  # An out-of-band adjustment has no LoopTrial receipt.
     trial = engine.run_experiment(uri, "step", conditions={"samples": 4})
     assert trial["parameters"]["gain"] == 3 and "last_parameter_write" not in trial
+
+
+def test_live_board_confirms_a_parameter_change_observed_in_telemetry(endpoint, monkeypatch):
+    from looptrial import engine
+    from looptrial.live import LiveSession
+    uri, _ = endpoint
+    session = LiveSession()
+    monkeypatch.setattr(engine, "runtime", session)
+    try:
+        assert session.connect(uri)["values"]["gain"] == 2
+        # A board write outside the host's apply operation has no client receipt.
+        session.board.apply(uri, {"gain": 6})
+        deadline = time.monotonic() + 3
+        while session.snapshot()["values"]["gain"] != 6 and time.monotonic() < deadline:
+            time.sleep(.03)
+        assert session.snapshot()["last_confirmed"]["values"] == {"gain": 6}
+        assert not engine.writes(uri)
+        changes = [e for e in engine.timeline(uri) if e["kind"] == "readback_changed"]
+        assert len(changes) == 1 and changes[0]["actor"] == "device"
+    finally:
+        session.close()
 
 
 def test_board_rejects_stale_parameter_snapshot_and_duplicate_conflict(firmware):
