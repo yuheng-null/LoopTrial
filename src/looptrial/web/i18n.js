@@ -1,5 +1,7 @@
 const strings = {
   devices:["Discovered devices","已发现设备"],
+  sameParams:["Parameters match","两轮生效参数一致"], changedParams:["Parameter changes","生效参数变化"], racePreview:["Start a trial to see the vehicle signals","开始整车试跑后将显示车辆信号"],
+  alignment:["Event markers use the nearest host-received batch. The horizontal axis shows device time.","事件标记对齐到主机收包时间最接近的一批样本，横轴为设备时间。"],
   workbench: ["Workbench", "调参工作台"], deviceControls:["Device controls","设备控制"], view:["View","视图"], dismiss:["Dismiss","关闭提示"],
   connection:["Connection","设备连接"], refresh:["Refresh","刷新"], deviceUri:["Device URI","设备 URI"], connect:["Connect","连接设备"], reconnect:["Reconnect","重新连接"], connecting:["Connecting…","连接中…"], disconnect:["Disconnect","断开"],
   parameters:["Parameters","参数"], apply:["Apply changes","应用修改"], experiment:["Experiment","实验"], action:["Action","实验动作"], conditions:["Trial conditions","实验工况"], run:["Run trial","开始实验"], stop:["Stop","停止"],

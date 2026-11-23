@@ -59,6 +59,7 @@
             <select id="window"><option value="5">5 s</option><option value="15" selected>15 s</option><option value="30">30 s</option><option value="60">60 s</option></select></label></div>
           <div id="live-plot" class="plot"></div>
           <div id="signals" class="signals"></div>
+          <p id="alignment" class="alignment" data-i="alignment" hidden>Event markers use the nearest host-received batch. The horizontal axis shows device time.</p>
         </section>
         <dl class="statistics">
           <div><dt data-i="sampleRate">Sample rate</dt><dd id="sample-rate">—</dd></div>
@@ -81,7 +82,7 @@
           <div id="compare-plot" class="plot"></div><div id="overlay-signals" class="signals"></div>
           <div id="overlay-legend" class="trace-legend" hidden><span class="line-symbol"></span><span data-i="baseline">Baseline</span><span class="line-symbol dashed"></span><span data-i="candidate">Candidate</span></div>
         </section>
-        <section class="metrics-block" id="metrics-block" hidden><h2 data-i="metrics">Metric changes</h2><div class="table-wrap"><table><thead><tr><th data-i="metric">Metric</th><th data-i="baseline">Baseline</th><th data-i="candidate">Candidate</th><th data-i="change">Change</th></tr></thead><tbody id="metrics"></tbody></table></div></section>
+        <section class="metrics-block" id="metrics-block" hidden><h2 data-i="metrics">Metric changes</h2><p id="changed-params" class="comparison-details"></p><div class="table-wrap"><table><thead><tr><th data-i="metric">Metric</th><th data-i="baseline">Baseline</th><th data-i="candidate">Candidate</th><th data-i="change">Change</th></tr></thead><tbody id="metrics"></tbody></table></div></section>
       </div>
       <section class="timeline">
         <div class="section-heading"><h2 data-i="timeline">Session timeline</h2><span class="mono minor" id="event-count"></span></div>

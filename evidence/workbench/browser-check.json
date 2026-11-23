@@ -1,0 +1,47 @@
+{
+  "browser": "158.0.4370.33",
+  "viewport": [
+    1400,
+    935
+  ],
+  "baseline": "53d2180b419d4459aa36d879b33f3a47",
+  "candidate": "89e62389296c4df6b9cca1e6106999e0",
+  "human_write": "verified",
+  "write_stages": {
+    "human": [
+      "sent",
+      "applied",
+      "verified"
+    ],
+    "mcp": [
+      "sent",
+      "applied",
+      "verified"
+    ]
+  },
+  "metric_delta": {
+    "noise_std": -0.6132249636934742,
+    "raw_noise_std": 0.0,
+    "reached": 0,
+    "delay_s": 0.2
+  },
+  "incompatible_overlay_refused": true,
+  "cancelled_run": "088c7867df3d458084d8daa2959d8d1e",
+  "mobile_viewport": [
+    390,
+    844
+  ],
+  "horizontal_overflow": false,
+  "disconnect_kept_last_confirmation": true,
+  "page_errors": [],
+  "scope": "Windows, Edge headless, actual loopback UI + standard stdio MCP + independent CLI, sim://sensor. Source integration check.",
+  "session": "session.json",
+  "records": "records.zip",
+  "render": "../../docs/media/workbench.png",
+  "visual_observations": {
+    "live_graph": "host receipt batches matched to device-time samples",
+    "comparison_ui": "alpha (1 to 0.2) and recalculated metric deltas",
+    "narrow_screen": "sidebar controls accessible via disclosure"
+  },
+  "reproduce": "tests/workbench_browser.py --server-python <installed-python> --browser <chromium-executable> --out <new-directory>"
+}

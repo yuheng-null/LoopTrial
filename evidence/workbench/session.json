@@ -1,0 +1,265 @@
+[
+  {
+    "seq": 1,
+    "time": "2026-11-23T07:24:46.935+00:00",
+    "actor": "human",
+    "kind": "connected",
+    "details": {
+      "device": "sim://sensor",
+      "values": {
+        "alpha": 1,
+        "offset": 0,
+        "scale": 1
+      },
+      "version": "1.0"
+    }
+  },
+  {
+    "seq": 2,
+    "time": "2026-11-23T07:24:47.695+00:00",
+    "actor": "human",
+    "kind": "run_started",
+    "details": {
+      "action": "capture",
+      "id": "53d2180b419d4459aa36d879b33f3a47",
+      "values": {
+        "alpha": 1,
+        "offset": 0,
+        "scale": 1
+      }
+    }
+  },
+  {
+    "seq": 3,
+    "time": "2026-11-23T07:24:47.713+00:00",
+    "actor": "human",
+    "kind": "run_completed",
+    "details": {
+      "error": null,
+      "id": "53d2180b419d4459aa36d879b33f3a47",
+      "state": {
+        "state": "verified",
+        "values": {
+          "alpha": 1,
+          "offset": 0,
+          "scale": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 4,
+    "time": "2026-11-23T07:24:48.029+00:00",
+    "actor": "human",
+    "kind": "sent",
+    "details": {
+      "command_id": "5d623d0c9d114abf8d31cf270d1ecf0c",
+      "requested": {
+        "alpha": 0.2
+      }
+    }
+  },
+  {
+    "seq": 5,
+    "time": "2026-11-23T07:24:48.047+00:00",
+    "actor": "human",
+    "kind": "applied",
+    "details": {
+      "command_id": "5d623d0c9d114abf8d31cf270d1ecf0c",
+      "values": {
+        "alpha": 0.2,
+        "offset": 0,
+        "scale": 1
+      }
+    }
+  },
+  {
+    "seq": 6,
+    "time": "2026-11-23T07:24:48.057+00:00",
+    "actor": "human",
+    "kind": "verified",
+    "details": {
+      "command_id": "5d623d0c9d114abf8d31cf270d1ecf0c",
+      "confirm_ms": 28.342,
+      "values": {
+        "alpha": 0.2,
+        "offset": 0,
+        "scale": 1
+      }
+    }
+  },
+  {
+    "seq": 7,
+    "time": "2026-11-23T07:24:48.605+00:00",
+    "actor": "human",
+    "kind": "run_started",
+    "details": {
+      "action": "capture",
+      "id": "89e62389296c4df6b9cca1e6106999e0",
+      "values": {
+        "alpha": 0.2,
+        "offset": 0,
+        "scale": 1
+      }
+    }
+  },
+  {
+    "seq": 8,
+    "time": "2026-11-23T07:24:48.632+00:00",
+    "actor": "human",
+    "kind": "run_completed",
+    "details": {
+      "error": null,
+      "id": "89e62389296c4df6b9cca1e6106999e0",
+      "state": {
+        "state": "verified",
+        "values": {
+          "alpha": 0.2,
+          "offset": 0,
+          "scale": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 9,
+    "time": "2026-11-23T07:24:54.461+00:00",
+    "actor": "mcp",
+    "kind": "sent",
+    "details": {
+      "command_id": "0a783286e7ba4c20b81ccd233c9ccf0d",
+      "requested": {
+        "alpha": 0.35
+      }
+    }
+  },
+  {
+    "seq": 10,
+    "time": "2026-11-23T07:24:54.479+00:00",
+    "actor": "mcp",
+    "kind": "applied",
+    "details": {
+      "command_id": "0a783286e7ba4c20b81ccd233c9ccf0d",
+      "values": {
+        "alpha": 0.35,
+        "offset": 0,
+        "scale": 1
+      }
+    }
+  },
+  {
+    "seq": 11,
+    "time": "2026-11-23T07:24:54.489+00:00",
+    "actor": "mcp",
+    "kind": "verified",
+    "details": {
+      "command_id": "0a783286e7ba4c20b81ccd233c9ccf0d",
+      "confirm_ms": 28.551,
+      "values": {
+        "alpha": 0.35,
+        "offset": 0,
+        "scale": 1
+      }
+    }
+  },
+  {
+    "seq": 12,
+    "time": "2026-11-23T07:24:55.827+00:00",
+    "actor": "cli",
+    "kind": "run_started",
+    "details": {
+      "action": "capture",
+      "id": "33b0aa8106c1450b9f9d0154051fd6a9",
+      "values": {
+        "alpha": 0.35,
+        "offset": 0,
+        "scale": 1
+      }
+    }
+  },
+  {
+    "seq": 13,
+    "time": "2026-11-23T07:24:55.846+00:00",
+    "actor": "cli",
+    "kind": "run_completed",
+    "details": {
+      "error": null,
+      "id": "33b0aa8106c1450b9f9d0154051fd6a9",
+      "state": {
+        "state": "verified",
+        "values": {
+          "alpha": 0.35,
+          "offset": 0,
+          "scale": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 14,
+    "time": "2026-11-23T07:24:56.501+00:00",
+    "actor": "cli",
+    "kind": "run_started",
+    "details": {
+      "action": "capture",
+      "id": "088c7867df3d458084d8daa2959d8d1e",
+      "values": {
+        "alpha": 0.35,
+        "offset": 0,
+        "scale": 1
+      }
+    }
+  },
+  {
+    "seq": 15,
+    "time": "2026-11-23T07:24:56.621+00:00",
+    "actor": "cli",
+    "kind": "run_cancelled",
+    "details": {
+      "error": {
+        "code": "cancelled",
+        "message": "cancelled before acquisition"
+      },
+      "id": "088c7867df3d458084d8daa2959d8d1e",
+      "state": {
+        "state": "verified",
+        "values": {
+          "alpha": 0.35,
+          "offset": 0,
+          "scale": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 16,
+    "time": "2026-11-23T07:24:56.818+00:00",
+    "actor": "human",
+    "kind": "disconnected",
+    "details": {
+      "last_confirmed": {
+        "time": "2026-11-23T07:24:54.489+00:00",
+        "values": {
+          "alpha": 0.35,
+          "offset": 0,
+          "scale": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 17,
+    "time": "2026-11-23T07:24:56.890+00:00",
+    "actor": "human",
+    "kind": "connected",
+    "details": {
+      "device": "sim://sensor",
+      "values": {
+        "alpha": 0.35,
+        "offset": 0,
+        "scale": 1
+      },
+      "version": "1.0"
+    }
+  }
+]

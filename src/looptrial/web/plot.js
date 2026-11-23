@@ -25,6 +25,33 @@ function nearest(rows, time) {
   return time - rows[lo-1].t < rows[lo].t - time ? rows[lo-1] : rows[lo];
 }
 
+// A batch can contain several device samples with one receive time. Associate the
+// host event with the last sample of the nearest batch, only within observed times.
+export function matchEvents(events, rows, selectedSeq) {
+  const batches = [];
+  for (const row of rows) {
+    const ms = Date.parse(row.received_at);
+    if (!Number.isFinite(ms)) continue;
+    if (batches.length && batches.at(-1).ms === ms) batches.at(-1).t = row.t;
+    else batches.push({ms,t:row.t});
+  }
+  if (!batches.length) return [];
+  const result = [];
+  for (const event of events) {
+    const ms = Date.parse(event.time);
+    if (ms < batches[0].ms || ms > batches.at(-1).ms || !Number.isFinite(ms)) continue;
+    const selected = selectedSeq === String(event.seq);
+    if (!selected && !["verified","restored","run_started","run_completed","run_failed","run_cancelled"].includes(event.kind)) continue;
+    let best = batches[0];
+    for (const batch of batches) {
+      if (Math.abs(batch.ms-ms) < Math.abs(best.ms-ms)) best = batch;
+      if (batch.ms >= ms) break;
+    }
+    result.push({t:best.t, seq:event.seq, selected});
+  }
+  return result;
+}
+
 export class TracePlot {
   constructor(host) {
     this.host = host;
@@ -77,7 +104,8 @@ export class TracePlot {
     ctx.fillRect(0, 0, width, height);
     ctx.font = "11px Consolas, monospace";
     const left = width < 480 ? 46 : 55, right = width - 16;
-    const top = 13, bottom = height - 28;
+    const markers = this.options.markers || [];
+    const top = markers.length ? 28 : 13, bottom = height - 33;
     let first = Infinity, last = -Infinity;
     for (const track of tracks) {
       if (!track.length) continue;
@@ -154,7 +182,26 @@ export class TracePlot {
       ctx.restore();
     }
     this.canvas.setAttribute("aria-label", timeLabel + (hasTime ? " · " + formatNumber(start) + "–" + formatNumber(end) + " s · " + [...selection].join(", ") : ""));
-    ctx.textAlign = "right"; ctx.fillStyle = "#9cb6be"; ctx.fillText("s", width-3, height-13);
+    ctx.textAlign = "right"; ctx.fillStyle = "#9cb6be"; ctx.fillText(timeLabel, right, height-3);
+    const visibleMarkers = markers.filter(m => m.t >= start && m.t <= end).sort((a,b) => a.t-b.t);
+    const clusters = [];
+    for (const marker of visibleMarkers) {
+      const xx = x(marker.t);
+      if (clusters.length && xx-clusters.at(-1).x < 46) clusters.at(-1).items.push(marker);
+      else clusters.push({x:xx,items:[marker]});
+    }
+    this.host.dataset.markers = String(visibleMarkers.length);
+    for (const cluster of clusters) {
+      const chosen = cluster.items.find(m=>m.selected) || cluster.items[0];
+      const xx = x(chosen.t);
+      ctx.strokeStyle = chosen.selected ? "#ffda89" : "#6d8a91";
+      ctx.lineWidth = chosen.selected ? 1.5 : 1;
+      ctx.setLineDash([3,4]); ctx.beginPath(); ctx.moveTo(xx,21); ctx.lineTo(xx,bottom); ctx.stroke(); ctx.setLineDash([]);
+      ctx.textAlign = xx+44 > right ? "right" : "left";
+      ctx.fillStyle = chosen.selected ? "#ffda89" : "#b7cdd2";
+      const last = cluster.items.at(-1);
+      ctx.fillText("#"+chosen.seq+(!chosen.selected && last.seq!==chosen.seq ? "–"+last.seq : ""),xx,15);
+    }
     this.message.textContent = emptyMessage;
     this.message.hidden = hasSignal;
     this.tooltip.hidden = true;

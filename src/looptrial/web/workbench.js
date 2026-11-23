@@ -1,4 +1,4 @@
-import { TracePlot, colors, formatNumber } from "./plot.js";
+import { TracePlot, colors, formatNumber, matchEvents } from "./plot.js";
 import { tr, lang, localize, switchLanguage } from "./i18n.js";
 
 const $ = id => document.getElementById(id);
@@ -9,6 +9,7 @@ let appliedSession = null;
 let liveSignals = [], liveSelection = new Set();
 let overlay = null, overlaySignals = [], overlaySelection = new Set();
 let frozenRows = null;
+let selectedEvent = null;
 let pendingWrite = false, pendingConnect = false, pendingRun = false, pendingStop = false;
 let refreshing = false, serviceLost = false, knownRecords = [], latestRun = "", overlayEpoch = 0;
 let recordSignature = "", eventSignature = "", eventContainerSession = null;
@@ -76,7 +77,7 @@ async function scan() {
   if (typeof devices.race === "string") candidates.push(devices.race);
   $("devices").replaceChildren(...[...new Set(candidates)].map(uri=>{
     const button=node("button",uri); button.type="button";
-    button.addEventListener("click",()=>{ $("device-uri").value=uri; closePicker(); $("connect").focus(); });
+    button.addEventListener("click",()=>{ $("device-uri").value=uri; closePicker(); syncControls(); $("connect").focus(); });
     return button;
   }));
 }
@@ -122,8 +123,11 @@ function drawLive() {
   const schema = liveSchema();
   const rows = frozenRows || snap.stream || [];
   const msg = !snap.uri ? "disconnectedPlot" : liveSignals.length && !liveSelection.size ? "chooseSignals" :
-        snap.state === "unknown" || serviceLost ? "unknown" : !snap.uri.startsWith("sim://") && !snap.info?.telemetry ? "noPreview" : "waiting";
-  livePlot.set({tracks:[rows], signalNames:liveSignals, schema, selection:liveSelection,
+        snap.state === "unknown" || serviceLost ? "unknown" : snap.uri.startsWith("race://") ? "racePreview" :
+        !snap.uri.startsWith("sim://") && !snap.info?.telemetry ? "noPreview" : "waiting";
+  const markers = matchEvents(snap.events || [],rows,selectedEvent);
+  $("alignment").hidden = !markers.length;
+  livePlot.set({tracks:[rows], markers, signalNames:liveSignals, schema, selection:liveSelection,
     labels:[""], windowSeconds:Number($("window").value), emptyMessage:tr(msg), timeLabel:tr("measured")});
 }
 function drawOverlay() {
@@ -207,8 +211,9 @@ function syncControls() {
   $("action").disabled = !verified || !Object.keys(snap.info?.actions || {}).length;
   $("run").disabled = $("action").disabled || pendingRun || !!snap.active_run;
   $("stop").disabled = !snap.active_run || pendingStop || serviceLost;
-  $("connect").disabled = pendingConnect;
-  $("connect").textContent = tr(pendingConnect ? "connecting" : snap.uri && !connected ? "reconnect":"connect");
+  const selectedConnected = connected && $("device-uri").value.trim() === snap.uri;
+  $("connect").disabled = pendingConnect || selectedConnected;
+  $("connect").textContent = tr(pendingConnect ? "connecting" : selectedConnected ? "online" : snap.uri && !connected ? "reconnect":"connect");
   $("disconnect").hidden = !snap.uri;
   $("disconnect").disabled = pendingConnect || serviceLost;
   $("freeze").textContent = tr(frozenRows ? "resume" : "freeze");
@@ -263,8 +268,10 @@ function renderTimeline(force = false) {
     const context = values && typeof values==="object" ?
       Object.entries(values).slice(0,4).map(([k,v])=>k+"="+v).join(" · ") :
       (extra.run_id || extra.id || extra.message || "");
-    summary.append(node("time",stamp(event.time)),node("span",actor,"actor"),
-      node("span",eventName(event.kind)+(context ? " · "+String(context) : ""),"event-text"));
+    const title = node("span",null,"event-text");
+    title.append(node("span","#"+event.seq,"event-id"),document.createTextNode(eventName(event.kind)+(context ? " · "+String(context) : "")));
+    summary.append(node("time",stamp(event.time)),node("span",actor==="human" ? tr("human") : actor,"actor"),title);
+    summary.addEventListener("click",()=>{selectedEvent = details.open ? null : String(event.seq); drawLive();});
     details.append(summary,node("pre",JSON.stringify(event,null,2)));
     li.append(details); fragment.append(li);
   }
@@ -279,7 +286,7 @@ function applySnapshot(data,force = false) {
   snap = data;
   if (!same) {
     appliedSession = token;
-    frozenRows = null; latestRun = ""; eventSignature="";
+    frozenRows = null; latestRun = ""; selectedEvent=null; eventSignature="";
     if (snap.uri) $("device-uri").value = snap.uri;
   }
   const signals = deriveSignals(liveSchema(), snap.stream || []);
@@ -330,6 +337,7 @@ $("disconnect").addEventListener("click",async()=>{
   finally {pendingConnect=false; syncControls(); await refresh();}
 });
 $("scan").addEventListener("click",()=>scan().catch(showError));
+$("device-uri").addEventListener("input",syncControls);
 $("action").addEventListener("change",buildConditions);
 $("param-form").addEventListener("submit",async event=>{
   event.preventDefault(); clearError();
@@ -406,6 +414,11 @@ function showOverlay() {
   $("overlay-legend").hidden=false; $("metrics-block").hidden=false;
   $("overlay-count").textContent=overlay.counts.join(" / ")+" "+tr("points");
   const [a,b]=overlay.records;
+  const changed = Object.entries(overlay.comparison.changed_parameters || {});
+  const [firstWrite,secondWrite] = overlay.comparison.last_parameter_writes || [];
+  const changes = changed.length ? tr("changedParams")+" · "+changed.map(([key,pair])=>key+" "+pair.join(" → ")).join(" · ") : tr("sameParams");
+  const origin = (label,write)=>write ? " · "+tr(label)+" "+(write.actor==="human"?tr("human"):write.actor)+" "+stamp(write.time) : "";
+  $("changed-params").textContent = changes + origin("baseline",firstWrite) + origin("candidate",secondWrite);
   const body=$("metrics"); body.replaceChildren();
   for(const [key,delta] of Object.entries(overlay.comparison.delta || {})){
     const row=node("tr"), unit=b.metric_units?.[key] || a.metric_units?.[key] || "";
