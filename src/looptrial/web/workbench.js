@@ -421,7 +421,7 @@ function showOverlay() {
   $("changed-params").textContent = changes + origin("baseline",firstWrite) + origin("candidate",secondWrite);
   const body=$("metrics"); body.replaceChildren();
   for(const [key,delta] of Object.entries(overlay.comparison.delta || {})){
-    const row=node("tr"), unit=b.metric_units?.[key] || a.metric_units?.[key] || "";
+    const row=node("tr"), unit=overlay.comparison.metric_units?.[key] || b.metric_units?.[key] || a.metric_units?.[key] || "";
     row.append(node("td",key+(unit?" ("+unit+")":"")),node("td",displayNumber(a.metrics?.[key])),node("td",displayNumber(b.metrics?.[key])),
       node("td",(delta>0?"+":"")+displayNumber(delta)));
     body.append(row);

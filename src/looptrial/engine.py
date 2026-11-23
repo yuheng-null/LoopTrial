@@ -439,7 +439,7 @@ def new_record(row, request):
 def finish(record):
     summary = {k:record[k] for k in ("id", "status", "source", "action", "conditions", "parameters",
                "device_state", "samples", "metrics", "checks", "passed", "error", "warnings", "instance",
-               "actor", "last_parameter_write", "started", "finished", "device") if k in record}
+               "actor", "last_parameter_write", "started", "finished", "device", "metric_units") if k in record}
     summary["record"] = "runs/" + record["id"] + "/record.json"
     with database() as db:
         db.execute("UPDATE jobs SET status=?,summary=? WHERE id=?",
@@ -633,6 +633,7 @@ def compare(first, second):
     if a.get("action") == "lap" and any(r["metrics"].get("valid_lap") != 1 for r in (a,b)):
         raise Problem("incomparable", "An invalid lap has no finish time. Review its trajectory and stop event.")
     return dict(first=a["id"], second=b["id"], parameters=[a["parameters"], b["parameters"]],
+                metric_units=b.get("metric_units", a.get("metric_units", {})),
                 changed_parameters={k: [v,b["parameters"].get(k)] for k,v in a["parameters"].items() if b["parameters"].get(k) != v},
                 last_parameter_writes=[a.get("last_parameter_write"), b.get("last_parameter_write")],
                 delta={k:b["metrics"][k]-v for k,v in a["metrics"].items()})
