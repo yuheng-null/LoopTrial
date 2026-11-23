@@ -1,0 +1,741 @@
+{
+  "transport": "ble",
+  "schedule": "ble-before",
+  "duration_s": 46.9369999999999,
+  "initial": {
+    "session_id": "cd2befb032bf41a1bf46fb151cf118bb",
+    "last_confirmed": {
+      "time": "2026-11-23T07:27:40.764+00:00",
+      "values": {
+        "gain": 2
+      }
+    },
+    "values": {
+      "gain": 2
+    },
+    "state": "verified",
+    "stats": {
+      "updates": 2,
+      "samples": 4,
+      "missing": 0,
+      "max_gap_s": 0.21899999999914144,
+      "age_s": 0.1710000000002765,
+      "update_hz": 4.566210045680002,
+      "sample_hz": 20.00000000000303
+    }
+  },
+  "final": {
+    "session_id": "cd2befb032bf41a1bf46fb151cf118bb",
+    "last_confirmed": {
+      "time": "2026-11-23T07:27:57.342+00:00",
+      "values": {
+        "gain": 2
+      }
+    },
+    "values": {
+      "gain": 2
+    },
+    "state": "verified",
+    "stats": {
+      "updates": 180,
+      "samples": 716,
+      "missing": 206,
+      "max_gap_s": 0.375,
+      "age_s": 0.2180000000007567,
+      "update_hz": 3.8624201622648737,
+      "sample_hz": 19.999999999999996
+    }
+  },
+  "writes": [
+    {
+      "sent_at": "2026-11-23T07:27:41.629+00:00",
+      "applied_at": "2026-11-23T07:27:41.795+00:00",
+      "verified_at": "2026-11-23T07:27:41.864+00:00",
+      "confirm_ms": 233.783,
+      "applied": {
+        "gain": 2
+      },
+      "verified": {
+        "gain": 2
+      },
+      "actor": "cli",
+      "command_id": "ff7591004f184194b970b2a2eddb3523"
+    },
+    {
+      "sent_at": "2026-11-23T07:27:45.604+00:00",
+      "applied_at": "2026-11-23T07:27:45.678+00:00",
+      "verified_at": "2026-11-23T07:27:45.904+00:00",
+      "confirm_ms": 299.609,
+      "applied": {
+        "gain": 8
+      },
+      "verified": {
+        "gain": 8
+      },
+      "actor": "cli",
+      "command_id": "5b7b1005e7e54b32b334a7a46f6c1a0c"
+    },
+    {
+      "sent_at": "2026-11-23T07:27:49.767+00:00",
+      "applied_at": "2026-11-23T07:27:49.991+00:00",
+      "verified_at": "2026-11-23T07:27:50.067+00:00",
+      "confirm_ms": 300.433,
+      "applied": {
+        "gain": 8
+      },
+      "verified": {
+        "gain": 8
+      },
+      "actor": "cli",
+      "command_id": "b7a42cb4f902415aa602fa5c5299aada"
+    },
+    {
+      "sent_at": "2026-11-23T07:27:53.616+00:00",
+      "applied_at": "2026-11-23T07:27:53.854+00:00",
+      "verified_at": "2026-11-23T07:27:53.929+00:00",
+      "confirm_ms": 300.122,
+      "applied": {
+        "gain": 6
+      },
+      "verified": {
+        "gain": 6
+      },
+      "actor": "cli",
+      "command_id": "d42d082c38594b1a846c079d37d083c5"
+    },
+    {
+      "sent_at": "2026-11-23T07:27:54.679+00:00",
+      "applied_at": "2026-11-23T07:27:54.791+00:00",
+      "verified_at": "2026-11-23T07:27:55.017+00:00",
+      "confirm_ms": 337.349,
+      "applied": {
+        "gain": 4
+      },
+      "verified": {
+        "gain": 4
+      },
+      "actor": "cli",
+      "command_id": "42840cd7e79947aea45615f243a2c7fa"
+    },
+    {
+      "sent_at": "2026-11-23T07:27:55.992+00:00",
+      "applied_at": "2026-11-23T07:27:56.067+00:00",
+      "verified_at": "2026-11-23T07:27:56.285+00:00",
+      "confirm_ms": 299.833,
+      "applied": {
+        "gain": 9
+      },
+      "verified": {
+        "gain": 9
+      },
+      "actor": "cli",
+      "command_id": "03443dfd57704adfbdd1a120761405f2"
+    },
+    {
+      "sent_at": "2026-11-23T07:27:57.037+00:00",
+      "applied_at": "2026-11-23T07:27:57.117+00:00",
+      "verified_at": "2026-11-23T07:27:57.342+00:00",
+      "confirm_ms": 301.0,
+      "applied": {
+        "gain": 2
+      },
+      "verified": {
+        "gain": 2
+      },
+      "actor": "cli",
+      "command_id": "e98cb4058b2349bb959645baf96935fa"
+    }
+  ],
+  "captures": [
+    {
+      "id": "8cf4d5525f0e4de0ba9c1d78333befc4",
+      "metrics": {
+        "final_response": 105.834,
+        "final_error": 14.165999999999997,
+        "mean_absolute_error": 46.3
+      },
+      "parameters": {
+        "gain": 2
+      },
+      "samples": 16
+    },
+    {
+      "id": "78afeec0bb84422ea426e34f37842899",
+      "metrics": {
+        "final_response": 119.999,
+        "final_error": 0.0010000000000047748,
+        "mean_absolute_error": 7.499562500000001
+      },
+      "parameters": {
+        "gain": 8
+      },
+      "samples": 16
+    },
+    {
+      "id": "c448272cb48e4b0cbcf34e086555fbb7",
+      "metrics": {
+        "final_response": 119.999,
+        "final_error": 0.0010000000000047748,
+        "mean_absolute_error": 7.499562500000001
+      },
+      "parameters": {
+        "gain": 8
+      },
+      "samples": 16
+    }
+  ],
+  "stat_samples": [
+    {
+      "elapsed_s": 16.73400000000038,
+      "session_id": "cd2befb032bf41a1bf46fb151cf118bb",
+      "last_confirmed": {
+        "time": "2026-11-23T07:27:57.342+00:00",
+        "values": {
+          "gain": 2
+        }
+      },
+      "values": {
+        "gain": 2
+      },
+      "state": "verified",
+      "stats": {
+        "updates": 61,
+        "samples": 240,
+        "missing": 89,
+        "max_gap_s": 0.375,
+        "age_s": 0.21900000000096043,
+        "update_hz": 3.549035845262239,
+        "sample_hz": 20.00000000000003
+      }
+    },
+    {
+      "elapsed_s": 17.843000000000757,
+      "session_id": "cd2befb032bf41a1bf46fb151cf118bb",
+      "last_confirmed": {
+        "time": "2026-11-23T07:27:57.342+00:00",
+        "values": {
+          "gain": 2
+        }
+      },
+      "values": {
+        "gain": 2
+      },
+      "state": "verified",
+      "stats": {
+        "updates": 66,
+        "samples": 260,
+        "missing": 89,
+        "max_gap_s": 0.375,
+        "age_s": 0.125,
+        "update_hz": 3.5893754486722167,
+        "sample_hz": 20.000000000000025
+      }
+    },
+    {
+      "elapsed_s": 18.968000000000757,
+      "session_id": "cd2befb032bf41a1bf46fb151cf118bb",
+      "last_confirmed": {
+        "time": "2026-11-23T07:27:57.342+00:00",
+        "values": {
+          "gain": 2
+        }
+      },
+      "values": {
+        "gain": 2
+      },
+      "state": "verified",
+      "stats": {
+        "updates": 71,
+        "samples": 280,
+        "missing": 89,
+        "max_gap_s": 0.375,
+        "age_s": 0.046999999998661224,
+        "update_hz": 3.6246893123446755,
+        "sample_hz": 20.000000000000025
+      }
+    },
+    {
+      "elapsed_s": 20.35900000000038,
+      "session_id": "cd2befb032bf41a1bf46fb151cf118bb",
+      "last_confirmed": {
+        "time": "2026-11-23T07:27:57.342+00:00",
+        "values": {
+          "gain": 2
+        }
+      },
+      "values": {
+        "gain": 2
+      },
+      "state": "verified",
+      "stats": {
+        "updates": 76,
+        "samples": 300,
+        "missing": 89,
+        "max_gap_s": 0.375,
+        "age_s": 0.125,
+        "update_hz": 3.6446690640490695,
+        "sample_hz": 20.000000000000025
+      }
+    },
+    {
+      "elapsed_s": 21.640000000001237,
+      "session_id": "cd2befb032bf41a1bf46fb151cf118bb",
+      "last_confirmed": {
+        "time": "2026-11-23T07:27:57.342+00:00",
+        "values": {
+          "gain": 2
+        }
+      },
+      "values": {
+        "gain": 2
+      },
+      "state": "verified",
+      "stats": {
+        "updates": 81,
+        "samples": 320,
+        "missing": 89,
+        "max_gap_s": 0.375,
+        "age_s": 0.1720000000004802,
+        "update_hz": 3.659819753877363,
+        "sample_hz": 20.00000000000002
+      }
+    },
+    {
+      "elapsed_s": 22.92200000000048,
+      "session_id": "cd2befb032bf41a1bf46fb151cf118bb",
+      "last_confirmed": {
+        "time": "2026-11-23T07:27:57.342+00:00",
+        "values": {
+          "gain": 2
+        }
+      },
+      "values": {
+        "gain": 2
+      },
+      "state": "verified",
+      "stats": {
+        "updates": 86,
+        "samples": 340,
+        "missing": 119,
+        "max_gap_s": 0.375,
+        "age_s": 0.2029999999995198,
+        "update_hz": 3.6806096821686656,
+        "sample_hz": 20.00000000000002
+      }
+    },
+    {
+      "elapsed_s": 24.390000000001237,
+      "session_id": "cd2befb032bf41a1bf46fb151cf118bb",
+      "last_confirmed": {
+        "time": "2026-11-23T07:27:57.342+00:00",
+        "values": {
+          "gain": 2
+        }
+      },
+      "values": {
+        "gain": 2
+      },
+      "state": "verified",
+      "stats": {
+        "updates": 92,
+        "samples": 364,
+        "missing": 119,
+        "max_gap_s": 0.375,
+        "age_s": 0.26600000000144064,
+        "update_hz": 3.716712955399663,
+        "sample_hz": 20.000000000000004
+      }
+    },
+    {
+      "elapsed_s": 25.60900000000038,
+      "session_id": "cd2befb032bf41a1bf46fb151cf118bb",
+      "last_confirmed": {
+        "time": "2026-11-23T07:27:57.342+00:00",
+        "values": {
+          "gain": 2
+        }
+      },
+      "values": {
+        "gain": 2
+      },
+      "state": "verified",
+      "stats": {
+        "updates": 97,
+        "samples": 384,
+        "missing": 119,
+        "max_gap_s": 0.375,
+        "age_s": 0.20300000000133878,
+        "update_hz": 3.7213629491803304,
+        "sample_hz": 20.000000000000004
+      }
+    },
+    {
+      "elapsed_s": 26.75,
+      "session_id": "cd2befb032bf41a1bf46fb151cf118bb",
+      "last_confirmed": {
+        "time": "2026-11-23T07:27:57.342+00:00",
+        "values": {
+          "gain": 2
+        }
+      },
+      "values": {
+        "gain": 2
+      },
+      "state": "verified",
+      "stats": {
+        "updates": 102,
+        "samples": 404,
+        "missing": 119,
+        "max_gap_s": 0.375,
+        "age_s": 0.06199999999989814,
+        "update_hz": 3.7299652854716667,
+        "sample_hz": 20.000000000000004
+      }
+    },
+    {
+      "elapsed_s": 27.92200000000048,
+      "session_id": "cd2befb032bf41a1bf46fb151cf118bb",
+      "last_confirmed": {
+        "time": "2026-11-23T07:27:57.342+00:00",
+        "values": {
+          "gain": 2
+        }
+      },
+      "values": {
+        "gain": 2
+      },
+      "state": "verified",
+      "stats": {
+        "updates": 107,
+        "samples": 424,
+        "missing": 119,
+        "max_gap_s": 0.375,
+        "age_s": 0.0,
+        "update_hz": 3.743995478948869,
+        "sample_hz": 20.000000000000004
+      }
+    },
+    {
+      "elapsed_s": 29.093000000000757,
+      "session_id": "cd2befb032bf41a1bf46fb151cf118bb",
+      "last_confirmed": {
+        "time": "2026-11-23T07:27:57.342+00:00",
+        "values": {
+          "gain": 2
+        }
+      },
+      "values": {
+        "gain": 2
+      },
+      "state": "verified",
+      "stats": {
+        "updates": 111,
+        "samples": 440,
+        "missing": 119,
+        "max_gap_s": 0.375,
+        "age_s": 0.18800000000010186,
+        "update_hz": 3.756702298418893,
+        "sample_hz": 20.000000000000018
+      }
+    },
+    {
+      "elapsed_s": 30.343000000000757,
+      "session_id": "cd2befb032bf41a1bf46fb151cf118bb",
+      "last_confirmed": {
+        "time": "2026-11-23T07:27:57.342+00:00",
+        "values": {
+          "gain": 2
+        }
+      },
+      "values": {
+        "gain": 2
+      },
+      "state": "verified",
+      "stats": {
+        "updates": 116,
+        "samples": 460,
+        "missing": 148,
+        "max_gap_s": 0.375,
+        "age_s": 0.17199999999866122,
+        "update_hz": 3.762842745893606,
+        "sample_hz": 20.000000000000004
+      }
+    },
+    {
+      "elapsed_s": 31.54700000000048,
+      "session_id": "cd2befb032bf41a1bf46fb151cf118bb",
+      "last_confirmed": {
+        "time": "2026-11-23T07:27:57.342+00:00",
+        "values": {
+          "gain": 2
+        }
+      },
+      "values": {
+        "gain": 2
+      },
+      "state": "verified",
+      "stats": {
+        "updates": 121,
+        "samples": 480,
+        "missing": 148,
+        "max_gap_s": 0.375,
+        "age_s": 0.125,
+        "update_hz": 3.773940937824482,
+        "sample_hz": 20.000000000000004
+      }
+    },
+    {
+      "elapsed_s": 32.71800000000076,
+      "session_id": "cd2befb032bf41a1bf46fb151cf118bb",
+      "last_confirmed": {
+        "time": "2026-11-23T07:27:57.342+00:00",
+        "values": {
+          "gain": 2
+        }
+      },
+      "values": {
+        "gain": 2
+      },
+      "state": "verified",
+      "stats": {
+        "updates": 126,
+        "samples": 500,
+        "missing": 148,
+        "max_gap_s": 0.375,
+        "age_s": 0.10899999999855936,
+        "update_hz": 3.787878787878788,
+        "sample_hz": 20.000000000000004
+      }
+    },
+    {
+      "elapsed_s": 33.96800000000076,
+      "session_id": "cd2befb032bf41a1bf46fb151cf118bb",
+      "last_confirmed": {
+        "time": "2026-11-23T07:27:57.342+00:00",
+        "values": {
+          "gain": 2
+        }
+      },
+      "values": {
+        "gain": 2
+      },
+      "state": "verified",
+      "stats": {
+        "updates": 131,
+        "samples": 520,
+        "missing": 148,
+        "max_gap_s": 0.375,
+        "age_s": 0.09399999999914144,
+        "update_hz": 3.79395885013869,
+        "sample_hz": 20.000000000000004
+      }
+    },
+    {
+      "elapsed_s": 35.1869999999999,
+      "session_id": "cd2befb032bf41a1bf46fb151cf118bb",
+      "last_confirmed": {
+        "time": "2026-11-23T07:27:57.342+00:00",
+        "values": {
+          "gain": 2
+        }
+      },
+      "values": {
+        "gain": 2
+      },
+      "state": "verified",
+      "stats": {
+        "updates": 136,
+        "samples": 540,
+        "missing": 148,
+        "max_gap_s": 0.375,
+        "age_s": 0.06300000000010186,
+        "update_hz": 3.801210756018646,
+        "sample_hz": 20.000000000000004
+      }
+    },
+    {
+      "elapsed_s": 36.3119999999999,
+      "session_id": "cd2befb032bf41a1bf46fb151cf118bb",
+      "last_confirmed": {
+        "time": "2026-11-23T07:27:57.342+00:00",
+        "values": {
+          "gain": 2
+        }
+      },
+      "values": {
+        "gain": 2
+      },
+      "state": "verified",
+      "stats": {
+        "updates": 140,
+        "samples": 556,
+        "missing": 148,
+        "max_gap_s": 0.375,
+        "age_s": 0.18800000000010186,
+        "update_hz": 3.8066547993975686,
+        "sample_hz": 20.000000000000014
+      }
+    },
+    {
+      "elapsed_s": 37.48400000000038,
+      "session_id": "cd2befb032bf41a1bf46fb151cf118bb",
+      "last_confirmed": {
+        "time": "2026-11-23T07:27:57.342+00:00",
+        "values": {
+          "gain": 2
+        }
+      },
+      "values": {
+        "gain": 2
+      },
+      "state": "verified",
+      "stats": {
+        "updates": 145,
+        "samples": 576,
+        "missing": 177,
+        "max_gap_s": 0.375,
+        "age_s": 0.15600000000085856,
+        "update_hz": 3.817704605106267,
+        "sample_hz": 20.000000000000004
+      }
+    },
+    {
+      "elapsed_s": 38.70300000000134,
+      "session_id": "cd2befb032bf41a1bf46fb151cf118bb",
+      "last_confirmed": {
+        "time": "2026-11-23T07:27:57.342+00:00",
+        "values": {
+          "gain": 2
+        }
+      },
+      "values": {
+        "gain": 2
+      },
+      "state": "verified",
+      "stats": {
+        "updates": 150,
+        "samples": 596,
+        "missing": 177,
+        "max_gap_s": 0.375,
+        "age_s": 0.09399999999914144,
+        "update_hz": 3.8205128205128207,
+        "sample_hz": 20.000000000000004
+      }
+    },
+    {
+      "elapsed_s": 39.92200000000048,
+      "session_id": "cd2befb032bf41a1bf46fb151cf118bb",
+      "last_confirmed": {
+        "time": "2026-11-23T07:27:57.342+00:00",
+        "values": {
+          "gain": 2
+        }
+      },
+      "values": {
+        "gain": 2
+      },
+      "state": "verified",
+      "stats": {
+        "updates": 155,
+        "samples": 616,
+        "missing": 177,
+        "max_gap_s": 0.375,
+        "age_s": 0.09399999999914144,
+        "update_hz": 3.830559908464588,
+        "sample_hz": 20.000000000000004
+      }
+    },
+    {
+      "elapsed_s": 41.03100000000086,
+      "session_id": "cd2befb032bf41a1bf46fb151cf118bb",
+      "last_confirmed": {
+        "time": "2026-11-23T07:27:57.342+00:00",
+        "values": {
+          "gain": 2
+        }
+      },
+      "values": {
+        "gain": 2
+      },
+      "state": "verified",
+      "stats": {
+        "updates": 159,
+        "samples": 632,
+        "missing": 177,
+        "max_gap_s": 0.375,
+        "age_s": 0.21899999999914144,
+        "update_hz": 3.8346722326044667,
+        "sample_hz": 20.00000000000001
+      }
+    },
+    {
+      "elapsed_s": 42.59300000000076,
+      "session_id": "cd2befb032bf41a1bf46fb151cf118bb",
+      "last_confirmed": {
+        "time": "2026-11-23T07:27:57.342+00:00",
+        "values": {
+          "gain": 2
+        }
+      },
+      "values": {
+        "gain": 2
+      },
+      "state": "verified",
+      "stats": {
+        "updates": 166,
+        "samples": 660,
+        "missing": 177,
+        "max_gap_s": 0.375,
+        "age_s": 0.01599999999962165,
+        "update_hz": 3.8428395090481495,
+        "sample_hz": 20.000000000000007
+      }
+    },
+    {
+      "elapsed_s": 43.90600000000086,
+      "session_id": "cd2befb032bf41a1bf46fb151cf118bb",
+      "last_confirmed": {
+        "time": "2026-11-23T07:27:57.342+00:00",
+        "values": {
+          "gain": 2
+        }
+      },
+      "values": {
+        "gain": 2
+      },
+      "state": "verified",
+      "stats": {
+        "updates": 171,
+        "samples": 680,
+        "missing": 177,
+        "max_gap_s": 0.375,
+        "age_s": 0.046999999998661224,
+        "update_hz": 3.84180790960452,
+        "sample_hz": 20.000000000000007
+      }
+    },
+    {
+      "elapsed_s": 45.04700000000048,
+      "session_id": "cd2befb032bf41a1bf46fb151cf118bb",
+      "last_confirmed": {
+        "time": "2026-11-23T07:27:57.342+00:00",
+        "values": {
+          "gain": 2
+        }
+      },
+      "values": {
+        "gain": 2
+      },
+      "state": "verified",
+      "stats": {
+        "updates": 175,
+        "samples": 696,
+        "missing": 206,
+        "max_gap_s": 0.375,
+        "age_s": 0.2349999999987631,
+        "update_hz": 3.8506650142740257,
+        "sample_hz": 19.999999999999996
+      }
+    }
+  ]
+}

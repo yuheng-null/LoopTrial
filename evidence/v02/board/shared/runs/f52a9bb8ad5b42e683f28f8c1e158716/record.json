@@ -1,0 +1,77 @@
+{
+  "format": 1,
+  "looptrial": "0.2.0",
+  "id": "f52a9bb8ad5b42e683f28f8c1e158716",
+  "created": "2026-11-23T07:28:45.884+00:00",
+  "source": "ble://device",
+  "action": "step",
+  "conditions": {
+    "target": 120,
+    "samples": 16,
+    "period_ms": 20
+  },
+  "constraints": {},
+  "fault": null,
+  "goals": {},
+  "note": "",
+  "pace": 0,
+  "device_state": {
+    "state": "verified",
+    "values": {
+      "gain": 8
+    }
+  },
+  "metrics": {
+    "final_response": 119.999,
+    "final_error": 0.0010000000000047748,
+    "mean_absolute_error": 7.499562500000001
+  },
+  "checks": {
+    "goals": [],
+    "constraints": []
+  },
+  "device": "bluepill-step",
+  "version": "0.2.0",
+  "object_source": "board-software-model",
+  "signals": {
+    "t": {
+      "unit": "s",
+      "description": "Time since board-side start, from SysTick."
+    },
+    "target": {
+      "unit": "count"
+    },
+    "response": {
+      "unit": "count"
+    }
+  },
+  "timestamp_unit": "s",
+  "instance": "63fa71ce1afb60f084bfb2ca",
+  "metric_units": {
+    "final_response": "count",
+    "final_error": "count",
+    "mean_absolute_error": "count"
+  },
+  "requires_event": {},
+  "parameters": {
+    "gain": 8
+  },
+  "actor": "cli",
+  "started": "2026-11-23T07:28:46.093+00:00",
+  "timeline_start": 15,
+  "last_parameter_write": {
+    "time": "2026-11-23T07:28:45.568+00:00",
+    "actor": "cli",
+    "command_id": "bfdd7fccbae7469aafb1b158f78f320f",
+    "confirm_ms": 450.076,
+    "values": {
+      "gain": 8
+    }
+  },
+  "passed": null,
+  "status": "completed",
+  "finished": "2026-11-23T07:28:48.308+00:00",
+  "timeline_end": 16,
+  "samples": 16,
+  "samples_sha256": "a98663f1bc84f39ebe0563488cb345f91fae537bacad32bbd855e86e7d318a3c"
+}

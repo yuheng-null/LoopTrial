@@ -1,0 +1,97 @@
+{
+  "format": 1,
+  "looptrial": "0.2.0",
+  "id": "32cfec0a53584e39bdb2ba6a2e578619",
+  "created": "2026-11-23T07:20:55.949+00:00",
+  "source": "ble://device",
+  "action": "step",
+  "conditions": {
+    "target": 120.0,
+    "samples": 16.0,
+    "period_ms": 20.0
+  },
+  "constraints": {},
+  "fault": null,
+  "goals": {
+    "final_error": {
+      "ge": -0.01,
+      "le": 0.01
+    }
+  },
+  "note": "Baseline before temporary gain tuning. Budget: baseline + up to 3 candidate trials + 1 fresh confirmation; gain bounded 1..16, retain passing value per user.",
+  "pace": 0,
+  "device_state": {
+    "state": "verified",
+    "values": {
+      "gain": 3
+    }
+  },
+  "metrics": {
+    "final_response": 115.674,
+    "final_error": 4.325999999999993,
+    "mean_absolute_error": 31.325875000000003
+  },
+  "checks": {
+    "goals": [
+      {
+        "metric": "final_error",
+        "op": "ge",
+        "limit": -0.01,
+        "value": 4.325999999999993,
+        "passed": true
+      },
+      {
+        "metric": "final_error",
+        "op": "le",
+        "limit": 0.01,
+        "value": 4.325999999999993,
+        "passed": false
+      }
+    ],
+    "constraints": []
+  },
+  "device": "bluepill-step",
+  "version": "0.2.0",
+  "object_source": "board-software-model",
+  "signals": {
+    "t": {
+      "unit": "s",
+      "description": "Time since board-side start, from SysTick."
+    },
+    "target": {
+      "unit": "count"
+    },
+    "response": {
+      "unit": "count"
+    }
+  },
+  "timestamp_unit": "s",
+  "instance": "713eaaa4cd12ab81c16cb7ba",
+  "metric_units": {
+    "final_response": "count",
+    "final_error": "count",
+    "mean_absolute_error": "count"
+  },
+  "requires_event": {},
+  "parameters": {
+    "gain": 3
+  },
+  "actor": "mcp",
+  "started": "2026-11-23T07:20:56.166+00:00",
+  "timeline_start": 11,
+  "last_parameter_write": {
+    "time": "2026-11-23T07:20:06.741+00:00",
+    "actor": "human",
+    "command_id": "2ffdef6470e84acdadb7ac4534a0e799",
+    "confirm_ms": 300.122,
+    "values": {
+      "gain": 3
+    }
+  },
+  "passed": false,
+  "status": "completed",
+  "finished": "2026-11-23T07:20:58.270+00:00",
+  "timeline_end": 12,
+  "samples": 16,
+  "samples_sha256": "7a9634612e306b136761f811bfc09c1e4db4065f6549cb43230fbd7959937a22"
+}

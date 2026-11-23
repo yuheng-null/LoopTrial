@@ -1,0 +1,100 @@
+[
+  {
+    "badge": "已连接",
+    "gain": "3",
+    "confirmed": "上次确认 · 15:20:06",
+    "events": "15:20:06\nhuman\n独立回读已确认 · gain=3\n15:20:06\nhuman\n设备已生效 · gain=3\n15:20:06\nhuman\n命令已发送 · gain=3\n15:20:03\ncli\n独立回读已确认 · gain=2\n15:20:03\ncli\n设备已生效 · gain=2\n15:20:03\ncli\n命令已发送 · gain=2\n15:19:46\nhuman\n独立回读已确认 · gain=3\n15:19:46\nhuman\n设备已生效 · gain=3\n15:19:46\nhuman\n命令已发送 · gain=3\n15:19:45\nhuman\n已连接设备 · gain=2",
+    "simTime": 1.8495999999996275
+  },
+  {
+    "badge": "已连接",
+    "gain": "3",
+    "confirmed": "上次确认 · 15:20:55",
+    "events": "15:20:56\nmcp\n实验已开始 · gain=3\n15:20:06\nhuman\n独立回读已确认 · gain=3\n15:20:06\nhuman\n设备已生效 · gain=3\n15:20:06\nhuman\n命令已发送 · gain=3\n15:20:03\ncli\n独立回读已确认 · gain=2\n15:20:03\ncli\n设备已生效 · gain=2\n15:20:03\ncli\n命令已发送 · gain=2\n15:19:46\nhuman\n独立回读已确认 · gain=3\n15:19:46\nhuman\n设备已生效 · gain=3\n15:19:46\nhuman\n命令已发送 · gain=3\n15:19:45\nhuman\n已连接设备 · gain=2",
+    "simTime": 51.596299999998884
+  },
+  {
+    "badge": "已连接",
+    "gain": "3",
+    "confirmed": "上次确认 · 15:20:55",
+    "events": "15:20:58\nmcp\n实验完成 · 32cfec0a53584e39bdb2ba6a2e578619\n15:20:56\nmcp\n实验已开始 · gain=3\n15:20:06\nhuman\n独立回读已确认 · gain=3\n15:20:06\nhuman\n设备已生效 · gain=3\n15:20:06\nhuman\n命令已发送 · gain=3\n15:20:03\ncli\n独立回读已确认 · gain=2\n15:20:03\ncli\n设备已生效 · gain=2\n15:20:03\ncli\n命令已发送 · gain=2\n15:19:46\nhuman\n独立回读已确认 · gain=3\n15:19:46\nhuman\n设备已生效 · gain=3\n15:19:46\nhuman\n命令已发送 · gain=3\n15:19:45\nhuman\n已连接设备 · gain=2",
+    "simTime": 53.63029999999888
+  },
+  {
+    "badge": "已连接",
+    "gain": "8",
+    "confirmed": "上次确认 · 15:21:04",
+    "events": "15:21:04\nmcp\n独立回读已确认 · gain=8\n15:21:04\nmcp\n设备已生效 · gain=8\n15:21:04\nmcp\n命令已发送 · gain=8\n15:20:58\nmcp\n实验完成 · 32cfec0a53584e39bdb2ba6a2e578619\n15:20:56\nmcp\n实验已开始 · gain=3\n15:20:06\nhuman\n独立回读已确认 · gain=3\n15:20:06\nhuman\n设备已生效 · gain=3\n15:20:06\nhuman\n命令已发送 · gain=3\n15:20:03\ncli\n独立回读已确认 · gain=2\n15:20:03\ncli\n设备已生效 · gain=2\n15:20:03\ncli\n命令已发送 · gain=2\n15:19:46\nhuman\n独立回读已确认 · gain=3\n15:19:46\nhuman\n设备已生效 · gain=3\n15:19:46\nhuman\n命令已发送 · gain=3\n15:19:45\nhuman\n已连接设备 · gain=2",
+    "simTime": 59.74
+  },
+  {
+    "badge": "已连接",
+    "gain": "8",
+    "confirmed": "上次确认 · 15:21:04",
+    "events": "15:21:08\nmcp\n实验已开始 · gain=8\n15:21:04\nmcp\n独立回读已确认 · gain=8\n15:21:04\nmcp\n设备已生效 · gain=8\n15:21:04\nmcp\n命令已发送 · gain=8\n15:20:58\nmcp\n实验完成 · 32cfec0a53584e39bdb2ba6a2e578619\n15:20:56\nmcp\n实验已开始 · gain=3\n15:20:06\nhuman\n独立回读已确认 · gain=3\n15:20:06\nhuman\n设备已生效 · gain=3\n15:20:06\nhuman\n命令已发送 · gain=3\n15:20:03\ncli\n独立回读已确认 · gain=2\n15:20:03\ncli\n设备已生效 · gain=2\n15:20:03\ncli\n命令已发送 · gain=2\n15:19:46\nhuman\n独立回读已确认 · gain=3\n15:19:46\nhuman\n设备已生效 · gain=3\n15:19:46\nhuman\n命令已发送 · gain=3\n15:19:45\nhuman\n已连接设备 · gain=2",
+    "simTime": 63.80289999999851
+  },
+  {
+    "badge": "已连接",
+    "gain": "8",
+    "confirmed": "上次确认 · 15:21:04",
+    "events": "15:21:10\nmcp\n实验完成 · 92f6926a555b48c7a8e8c712645bcd0d\n15:21:08\nmcp\n实验已开始 · gain=8\n15:21:04\nmcp\n独立回读已确认 · gain=8\n15:21:04\nmcp\n设备已生效 · gain=8\n15:21:04\nmcp\n命令已发送 · gain=8\n15:20:58\nmcp\n实验完成 · 32cfec0a53584e39bdb2ba6a2e578619\n15:20:56\nmcp\n实验已开始 · gain=3\n15:20:06\nhuman\n独立回读已确认 · gain=3\n15:20:06\nhuman\n设备已生效 · gain=3\n15:20:06\nhuman\n命令已发送 · gain=3\n15:20:03\ncli\n独立回读已确认 · gain=2\n15:20:03\ncli\n设备已生效 · gain=2\n15:20:03\ncli\n命令已发送 · gain=2\n15:19:46\nhuman\n独立回读已确认 · gain=3\n15:19:46\nhuman\n设备已生效 · gain=3\n15:19:46\nhuman\n命令已发送 · gain=3\n15:19:45\nhuman\n已连接设备 · gain=2",
+    "simTime": 65.81969999999926
+  },
+  {
+    "badge": "已连接",
+    "gain": "8",
+    "confirmed": "上次确认 · 15:21:04",
+    "events": "15:21:15\nmcp\n实验已开始 · gain=8\n15:21:10\nmcp\n实验完成 · 92f6926a555b48c7a8e8c712645bcd0d\n15:21:08\nmcp\n实验已开始 · gain=8\n15:21:04\nmcp\n独立回读已确认 · gain=8\n15:21:04\nmcp\n设备已生效 · gain=8\n15:21:04\nmcp\n命令已发送 · gain=8\n15:20:58\nmcp\n实验完成 · 32cfec0a53584e39bdb2ba6a2e578619\n15:20:56\nmcp\n实验已开始 · gain=3\n15:20:06\nhuman\n独立回读已确认 · gain=3\n15:20:06\nhuman\n设备已生效 · gain=3\n15:20:06\nhuman\n命令已发送 · gain=3\n15:20:03\ncli\n独立回读已确认 · gain=2\n15:20:03\ncli\n设备已生效 · gain=2\n15:20:03\ncli\n命令已发送 · gain=2\n15:19:46\nhuman\n独立回读已确认 · gain=3\n15:19:46\nhuman\n设备已生效 · gain=3\n15:19:46\nhuman\n命令已发送 · gain=3\n15:19:45\nhuman\n已连接设备 · gain=2",
+    "simTime": 70.87289999999851
+  },
+  {
+    "badge": "已连接",
+    "gain": "8",
+    "confirmed": "上次确认 · 15:21:17",
+    "events": "15:21:17\nmcp\n实验完成 · edecbc9d7e95426787768fcd26a3ba5c\n15:21:15\nmcp\n实验已开始 · gain=8\n15:21:10\nmcp\n实验完成 · 92f6926a555b48c7a8e8c712645bcd0d\n15:21:08\nmcp\n实验已开始 · gain=8\n15:21:04\nmcp\n独立回读已确认 · gain=8\n15:21:04\nmcp\n设备已生效 · gain=8\n15:21:04\nmcp\n命令已发送 · gain=8\n15:20:58\nmcp\n实验完成 · 32cfec0a53584e39bdb2ba6a2e578619\n15:20:56\nmcp\n实验已开始 · gain=3\n15:20:06\nhuman\n独立回读已确认 · gain=3\n15:20:06\nhuman\n设备已生效 · gain=3\n15:20:06\nhuman\n命令已发送 · gain=3\n15:20:03\ncli\n独立回读已确认 · gain=2\n15:20:03\ncli\n设备已生效 · gain=2\n15:20:03\ncli\n命令已发送 · gain=2\n15:19:46\nhuman\n独立回读已确认 · gain=3\n15:19:46\nhuman\n设备已生效 · gain=3\n15:19:46\nhuman\n命令已发送 · gain=3\n15:19:45\nhuman\n已连接设备 · gain=2",
+    "simTime": 72.90009999999963
+  },
+  {
+    "badge": "已连接",
+    "gain": "6",
+    "confirmed": "上次确认 · 15:22:04",
+    "events": "15:22:04\nhuman\n独立回读已确认 · gain=6\n15:22:04\nhuman\n设备已生效 · gain=6\n15:22:04\nhuman\n命令已发送 · gain=6\n15:21:17\nmcp\n实验完成 · edecbc9d7e95426787768fcd26a3ba5c\n15:21:15\nmcp\n实验已开始 · gain=8\n15:21:10\nmcp\n实验完成 · 92f6926a555b48c7a8e8c712645bcd0d\n15:21:08\nmcp\n实验已开始 · gain=8\n15:21:04\nmcp\n独立回读已确认 · gain=8\n15:21:04\nmcp\n设备已生效 · gain=8\n15:21:04\nmcp\n命令已发送 · gain=8\n15:20:58\nmcp\n实验完成 · 32cfec0a53584e39bdb2ba6a2e578619\n15:20:56\nmcp\n实验已开始 · gain=3\n15:20:06\nhuman\n独立回读已确认 · gain=3\n15:20:06\nhuman\n设备已生效 · gain=3\n15:20:06\nhuman\n命令已发送 · gain=3\n15:20:03\ncli\n独立回读已确认 · gain=2\n15:20:03\ncli\n设备已生效 · gain=2\n15:20:03\ncli\n命令已发送 · gain=2\n15:19:46\nhuman\n独立回读已确认 · gain=3\n15:19:46\nhuman\n设备已生效 · gain=3\n15:19:46\nhuman\n命令已发送 · gain=3\n15:19:45\nhuman\n已连接设备 · gain=2",
+    "simTime": 119.59779999999888
+  },
+  {
+    "badge": "已连接",
+    "gain": "6",
+    "confirmed": "上次确认 · 15:22:46",
+    "events": "15:22:56\nmcp\n实验已开始 · gain=6\n15:22:04\nhuman\n独立回读已确认 · gain=6\n15:22:04\nhuman\n设备已生效 · gain=6\n15:22:04\nhuman\n命令已发送 · gain=6\n15:21:17\nmcp\n实验完成 · edecbc9d7e95426787768fcd26a3ba5c\n15:21:15\nmcp\n实验已开始 · gain=8\n15:21:10\nmcp\n实验完成 · 92f6926a555b48c7a8e8c712645bcd0d\n15:21:08\nmcp\n实验已开始 · gain=8\n15:21:04\nmcp\n独立回读已确认 · gain=8\n15:21:04\nmcp\n设备已生效 · gain=8\n15:21:04\nmcp\n命令已发送 · gain=8\n15:20:58\nmcp\n实验完成 · 32cfec0a53584e39bdb2ba6a2e578619\n15:20:56\nmcp\n实验已开始 · gain=3\n15:20:06\nhuman\n独立回读已确认 · gain=3\n15:20:06\nhuman\n设备已生效 · gain=3\n15:20:06\nhuman\n命令已发送 · gain=3\n15:20:03\ncli\n独立回读已确认 · gain=2\n15:20:03\ncli\n设备已生效 · gain=2\n15:20:03\ncli\n命令已发送 · gain=2\n15:19:46\nhuman\n独立回读已确认 · gain=3\n15:19:46\nhuman\n设备已生效 · gain=3\n15:19:46\nhuman\n命令已发送 · gain=3\n15:19:45\nhuman\n已连接设备 · gain=2",
+    "simTime": 171.2062999999989
+  },
+  {
+    "badge": "已连接",
+    "gain": "6",
+    "confirmed": "上次确认 · 15:22:46",
+    "events": "15:22:58\nmcp\n实验完成 · 74d4faafea82437980b94ad7a6becdbe\n15:22:56\nmcp\n实验已开始 · gain=6\n15:22:04\nhuman\n独立回读已确认 · gain=6\n15:22:04\nhuman\n设备已生效 · gain=6\n15:22:04\nhuman\n命令已发送 · gain=6\n15:21:17\nmcp\n实验完成 · edecbc9d7e95426787768fcd26a3ba5c\n15:21:15\nmcp\n实验已开始 · gain=8\n15:21:10\nmcp\n实验完成 · 92f6926a555b48c7a8e8c712645bcd0d\n15:21:08\nmcp\n实验已开始 · gain=8\n15:21:04\nmcp\n独立回读已确认 · gain=8\n15:21:04\nmcp\n设备已生效 · gain=8\n15:21:04\nmcp\n命令已发送 · gain=8\n15:20:58\nmcp\n实验完成 · 32cfec0a53584e39bdb2ba6a2e578619\n15:20:56\nmcp\n实验已开始 · gain=3\n15:20:06\nhuman\n独立回读已确认 · gain=3\n15:20:06\nhuman\n设备已生效 · gain=3\n15:20:06\nhuman\n命令已发送 · gain=3\n15:20:03\ncli\n独立回读已确认 · gain=2\n15:20:03\ncli\n设备已生效 · gain=2\n15:20:03\ncli\n命令已发送 · gain=2\n15:19:46\nhuman\n独立回读已确认 · gain=3\n15:19:46\nhuman\n设备已生效 · gain=3\n15:19:46\nhuman\n命令已发送 · gain=3\n15:19:45\nhuman\n已连接设备 · gain=2",
+    "simTime": 174.24709999999962
+  },
+  {
+    "badge": "已连接",
+    "gain": "6",
+    "confirmed": "上次确认 · 15:22:46",
+    "events": "15:23:50\ncli\n实验已开始 · gain=6\n15:22:58\nmcp\n实验完成 · 74d4faafea82437980b94ad7a6becdbe\n15:22:56\nmcp\n实验已开始 · gain=6\n15:22:04\nhuman\n独立回读已确认 · gain=6\n15:22:04\nhuman\n设备已生效 · gain=6\n15:22:04\nhuman\n命令已发送 · gain=6\n15:21:17\nmcp\n实验完成 · edecbc9d7e95426787768fcd26a3ba5c\n15:21:15\nmcp\n实验已开始 · gain=8\n15:21:10\nmcp\n实验完成 · 92f6926a555b48c7a8e8c712645bcd0d\n15:21:08\nmcp\n实验已开始 · gain=8\n15:21:04\nmcp\n独立回读已确认 · gain=8\n15:21:04\nmcp\n设备已生效 · gain=8\n15:21:04\nmcp\n命令已发送 · gain=8\n15:20:58\nmcp\n实验完成 · 32cfec0a53584e39bdb2ba6a2e578619\n15:20:56\nmcp\n实验已开始 · gain=3\n15:20:06\nhuman\n独立回读已确认 · gain=3\n15:20:06\nhuman\n设备已生效 · gain=3\n15:20:06\nhuman\n命令已发送 · gain=3\n15:20:03\ncli\n独立回读已确认 · gain=2\n15:20:03\ncli\n设备已生效 · gain=2\n15:20:03\ncli\n命令已发送 · gain=2\n15:19:46\nhuman\n独立回读已确认 · gain=3\n15:19:46\nhuman\n设备已生效 · gain=3\n15:19:46\nhuman\n命令已发送 · gain=3\n15:19:45\nhuman\n已连接设备 · gain=2",
+    "simTime": 224.80929999999887
+  },
+  {
+    "badge": "状态未知",
+    "gain": "6",
+    "confirmed": "上次确认 · 15:22:46",
+    "events": "15:23:50\ncli\n实验失败 · 221e94b9e0f6407dbbcf1033eb68f10d\n15:23:50\ndevice\n设备状态未知\n15:23:50\ncli\n实验已开始 · gain=6\n15:22:58\nmcp\n实验完成 · 74d4faafea82437980b94ad7a6becdbe\n15:22:56\nmcp\n实验已开始 · gain=6\n15:22:04\nhuman\n独立回读已确认 · gain=6\n15:22:04\nhuman\n设备已生效 · gain=6\n15:22:04\nhuman\n命令已发送 · gain=6\n15:21:17\nmcp\n实验完成 · edecbc9d7e95426787768fcd26a3ba5c\n15:21:15\nmcp\n实验已开始 · gain=8\n15:21:10\nmcp\n实验完成 · 92f6926a555b48c7a8e8c712645bcd0d\n15:21:08\nmcp\n实验已开始 · gain=8\n15:21:04\nmcp\n独立回读已确认 · gain=8\n15:21:04\nmcp\n设备已生效 · gain=8\n15:21:04\nmcp\n命令已发送 · gain=8\n15:20:58\nmcp\n实验完成 · 32cfec0a53584e39bdb2ba6a2e578619\n15:20:56\nmcp\n实验已开始 · gain=3\n15:20:06\nhuman\n独立回读已确认 · gain=3\n15:20:06\nhuman\n设备已生效 · gain=3\n15:20:06\nhuman\n命令已发送 · gain=3\n15:20:03\ncli\n独立回读已确认 · gain=2\n15:20:03\ncli\n设备已生效 · gain=2\n15:20:03\ncli\n命令已发送 · gain=2\n15:19:46\nhuman\n独立回读已确认 · gain=3\n15:19:46\nhuman\n设备已生效 · gain=3\n15:19:46\nhuman\n命令已发送 · gain=3\n15:19:45\nhuman\n已连接设备 · gain=2",
+    "simTime": 225.83639999999852
+  },
+  {
+    "badge": "已连接",
+    "gain": "6",
+    "confirmed": "上次确认 · 15:23:57",
+    "events": "15:23:57\ncli\n已连接设备 · gain=6\n15:23:50\ncli\n实验失败 · 221e94b9e0f6407dbbcf1033eb68f10d\n15:23:50\ndevice\n设备状态未知\n15:23:50\ncli\n实验已开始 · gain=6\n15:22:58\nmcp\n实验完成 · 74d4faafea82437980b94ad7a6becdbe\n15:22:56\nmcp\n实验已开始 · gain=6\n15:22:04\nhuman\n独立回读已确认 · gain=6\n15:22:04\nhuman\n设备已生效 · gain=6\n15:22:04\nhuman\n命令已发送 · gain=6\n15:21:17\nmcp\n实验完成 · edecbc9d7e95426787768fcd26a3ba5c\n15:21:15\nmcp\n实验已开始 · gain=8\n15:21:10\nmcp\n实验完成 · 92f6926a555b48c7a8e8c712645bcd0d\n15:21:08\nmcp\n实验已开始 · gain=8\n15:21:04\nmcp\n独立回读已确认 · gain=8\n15:21:04\nmcp\n设备已生效 · gain=8\n15:21:04\nmcp\n命令已发送 · gain=8\n15:20:58\nmcp\n实验完成 · 32cfec0a53584e39bdb2ba6a2e578619\n15:20:56\nmcp\n实验已开始 · gain=3\n15:20:06\nhuman\n独立回读已确认 · gain=3\n15:20:06\nhuman\n设备已生效 · gain=3\n15:20:06\nhuman\n命令已发送 · gain=3\n15:20:03\ncli\n独立回读已确认 · gain=2\n15:20:03\ncli\n设备已生效 · gain=2\n15:20:03\ncli\n命令已发送 · gain=2\n15:19:46\nhuman\n独立回读已确认 · gain=3\n15:19:46\nhuman\n设备已生效 · gain=3\n15:19:46\nhuman\n命令已发送 · gain=3\n15:19:45\nhuman\n已连接设备 · gain=2",
+    "simTime": 232.94069999999925
+  }
+]

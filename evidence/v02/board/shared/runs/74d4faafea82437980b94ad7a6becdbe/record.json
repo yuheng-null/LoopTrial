@@ -1,0 +1,97 @@
+{
+  "format": 1,
+  "looptrial": "0.2.0",
+  "id": "74d4faafea82437980b94ad7a6becdbe",
+  "created": "2026-11-23T07:22:56.558+00:00",
+  "source": "ble://device",
+  "action": "step",
+  "conditions": {
+    "target": 120.0,
+    "samples": 16.0,
+    "period_ms": 20.0
+  },
+  "constraints": {},
+  "fault": null,
+  "goals": {
+    "final_error": {
+      "ge": -0.01,
+      "le": 0.01
+    }
+  },
+  "note": "",
+  "pace": 0,
+  "device_state": {
+    "state": "verified",
+    "values": {
+      "gain": 6
+    }
+  },
+  "metrics": {
+    "final_response": 119.936,
+    "final_error": 0.06399999999999295,
+    "mean_absolute_error": 12.4921875
+  },
+  "checks": {
+    "goals": [
+      {
+        "metric": "final_error",
+        "op": "ge",
+        "limit": -0.01,
+        "value": 0.06399999999999295,
+        "passed": true
+      },
+      {
+        "metric": "final_error",
+        "op": "le",
+        "limit": 0.01,
+        "value": 0.06399999999999295,
+        "passed": false
+      }
+    ],
+    "constraints": []
+  },
+  "device": "bluepill-step",
+  "version": "0.2.0",
+  "object_source": "board-software-model",
+  "signals": {
+    "t": {
+      "unit": "s",
+      "description": "Time since board-side start, from SysTick."
+    },
+    "target": {
+      "unit": "count"
+    },
+    "response": {
+      "unit": "count"
+    }
+  },
+  "timestamp_unit": "s",
+  "instance": "713eaaa4cd12ab81c16cb7ba",
+  "metric_units": {
+    "final_response": "count",
+    "final_error": "count",
+    "mean_absolute_error": "count"
+  },
+  "requires_event": {},
+  "parameters": {
+    "gain": 6
+  },
+  "actor": "mcp",
+  "started": "2026-11-23T07:22:56.733+00:00",
+  "timeline_start": 23,
+  "last_parameter_write": {
+    "time": "2026-11-23T07:22:04.568+00:00",
+    "actor": "human",
+    "command_id": "1df6a3b0472e47f3b2a83b21ee79b9b4",
+    "confirm_ms": 299.696,
+    "values": {
+      "gain": 6
+    }
+  },
+  "passed": false,
+  "status": "completed",
+  "finished": "2026-11-23T07:22:58.834+00:00",
+  "timeline_end": 24,
+  "samples": 16,
+  "samples_sha256": "35bb9f20f2d7d8a9a70471ee1c62a37dd39c6c8511024eac75dd2ea156596010"
+}

@@ -18,7 +18,7 @@ Install Python 3.11+ and GNU Arm Embedded tools. The Windows test used ST GNU To
 python firmware/build.py --output dist/firmware
 ```
 
-Write `looptrial-bluepill-0.1.0.bin` starting at `0x08000000`. The ELF retains symbols. The firmware runs independently of HAL, an RTOS and the C runtime. To reproduce release bytes, use the compiler and source commit in the [release guide](RELEASE.en.md).
+Write `looptrial-bluepill-0.2.0.bin` starting at `0x08000000`. The ELF retains symbols. The firmware runs independently of HAL, an RTOS and the C runtime. To reproduce release bytes, use the compiler and source commit in the [release guide](RELEASE.en.md).
 
 In **PowerShell**, add the directory containing `STM32_Programmer_CLI` to PATH and use a private working directory. These commands assume **one positively identified 64 KiB target**. List probes and put the selected serial number in the variable. Check that the RDP option byte is Disabled. Check the device ID, reported capacity, Flash capacity register (`0040` for this 64 KiB part) and physical wiring. Stop if the identity, full read or matching backups cannot be confirmed.
 
@@ -45,7 +45,7 @@ With the same bench and target still connected, run the next command from the di
 
 ```powershell
 # Adjust the path to the downloaded or built firmware.
-STM32_Programmer_CLI @connect -d ./looptrial-bluepill-0.1.0.bin 0x08000000 -v -rst
+STM32_Programmer_CLI @connect -d ./looptrial-bluepill-0.2.0.bin 0x08000000 -v -rst
 if ($LASTEXITCODE) { throw 'Example flash verification failed.' }
 ```
 
@@ -78,6 +78,10 @@ looptrial apply $link gain=2
 
 The returned `id` identifies the run. Use `looptrial review <id>` to recompute metrics from CSV. For BLE, the default service is FFE0. The client subscribes to FFE1 and selects a writable characteristic from FFE1 and FFE2. To specify a mapping explicitly, use `'ble://BD-BT26?service=ffe0&notify=ffe1&write=ffe2'`. Allow time for advertising to resume after disconnect. On Windows one command can include several scans and handshakes. The USB path uses a USB-to-UART bridge. The BLE path requires GATT, which classic Bluetooth virtual COM ports do not provide.
 
+### Live observation
+
+The v0.2 firmware produces an observation every 50 ms (20 Hz) using the board clock. During idle operation the model follows an alternating 20/120 count reference with one second per level. During a step it reports the bounded experiment's target and latest response. The observation ring retains 32 samples (1.6 s). The host reads at most four rows per page; successive sequence numbers expose any missed samples. The separate 4–64 point experiment buffer preserves the requested sample period through host delays. A BLE or serial write acknowledged by the device is followed by an independent read of the active gain. The host keeps the caller's last confirmed state and its timestamp when the link fails. A fresh handshake and read are required to confirm the new state.
+
 ### Timing, samples and wire protocol
 
 SysTick computes the response on a 1 ms timebase. The main loop sends data. At each sample period the model adds `gain/16` of the remaining error to its output, rounding the increment up to 0.001 count. The first sample arrives after one period. Actions accept 4–64 samples, 10–100 ms periods and targets of 1–1000 count. They finish autonomously within 6.4 s. The board drives no external actuator. Sample time `t` is measured on the board in seconds from the start; host retrieval time and BLE latency do not affect it.
@@ -93,6 +97,7 @@ LT1 uses LF-terminated ASCII frames and an independent byte-stream decoder per l
 | Q | token | state, buffered sample count, gain at start |
 | F | token offset | offset, row count, pairs of relative milliseconds and output in thousandths of a count |
 | X | token | state after stop, sample count, gain at start |
+| T | last continuous sequence, 0 for latest | first sequence, row count (0–4), then target, response in milli-counts and active gain per row. Time in seconds is sequence × 0.05. If the cursor exceeds the current sequence, return `clock_reset`. |
 
 States are 1 running, 2 completed and 3 cancelled. During acquisition, W and a new S return `busy`. Repeating S with the same token and configuration retrieves the original acceptance; conflicting settings return `conflict`. Reset clears the current trial and deduplication history for the last eight replaced tokens. Only the latest trial's sample buffer is retained on the board. The host keeps data by run ID. CLI `--key` independently provides persistent cross-process idempotency. After a transport interruption, the host repeats the handshake, compares the unit tag, then queries and resumes retrieval using the original token. If reset or board replacement prevents recovery, the host records a failure. A cancelled run can return the samples already collected. The protocol is designed for a trusted bench. Serial frames have no authentication or application-level CRC.
 
@@ -105,6 +110,6 @@ The host sends S once per experiment. If the start acknowledgement is lost, it q
 3. To retain a device's existing real-time loop and protocol, sample into a preallocated ring or fixed-length buffer. Start the excitation on the board. Enforce device-specific limits, timeout, cancellation and idle state. Validate parameters, commit at a defined loop boundary and read back the active variables. Return buffered pages with timestamps and indices. Implement physical limits and fallback for each real actuator.
 4. Register the Python adapter as a `looptrial.devices` entry point. Report the actual firmware identity and version. In `describe`, list signal units and allowable parameters and action ranges. A read-only device exposes empty `parameters`. Map `read/apply/acquire` to the existing protocol. Keep `metrics` dependent only on saved settings, conditions and rows so offline review can reproduce it. Run `looptrial resources` to locate the installed `pressure_adapter` example. CLI and MCP reuse the description. The built-in LT1 host description matches a particular model and version. New firmware needs its own description and validation.
 
-A record's board `instance` alias derives from a private local salt and the handshake tag. USB and BLE connections to the same board share an alias in the same data directory. A different directory yields an independent alias. The example uses a 32-bit unit tag, so collisions are possible. Production firmware can supply a longer tag. [Physical bench records](../evidence/board/README.en.md)
+A record's board `instance` alias derives from a private local salt and the handshake tag. USB and BLE connections to the same board share an alias in the same data directory. A different directory yields an independent alias. The example uses a 32-bit unit tag, so collisions are possible. Production firmware can supply a longer tag. [v0.2 workbench and physical link records](../evidence/v02/board/README.en.md) · [v0.1 bench records](../evidence/board/README.en.md)
 
 Pin mapping follows ST RM0008 Rev 21, table 54 on page 181. [ST reference manual](https://www.st.com/resource/en/reference_manual/rm0008-stm32f101xx-stm32f102xx-stm32f103xx-stm32f105xx-and-stm32f107xx-advanced-armbased-32bit-mcus-stmicroelectronics.pdf) · [Module documentation](https://botelvdong.com/courses/Modules/docs/bluetooth/Summary) · [pySerial API](https://pyserial.readthedocs.io/en/latest/pyserial_api.html) · [BleakClient API](https://bleak.readthedocs.io/en/stable/api/client.html)

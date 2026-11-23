@@ -1,0 +1,73 @@
+{
+  "format": 1,
+  "looptrial": "0.2.0",
+  "id": "221e94b9e0f6407dbbcf1033eb68f10d",
+  "created": "2026-11-23T07:23:50.017+00:00",
+  "source": "ble://device",
+  "action": "step",
+  "conditions": {
+    "target": 100,
+    "samples": 64,
+    "period_ms": 100
+  },
+  "constraints": {},
+  "fault": null,
+  "goals": {},
+  "note": "",
+  "pace": 0,
+  "device_state": {
+    "state": "unknown",
+    "last_confirmed": {
+      "gain": 6
+    }
+  },
+  "metrics": {},
+  "checks": {},
+  "device": "bluepill-step",
+  "version": "0.2.0",
+  "object_source": "board-software-model",
+  "signals": {
+    "t": {
+      "unit": "s",
+      "description": "Time since board-side start, from SysTick."
+    },
+    "target": {
+      "unit": "count"
+    },
+    "response": {
+      "unit": "count"
+    }
+  },
+  "timestamp_unit": "s",
+  "instance": "713eaaa4cd12ab81c16cb7ba",
+  "metric_units": {
+    "final_response": "count",
+    "final_error": "count",
+    "mean_absolute_error": "count"
+  },
+  "requires_event": {},
+  "parameters": {
+    "gain": 6
+  },
+  "actor": "cli",
+  "started": "2026-11-23T07:23:50.170+00:00",
+  "timeline_start": 25,
+  "last_parameter_write": {
+    "time": "2026-11-23T07:22:04.568+00:00",
+    "actor": "human",
+    "command_id": "1df6a3b0472e47f3b2a83b21ee79b9b4",
+    "confirm_ms": 299.696,
+    "values": {
+      "gain": 6
+    }
+  },
+  "status": "failed",
+  "error": {
+    "code": "link_error",
+    "message": "Board I/O failed (BleakError)."
+  },
+  "finished": "2026-11-23T07:23:50.960+00:00",
+  "timeline_end": 27,
+  "samples": 0,
+  "samples_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

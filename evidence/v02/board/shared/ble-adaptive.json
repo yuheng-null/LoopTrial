@@ -1,0 +1,764 @@
+{
+  "transport": "ble",
+  "schedule": "ble-adaptive",
+  "duration_s": 47.04700000000048,
+  "initial": {
+    "session_id": "b2efe253b7b4411b979bf16f08ada252",
+    "last_confirmed": {
+      "time": "2026-11-23T07:28:34.886+00:00",
+      "values": {
+        "gain": 2
+      }
+    },
+    "values": {
+      "gain": 2
+    },
+    "state": "verified",
+    "stats": {
+      "updates": 7,
+      "samples": 14,
+      "missing": 0,
+      "max_gap_s": 0.15599999999903957,
+      "age_s": 0.07799999999951979,
+      "update_hz": 9.146341463428024,
+      "sample_hz": 19.999999999998952
+    }
+  },
+  "final": {
+    "session_id": "b2efe253b7b4411b979bf16f08ada252",
+    "last_confirmed": {
+      "time": "2026-11-23T07:28:53.706+00:00",
+      "values": {
+        "gain": 2
+      }
+    },
+    "values": {
+      "gain": 2
+    },
+    "state": "verified",
+    "stats": {
+      "updates": 281,
+      "samples": 906,
+      "missing": 31,
+      "max_gap_s": 0.375,
+      "age_s": 0.14099999999962165,
+      "update_hz": 5.985335926979024,
+      "sample_hz": 19.999999999999996
+    }
+  },
+  "writes": [
+    {
+      "sent_at": "2026-11-23T07:28:36.156+00:00",
+      "applied_at": "2026-11-23T07:28:36.380+00:00",
+      "verified_at": "2026-11-23T07:28:36.605+00:00",
+      "confirm_ms": 449.268,
+      "applied": {
+        "gain": 2
+      },
+      "verified": {
+        "gain": 2
+      },
+      "actor": "cli",
+      "command_id": "6186715786054a628c076c711ac2a67f"
+    },
+    {
+      "sent_at": "2026-11-23T07:28:40.766+00:00",
+      "applied_at": "2026-11-23T07:28:40.993+00:00",
+      "verified_at": "2026-11-23T07:28:41.216+00:00",
+      "confirm_ms": 449.956,
+      "applied": {
+        "gain": 8
+      },
+      "verified": {
+        "gain": 8
+      },
+      "actor": "cli",
+      "command_id": "fcb7b96ec0594b798f0d326b8d1e9f3c"
+    },
+    {
+      "sent_at": "2026-11-23T07:28:45.118+00:00",
+      "applied_at": "2026-11-23T07:28:45.342+00:00",
+      "verified_at": "2026-11-23T07:28:45.568+00:00",
+      "confirm_ms": 450.076,
+      "applied": {
+        "gain": 8
+      },
+      "verified": {
+        "gain": 8
+      },
+      "actor": "cli",
+      "command_id": "bfdd7fccbae7469aafb1b158f78f320f"
+    },
+    {
+      "sent_at": "2026-11-23T07:28:49.431+00:00",
+      "applied_at": "2026-11-23T07:28:49.656+00:00",
+      "verified_at": "2026-11-23T07:28:49.880+00:00",
+      "confirm_ms": 449.596,
+      "applied": {
+        "gain": 6
+      },
+      "verified": {
+        "gain": 6
+      },
+      "actor": "cli",
+      "command_id": "15df1ed4ed6448878372ada79ec96f81"
+    },
+    {
+      "sent_at": "2026-11-23T07:28:50.692+00:00",
+      "applied_at": "2026-11-23T07:28:50.929+00:00",
+      "verified_at": "2026-11-23T07:28:51.155+00:00",
+      "confirm_ms": 449.853,
+      "applied": {
+        "gain": 4
+      },
+      "verified": {
+        "gain": 4
+      },
+      "actor": "cli",
+      "command_id": "cc9d79fcfb78405cbfbd537413aeab08"
+    },
+    {
+      "sent_at": "2026-11-23T07:28:51.981+00:00",
+      "applied_at": "2026-11-23T07:28:52.205+00:00",
+      "verified_at": "2026-11-23T07:28:52.430+00:00",
+      "confirm_ms": 449.664,
+      "applied": {
+        "gain": 9
+      },
+      "verified": {
+        "gain": 9
+      },
+      "actor": "cli",
+      "command_id": "d3b3ed20276146e0935c01b7ae6a78ab"
+    },
+    {
+      "sent_at": "2026-11-23T07:28:53.256+00:00",
+      "applied_at": "2026-11-23T07:28:53.480+00:00",
+      "verified_at": "2026-11-23T07:28:53.706+00:00",
+      "confirm_ms": 450.305,
+      "applied": {
+        "gain": 2
+      },
+      "verified": {
+        "gain": 2
+      },
+      "actor": "cli",
+      "command_id": "6e120036cabd4d68af18320beace9f57"
+    }
+  ],
+  "captures": [
+    {
+      "id": "95447abc4ff346f8a8b9ceea4b4c5ff4",
+      "metrics": {
+        "final_response": 105.834,
+        "final_error": 14.165999999999997,
+        "mean_absolute_error": 46.3
+      },
+      "parameters": {
+        "gain": 2
+      },
+      "samples": 16
+    },
+    {
+      "id": "50801bbe4b5a4700a29dc9d564af919c",
+      "metrics": {
+        "final_response": 119.999,
+        "final_error": 0.0010000000000047748,
+        "mean_absolute_error": 7.499562500000001
+      },
+      "parameters": {
+        "gain": 8
+      },
+      "samples": 16
+    },
+    {
+      "id": "f52a9bb8ad5b42e683f28f8c1e158716",
+      "metrics": {
+        "final_response": 119.999,
+        "final_error": 0.0010000000000047748,
+        "mean_absolute_error": 7.499562500000001
+      },
+      "parameters": {
+        "gain": 8
+      },
+      "samples": 16
+    }
+  ],
+  "stat_samples": [
+    {
+      "elapsed_s": 18.59399999999914,
+      "session_id": "b2efe253b7b4411b979bf16f08ada252",
+      "last_confirmed": {
+        "time": "2026-11-23T07:28:53.706+00:00",
+        "values": {
+          "gain": 2
+        }
+      },
+      "values": {
+        "gain": 2
+      },
+      "state": "verified",
+      "stats": {
+        "updates": 97,
+        "samples": 356,
+        "missing": 31,
+        "max_gap_s": 0.375,
+        "age_s": 0.01599999999962165,
+        "update_hz": 4.966887417218667,
+        "sample_hz": 19.99999999999999
+      }
+    },
+    {
+      "elapsed_s": 19.688000000000102,
+      "session_id": "b2efe253b7b4411b979bf16f08ada252",
+      "last_confirmed": {
+        "time": "2026-11-23T07:28:53.706+00:00",
+        "values": {
+          "gain": 2
+        }
+      },
+      "values": {
+        "gain": 2
+      },
+      "state": "verified",
+      "stats": {
+        "updates": 104,
+        "samples": 377,
+        "missing": 31,
+        "max_gap_s": 0.375,
+        "age_s": 0.04700000000048021,
+        "update_hz": 5.0514958312899925,
+        "sample_hz": 19.99999999999998
+      }
+    },
+    {
+      "elapsed_s": 20.79700000000048,
+      "session_id": "b2efe253b7b4411b979bf16f08ada252",
+      "last_confirmed": {
+        "time": "2026-11-23T07:28:53.706+00:00",
+        "values": {
+          "gain": 2
+        }
+      },
+      "values": {
+        "gain": 2
+      },
+      "state": "verified",
+      "stats": {
+        "updates": 111,
+        "samples": 398,
+        "missing": 31,
+        "max_gap_s": 0.375,
+        "age_s": 0.10999999999876309,
+        "update_hz": 5.131315016093694,
+        "sample_hz": 19.999999999999968
+      }
+    },
+    {
+      "elapsed_s": 21.906999999999243,
+      "session_id": "b2efe253b7b4411b979bf16f08ada252",
+      "last_confirmed": {
+        "time": "2026-11-23T07:28:53.706+00:00",
+        "values": {
+          "gain": 2
+        }
+      },
+      "values": {
+        "gain": 2
+      },
+      "state": "verified",
+      "stats": {
+        "updates": 119,
+        "samples": 422,
+        "missing": 31,
+        "max_gap_s": 0.375,
+        "age_s": 0.0,
+        "update_hz": 5.212014134275752,
+        "sample_hz": 19.99999999999998
+      }
+    },
+    {
+      "elapsed_s": 23.031999999999243,
+      "session_id": "b2efe253b7b4411b979bf16f08ada252",
+      "last_confirmed": {
+        "time": "2026-11-23T07:28:53.706+00:00",
+        "values": {
+          "gain": 2
+        }
+      },
+      "values": {
+        "gain": 2
+      },
+      "state": "verified",
+      "stats": {
+        "updates": 126,
+        "samples": 443,
+        "missing": 31,
+        "max_gap_s": 0.375,
+        "age_s": 0.07799999999951979,
+        "update_hz": 5.277156246042155,
+        "sample_hz": 19.99999999999997
+      }
+    },
+    {
+      "elapsed_s": 24.156999999999243,
+      "session_id": "b2efe253b7b4411b979bf16f08ada252",
+      "last_confirmed": {
+        "time": "2026-11-23T07:28:53.706+00:00",
+        "values": {
+          "gain": 2
+        }
+      },
+      "values": {
+        "gain": 2
+      },
+      "state": "verified",
+      "stats": {
+        "updates": 134,
+        "samples": 467,
+        "missing": 31,
+        "max_gap_s": 0.375,
+        "age_s": 0.0,
+        "update_hz": 5.343511450381804,
+        "sample_hz": 19.999999999999982
+      }
+    },
+    {
+      "elapsed_s": 25.25,
+      "session_id": "b2efe253b7b4411b979bf16f08ada252",
+      "last_confirmed": {
+        "time": "2026-11-23T07:28:53.706+00:00",
+        "values": {
+          "gain": 2
+        }
+      },
+      "values": {
+        "gain": 2
+      },
+      "state": "verified",
+      "stats": {
+        "updates": 141,
+        "samples": 488,
+        "missing": 31,
+        "max_gap_s": 0.375,
+        "age_s": 0.046999999998661224,
+        "update_hz": 5.397694413386303,
+        "sample_hz": 19.999999999999975
+      }
+    },
+    {
+      "elapsed_s": 26.375,
+      "session_id": "b2efe253b7b4411b979bf16f08ada252",
+      "last_confirmed": {
+        "time": "2026-11-23T07:28:53.706+00:00",
+        "values": {
+          "gain": 2
+        }
+      },
+      "values": {
+        "gain": 2
+      },
+      "state": "verified",
+      "stats": {
+        "updates": 148,
+        "samples": 509,
+        "missing": 31,
+        "max_gap_s": 0.375,
+        "age_s": 0.125,
+        "update_hz": 5.44767269493062,
+        "sample_hz": 19.999999999999968
+      }
+    },
+    {
+      "elapsed_s": 27.485000000000582,
+      "session_id": "b2efe253b7b4411b979bf16f08ada252",
+      "last_confirmed": {
+        "time": "2026-11-23T07:28:53.706+00:00",
+        "values": {
+          "gain": 2
+        }
+      },
+      "values": {
+        "gain": 2
+      },
+      "state": "verified",
+      "stats": {
+        "updates": 156,
+        "samples": 533,
+        "missing": 31,
+        "max_gap_s": 0.375,
+        "age_s": 0.0319999999992433,
+        "update_hz": 5.498988895590186,
+        "sample_hz": 19.999999999999975
+      }
+    },
+    {
+      "elapsed_s": 28.578999999999724,
+      "session_id": "b2efe253b7b4411b979bf16f08ada252",
+      "last_confirmed": {
+        "time": "2026-11-23T07:28:53.706+00:00",
+        "values": {
+          "gain": 2
+        }
+      },
+      "values": {
+        "gain": 2
+      },
+      "state": "verified",
+      "stats": {
+        "updates": 163,
+        "samples": 554,
+        "missing": 31,
+        "max_gap_s": 0.375,
+        "age_s": 0.07800000000133878,
+        "update_hz": 5.541492782376958,
+        "sample_hz": 19.999999999999968
+      }
+    },
+    {
+      "elapsed_s": 29.656999999999243,
+      "session_id": "b2efe253b7b4411b979bf16f08ada252",
+      "last_confirmed": {
+        "time": "2026-11-23T07:28:53.706+00:00",
+        "values": {
+          "gain": 2
+        }
+      },
+      "values": {
+        "gain": 2
+      },
+      "state": "verified",
+      "stats": {
+        "updates": 170,
+        "samples": 575,
+        "missing": 31,
+        "max_gap_s": 0.375,
+        "age_s": 0.10900000000037835,
+        "update_hz": 5.581057428750879,
+        "sample_hz": 20.0
+      }
+    },
+    {
+      "elapsed_s": 30.75,
+      "session_id": "b2efe253b7b4411b979bf16f08ada252",
+      "last_confirmed": {
+        "time": "2026-11-23T07:28:53.706+00:00",
+        "values": {
+          "gain": 2
+        }
+      },
+      "values": {
+        "gain": 2
+      },
+      "state": "verified",
+      "stats": {
+        "updates": 178,
+        "samples": 599,
+        "missing": 31,
+        "max_gap_s": 0.375,
+        "age_s": 0.0,
+        "update_hz": 5.621903188921614,
+        "sample_hz": 19.99999999999997
+      }
+    },
+    {
+      "elapsed_s": 31.84399999999914,
+      "session_id": "b2efe253b7b4411b979bf16f08ada252",
+      "last_confirmed": {
+        "time": "2026-11-23T07:28:53.706+00:00",
+        "values": {
+          "gain": 2
+        }
+      },
+      "values": {
+        "gain": 2
+      },
+      "state": "verified",
+      "stats": {
+        "updates": 185,
+        "samples": 620,
+        "missing": 31,
+        "max_gap_s": 0.375,
+        "age_s": 0.04700000000048021,
+        "update_hz": 5.656143370938657,
+        "sample_hz": 20.0
+      }
+    },
+    {
+      "elapsed_s": 32.92200000000048,
+      "session_id": "b2efe253b7b4411b979bf16f08ada252",
+      "last_confirmed": {
+        "time": "2026-11-23T07:28:53.706+00:00",
+        "values": {
+          "gain": 2
+        }
+      },
+      "values": {
+        "gain": 2
+      },
+      "state": "verified",
+      "stats": {
+        "updates": 192,
+        "samples": 641,
+        "missing": 31,
+        "max_gap_s": 0.375,
+        "age_s": 0.07799999999951979,
+        "update_hz": 5.688248257787919,
+        "sample_hz": 19.999999999999993
+      }
+    },
+    {
+      "elapsed_s": 34.0,
+      "session_id": "b2efe253b7b4411b979bf16f08ada252",
+      "last_confirmed": {
+        "time": "2026-11-23T07:28:53.706+00:00",
+        "values": {
+          "gain": 2
+        }
+      },
+      "values": {
+        "gain": 2
+      },
+      "state": "verified",
+      "stats": {
+        "updates": 199,
+        "samples": 662,
+        "missing": 31,
+        "max_gap_s": 0.375,
+        "age_s": 0.10899999999855936,
+        "update_hz": 5.718411552346571,
+        "sample_hz": 19.999999999999986
+      }
+    },
+    {
+      "elapsed_s": 35.09399999999914,
+      "session_id": "b2efe253b7b4411b979bf16f08ada252",
+      "last_confirmed": {
+        "time": "2026-11-23T07:28:53.706+00:00",
+        "values": {
+          "gain": 2
+        }
+      },
+      "values": {
+        "gain": 2
+      },
+      "state": "verified",
+      "stats": {
+        "updates": 206,
+        "samples": 683,
+        "missing": 31,
+        "max_gap_s": 0.375,
+        "age_s": 0.14099999999962165,
+        "update_hz": 5.744388712976731,
+        "sample_hz": 19.999999999999982
+      }
+    },
+    {
+      "elapsed_s": 36.1880000000001,
+      "session_id": "b2efe253b7b4411b979bf16f08ada252",
+      "last_confirmed": {
+        "time": "2026-11-23T07:28:53.706+00:00",
+        "values": {
+          "gain": 2
+        }
+      },
+      "values": {
+        "gain": 2
+      },
+      "state": "verified",
+      "stats": {
+        "updates": 214,
+        "samples": 708,
+        "missing": 31,
+        "max_gap_s": 0.375,
+        "age_s": 0.046999999998661224,
+        "update_hz": 5.776271186440678,
+        "sample_hz": 19.999999999999982
+      }
+    },
+    {
+      "elapsed_s": 37.28199999999924,
+      "session_id": "b2efe253b7b4411b979bf16f08ada252",
+      "last_confirmed": {
+        "time": "2026-11-23T07:28:53.706+00:00",
+        "values": {
+          "gain": 2
+        }
+      },
+      "values": {
+        "gain": 2
+      },
+      "state": "verified",
+      "stats": {
+        "updates": 221,
+        "samples": 729,
+        "missing": 31,
+        "max_gap_s": 0.375,
+        "age_s": 0.07799999999951979,
+        "update_hz": 5.7990879616205975,
+        "sample_hz": 19.999999999999975
+      }
+    },
+    {
+      "elapsed_s": 38.45399999999972,
+      "session_id": "b2efe253b7b4411b979bf16f08ada252",
+      "last_confirmed": {
+        "time": "2026-11-23T07:28:53.706+00:00",
+        "values": {
+          "gain": 2
+        }
+      },
+      "values": {
+        "gain": 2
+      },
+      "state": "verified",
+      "stats": {
+        "updates": 229,
+        "samples": 753,
+        "missing": 31,
+        "max_gap_s": 0.375,
+        "age_s": 0.04700000000048021,
+        "update_hz": 5.825242718446688,
+        "sample_hz": 19.999999999999982
+      }
+    },
+    {
+      "elapsed_s": 39.5630000000001,
+      "session_id": "b2efe253b7b4411b979bf16f08ada252",
+      "last_confirmed": {
+        "time": "2026-11-23T07:28:53.706+00:00",
+        "values": {
+          "gain": 2
+        }
+      },
+      "values": {
+        "gain": 2
+      },
+      "state": "verified",
+      "stats": {
+        "updates": 236,
+        "samples": 774,
+        "missing": 31,
+        "max_gap_s": 0.375,
+        "age_s": 0.10999999999876309,
+        "update_hz": 5.847662179311732,
+        "sample_hz": 19.99999999999998
+      }
+    },
+    {
+      "elapsed_s": 40.65699999999924,
+      "session_id": "b2efe253b7b4411b979bf16f08ada252",
+      "last_confirmed": {
+        "time": "2026-11-23T07:28:53.706+00:00",
+        "values": {
+          "gain": 2
+        }
+      },
+      "values": {
+        "gain": 2
+      },
+      "state": "verified",
+      "stats": {
+        "updates": 244,
+        "samples": 798,
+        "missing": 31,
+        "max_gap_s": 0.375,
+        "age_s": 0.0,
+        "update_hz": 5.870983329306679,
+        "sample_hz": 19.999999999999982
+      }
+    },
+    {
+      "elapsed_s": 41.75,
+      "session_id": "b2efe253b7b4411b979bf16f08ada252",
+      "last_confirmed": {
+        "time": "2026-11-23T07:28:53.706+00:00",
+        "values": {
+          "gain": 2
+        }
+      },
+      "values": {
+        "gain": 2
+      },
+      "state": "verified",
+      "stats": {
+        "updates": 251,
+        "samples": 819,
+        "missing": 31,
+        "max_gap_s": 0.375,
+        "age_s": 0.046999999998661224,
+        "update_hz": 5.891085609256088,
+        "sample_hz": 19.99999999999998
+      }
+    },
+    {
+      "elapsed_s": 42.84399999999914,
+      "session_id": "b2efe253b7b4411b979bf16f08ada252",
+      "last_confirmed": {
+        "time": "2026-11-23T07:28:53.706+00:00",
+        "values": {
+          "gain": 2
+        }
+      },
+      "values": {
+        "gain": 2
+      },
+      "state": "verified",
+      "stats": {
+        "updates": 258,
+        "samples": 840,
+        "missing": 31,
+        "max_gap_s": 0.375,
+        "age_s": 0.09400000000096043,
+        "update_hz": 5.910219850979867,
+        "sample_hz": 20.0
+      }
+    },
+    {
+      "elapsed_s": 43.96899999999914,
+      "session_id": "b2efe253b7b4411b979bf16f08ada252",
+      "last_confirmed": {
+        "time": "2026-11-23T07:28:53.706+00:00",
+        "values": {
+          "gain": 2
+        }
+      },
+      "values": {
+        "gain": 2
+      },
+      "state": "verified",
+      "stats": {
+        "updates": 266,
+        "samples": 864,
+        "missing": 31,
+        "max_gap_s": 0.375,
+        "age_s": 0.01599999999962165,
+        "update_hz": 5.930136281245118,
+        "sample_hz": 19.99999999999998
+      }
+    },
+    {
+      "elapsed_s": 45.07899999999972,
+      "session_id": "b2efe253b7b4411b979bf16f08ada252",
+      "last_confirmed": {
+        "time": "2026-11-23T07:28:53.706+00:00",
+        "values": {
+          "gain": 2
+        }
+      },
+      "values": {
+        "gain": 2
+      },
+      "state": "verified",
+      "stats": {
+        "updates": 274,
+        "samples": 885,
+        "missing": 31,
+        "max_gap_s": 0.375,
+        "age_s": 0.09400000000096043,
+        "update_hz": 5.96930073905647,
+        "sample_hz": 20.0
+      }
+    }
+  ]
+}

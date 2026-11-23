@@ -1,0 +1,449 @@
+{
+  "summary": {
+    "transport": "serial",
+    "connect_s": 0.09414880000076664,
+    "wall_s": 45.06543109999984,
+    "first_t": 80.0,
+    "last_t": 124.95,
+    "board_hz": 20.0,
+    "received_rows": 900,
+    "received_batches": 312,
+    "polls": 312,
+    "host_updates_hz": 6.920836285639335,
+    "delivered_rows_hz": 20.00589009900245,
+    "missing": 0,
+    "gap_events": 0,
+    "longest_missing": 0,
+    "largest_update_gap_s": 0.6340471999992587,
+    "write_confirm_ms": {
+      "min": 53.9690999994491,
+      "median": 110.25355000037962,
+      "max": 450.6170000004204
+    },
+    "last_readback": {
+      "gain": 2
+    },
+    "cancelled": {
+      "reason": "cancelled",
+      "samples": [
+        {
+          "t": 0.1,
+          "target": 120,
+          "response": 60.0
+        },
+        {
+          "t": 0.2,
+          "target": 120,
+          "response": 90.0
+        }
+      ],
+      "confirmed": {
+        "gain": 8
+      }
+    }
+  },
+  "writes": [
+    {
+      "sent_s": 0.026068600000144215,
+      "applied_s": 0.05398149999928137,
+      "verified_s": 0.08003769999959331,
+      "previous": {
+        "gain": 2
+      },
+      "applied": {
+        "gain": 2
+      },
+      "readback": {
+        "gain": 2
+      }
+    },
+    {
+      "sent_s": 2.4233568999989075,
+      "applied_s": 2.5101450000001932,
+      "verified_s": 2.542822100000194,
+      "previous": {
+        "gain": 2
+      },
+      "applied": {
+        "gain": 8
+      },
+      "readback": {
+        "gain": 8
+      }
+    },
+    {
+      "sent_s": 5.916245700000218,
+      "applied_s": 5.945279399998981,
+      "verified_s": 5.972346499998821,
+      "previous": {
+        "gain": 8
+      },
+      "applied": {
+        "gain": 5
+      },
+      "readback": {
+        "gain": 5
+      }
+    },
+    {
+      "sent_s": 6.549285099999906,
+      "applied_s": 6.581094600000142,
+      "verified_s": 6.681740299998637,
+      "previous": {
+        "gain": 5
+      },
+      "applied": {
+        "gain": 12
+      },
+      "readback": {
+        "gain": 12
+      }
+    },
+    {
+      "sent_s": 7.496631799998795,
+      "applied_s": 7.863429099999848,
+      "verified_s": 7.947248799999215,
+      "previous": {
+        "gain": 12
+      },
+      "applied": {
+        "gain": 4
+      },
+      "readback": {
+        "gain": 4
+      }
+    },
+    {
+      "sent_s": 8.72580620000008,
+      "applied_s": 8.762136699999246,
+      "verified_s": 8.826848099999552,
+      "previous": {
+        "gain": 4
+      },
+      "applied": {
+        "gain": 9
+      },
+      "readback": {
+        "gain": 9
+      }
+    },
+    {
+      "sent_s": 9.456627699999444,
+      "applied_s": 9.485483799999201,
+      "verified_s": 9.512448899999072,
+      "previous": {
+        "gain": 9
+      },
+      "applied": {
+        "gain": 8
+      },
+      "readback": {
+        "gain": 8
+      }
+    },
+    {
+      "sent_s": 10.092520399999557,
+      "applied_s": 10.19645589999891,
+      "verified_s": 10.223541999999725,
+      "previous": {
+        "gain": 8
+      },
+      "applied": {
+        "gain": 2
+      },
+      "readback": {
+        "gain": 2
+      }
+    }
+  ],
+  "captures": [
+    {
+      "name": "baseline",
+      "conditions": {
+        "samples": 16,
+        "target": 120,
+        "period_ms": 20
+      },
+      "gain": 2,
+      "samples": [
+        {
+          "t": 0.02,
+          "target": 120,
+          "response": 15.0
+        },
+        {
+          "t": 0.04,
+          "target": 120,
+          "response": 28.125
+        },
+        {
+          "t": 0.06,
+          "target": 120,
+          "response": 39.61
+        },
+        {
+          "t": 0.08,
+          "target": 120,
+          "response": 49.659
+        },
+        {
+          "t": 0.1,
+          "target": 120,
+          "response": 58.452
+        },
+        {
+          "t": 0.12,
+          "target": 120,
+          "response": 66.146
+        },
+        {
+          "t": 0.14,
+          "target": 120,
+          "response": 72.878
+        },
+        {
+          "t": 0.16,
+          "target": 120,
+          "response": 78.769
+        },
+        {
+          "t": 0.18,
+          "target": 120,
+          "response": 83.923
+        },
+        {
+          "t": 0.2,
+          "target": 120,
+          "response": 88.433
+        },
+        {
+          "t": 0.22,
+          "target": 120,
+          "response": 92.379
+        },
+        {
+          "t": 0.24,
+          "target": 120,
+          "response": 95.832
+        },
+        {
+          "t": 0.26,
+          "target": 120,
+          "response": 98.853
+        },
+        {
+          "t": 0.28,
+          "target": 120,
+          "response": 101.497
+        },
+        {
+          "t": 0.3,
+          "target": 120,
+          "response": 103.81
+        },
+        {
+          "t": 0.32,
+          "target": 120,
+          "response": 105.834
+        }
+      ],
+      "metrics": {
+        "final_response": 105.834,
+        "final_error": 14.165999999999997,
+        "mean_absolute_error": 46.3
+      }
+    },
+    {
+      "name": "candidate",
+      "conditions": {
+        "samples": 16,
+        "target": 120,
+        "period_ms": 20
+      },
+      "gain": 8,
+      "samples": [
+        {
+          "t": 0.02,
+          "target": 120,
+          "response": 60.0
+        },
+        {
+          "t": 0.04,
+          "target": 120,
+          "response": 90.0
+        },
+        {
+          "t": 0.06,
+          "target": 120,
+          "response": 105.0
+        },
+        {
+          "t": 0.08,
+          "target": 120,
+          "response": 112.5
+        },
+        {
+          "t": 0.1,
+          "target": 120,
+          "response": 116.25
+        },
+        {
+          "t": 0.12,
+          "target": 120,
+          "response": 118.125
+        },
+        {
+          "t": 0.14,
+          "target": 120,
+          "response": 119.063
+        },
+        {
+          "t": 0.16,
+          "target": 120,
+          "response": 119.532
+        },
+        {
+          "t": 0.18,
+          "target": 120,
+          "response": 119.766
+        },
+        {
+          "t": 0.2,
+          "target": 120,
+          "response": 119.883
+        },
+        {
+          "t": 0.22,
+          "target": 120,
+          "response": 119.942
+        },
+        {
+          "t": 0.24,
+          "target": 120,
+          "response": 119.971
+        },
+        {
+          "t": 0.26,
+          "target": 120,
+          "response": 119.986
+        },
+        {
+          "t": 0.28,
+          "target": 120,
+          "response": 119.993
+        },
+        {
+          "t": 0.3,
+          "target": 120,
+          "response": 119.997
+        },
+        {
+          "t": 0.32,
+          "target": 120,
+          "response": 119.999
+        }
+      ],
+      "metrics": {
+        "final_response": 119.999,
+        "final_error": 0.0010000000000047748,
+        "mean_absolute_error": 7.499562500000001
+      }
+    },
+    {
+      "name": "confirmation",
+      "conditions": {
+        "samples": 16,
+        "target": 120,
+        "period_ms": 20
+      },
+      "gain": 8,
+      "samples": [
+        {
+          "t": 0.02,
+          "target": 120,
+          "response": 60.0
+        },
+        {
+          "t": 0.04,
+          "target": 120,
+          "response": 90.0
+        },
+        {
+          "t": 0.06,
+          "target": 120,
+          "response": 105.0
+        },
+        {
+          "t": 0.08,
+          "target": 120,
+          "response": 112.5
+        },
+        {
+          "t": 0.1,
+          "target": 120,
+          "response": 116.25
+        },
+        {
+          "t": 0.12,
+          "target": 120,
+          "response": 118.125
+        },
+        {
+          "t": 0.14,
+          "target": 120,
+          "response": 119.063
+        },
+        {
+          "t": 0.16,
+          "target": 120,
+          "response": 119.532
+        },
+        {
+          "t": 0.18,
+          "target": 120,
+          "response": 119.766
+        },
+        {
+          "t": 0.2,
+          "target": 120,
+          "response": 119.883
+        },
+        {
+          "t": 0.22,
+          "target": 120,
+          "response": 119.942
+        },
+        {
+          "t": 0.24,
+          "target": 120,
+          "response": 119.971
+        },
+        {
+          "t": 0.26,
+          "target": 120,
+          "response": 119.986
+        },
+        {
+          "t": 0.28,
+          "target": 120,
+          "response": 119.993
+        },
+        {
+          "t": 0.3,
+          "target": 120,
+          "response": 119.997
+        },
+        {
+          "t": 0.32,
+          "target": 120,
+          "response": 119.999
+        }
+      ],
+      "metrics": {
+        "final_response": 119.999,
+        "final_error": 0.0010000000000047748,
+        "mean_absolute_error": 7.499562500000001
+      }
+    }
+  ]
+}

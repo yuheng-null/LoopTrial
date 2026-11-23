@@ -1,0 +1,500 @@
+{
+  "interrupt": {
+    "mechanism": "Disable the Windows Bluetooth radio while a bounded experiment is running; enable it and repeat the handshake.",
+    "before": {
+      "connected": true,
+      "session_id": "509b027a3c5343c7942eef476099bc8d",
+      "last_confirmed": {
+        "time": "2026-11-23T07:22:46.981+00:00",
+        "values": {
+          "gain": 6
+        }
+      },
+      "state": "verified",
+      "values": {
+        "gain": 6
+      },
+      "error": null,
+      "stats": {
+        "updates": 970,
+        "samples": 3876,
+        "missing": 1001,
+        "max_gap_s": 0.5,
+        "age_s": 0.0930000000007567,
+        "update_hz": 3.9735914049044734,
+        "sample_hz": 20.000000000000004
+      },
+      "active_run": null
+    },
+    "id": "221e94b9e0f6407dbbcf1033eb68f10d",
+    "loss": {
+      "connected": false,
+      "session_id": "509b027a3c5343c7942eef476099bc8d",
+      "last_confirmed": {
+        "time": "2026-11-23T07:22:46.981+00:00",
+        "values": {
+          "gain": 6
+        }
+      },
+      "state": "unknown",
+      "values": null,
+      "error": "Board I/O failed (BleakError).",
+      "stats": {
+        "updates": 974,
+        "samples": 3892,
+        "missing": 1001,
+        "max_gap_s": 0.5,
+        "age_s": 0.6880000000001019,
+        "update_hz": 3.9721905834996996,
+        "sample_hz": 19.999999999999996
+      },
+      "active_run": null
+    },
+    "failed_run": {
+      "action": "step",
+      "actor": "cli",
+      "checks": {},
+      "conditions": {
+        "period_ms": 100,
+        "samples": 64,
+        "target": 100
+      },
+      "device": "bluepill-step",
+      "device_state": {
+        "last_confirmed": {
+          "gain": 6
+        },
+        "state": "unknown"
+      },
+      "error": {
+        "code": "link_error",
+        "message": "Board I/O failed (BleakError)."
+      },
+      "finished": "2026-11-23T07:23:50.960+00:00",
+      "id": "221e94b9e0f6407dbbcf1033eb68f10d",
+      "instance": "713eaaa4cd12ab81c16cb7ba",
+      "last_parameter_write": {
+        "actor": "human",
+        "command_id": "1df6a3b0472e47f3b2a83b21ee79b9b4",
+        "confirm_ms": 299.696,
+        "time": "2026-11-23T07:22:04.568+00:00",
+        "values": {
+          "gain": 6
+        }
+      },
+      "metrics": {},
+      "parameters": {
+        "gain": 6
+      },
+      "record": "runs/221e94b9e0f6407dbbcf1033eb68f10d/record.json",
+      "samples": 0,
+      "source": "ble://device",
+      "started": "2026-11-23T07:23:50.170+00:00",
+      "status": "failed"
+    },
+    "reconnected": {
+      "connected": true,
+      "session_id": "30362ed53227414fb64a6006b772907f",
+      "last_confirmed": {
+        "time": "2026-11-23T07:23:57.288+00:00",
+        "values": {
+          "gain": 6
+        }
+      },
+      "state": "verified",
+      "values": {
+        "gain": 6
+      },
+      "error": null,
+      "stats": {
+        "updates": 1,
+        "samples": 1,
+        "missing": 0,
+        "max_gap_s": 0.0,
+        "age_s": 0.18800000000010186,
+        "update_hz": 0,
+        "sample_hz": 0
+      },
+      "active_run": null
+    },
+    "effective": {
+      "gain": 6
+    }
+  },
+  "timeline": [
+    {
+      "seq": 1,
+      "time": "2026-11-23T07:19:45.703+00:00",
+      "actor": "human",
+      "kind": "connected",
+      "details": {
+        "device": "bluepill-step",
+        "values": {
+          "gain": 2
+        },
+        "version": "0.2.0"
+      }
+    },
+    {
+      "seq": 2,
+      "time": "2026-11-23T07:19:46.114+00:00",
+      "actor": "human",
+      "kind": "sent",
+      "details": {
+        "command_id": "9609e1aa95a545ee82a170f9582b1e9a",
+        "requested": {
+          "gain": 3
+        }
+      }
+    },
+    {
+      "seq": 3,
+      "time": "2026-11-23T07:19:46.279+00:00",
+      "actor": "human",
+      "kind": "applied",
+      "details": {
+        "command_id": "9609e1aa95a545ee82a170f9582b1e9a",
+        "values": {
+          "gain": 3
+        }
+      }
+    },
+    {
+      "seq": 4,
+      "time": "2026-11-23T07:19:46.349+00:00",
+      "actor": "human",
+      "kind": "verified",
+      "details": {
+        "command_id": "9609e1aa95a545ee82a170f9582b1e9a",
+        "confirm_ms": 233.795,
+        "values": {
+          "gain": 3
+        }
+      }
+    },
+    {
+      "seq": 5,
+      "time": "2026-11-23T07:20:03.592+00:00",
+      "actor": "cli",
+      "kind": "sent",
+      "details": {
+        "command_id": "4fa139970cb340cc83dfb2ae6dbb998d",
+        "requested": {
+          "gain": 2
+        }
+      }
+    },
+    {
+      "seq": 6,
+      "time": "2026-11-23T07:20:03.666+00:00",
+      "actor": "cli",
+      "kind": "applied",
+      "details": {
+        "command_id": "4fa139970cb340cc83dfb2ae6dbb998d",
+        "values": {
+          "gain": 2
+        }
+      }
+    },
+    {
+      "seq": 7,
+      "time": "2026-11-23T07:20:03.891+00:00",
+      "actor": "cli",
+      "kind": "verified",
+      "details": {
+        "command_id": "4fa139970cb340cc83dfb2ae6dbb998d",
+        "confirm_ms": 299.095,
+        "values": {
+          "gain": 2
+        }
+      }
+    },
+    {
+      "seq": 8,
+      "time": "2026-11-23T07:20:06.441+00:00",
+      "actor": "human",
+      "kind": "sent",
+      "details": {
+        "command_id": "2ffdef6470e84acdadb7ac4534a0e799",
+        "requested": {
+          "gain": 3
+        }
+      }
+    },
+    {
+      "seq": 9,
+      "time": "2026-11-23T07:20:06.516+00:00",
+      "actor": "human",
+      "kind": "applied",
+      "details": {
+        "command_id": "2ffdef6470e84acdadb7ac4534a0e799",
+        "values": {
+          "gain": 3
+        }
+      }
+    },
+    {
+      "seq": 10,
+      "time": "2026-11-23T07:20:06.741+00:00",
+      "actor": "human",
+      "kind": "verified",
+      "details": {
+        "command_id": "2ffdef6470e84acdadb7ac4534a0e799",
+        "confirm_ms": 300.122,
+        "values": {
+          "gain": 3
+        }
+      }
+    },
+    {
+      "seq": 11,
+      "time": "2026-11-23T07:20:56.166+00:00",
+      "actor": "mcp",
+      "kind": "run_started",
+      "details": {
+        "action": "step",
+        "id": "32cfec0a53584e39bdb2ba6a2e578619",
+        "values": {
+          "gain": 3
+        }
+      }
+    },
+    {
+      "seq": 12,
+      "time": "2026-11-23T07:20:58.270+00:00",
+      "actor": "mcp",
+      "kind": "run_completed",
+      "details": {
+        "error": null,
+        "id": "32cfec0a53584e39bdb2ba6a2e578619",
+        "state": {
+          "state": "verified",
+          "values": {
+            "gain": 3
+          }
+        }
+      }
+    },
+    {
+      "seq": 13,
+      "time": "2026-11-23T07:21:04.417+00:00",
+      "actor": "mcp",
+      "kind": "sent",
+      "details": {
+        "command_id": "5ff1050afba54ab0878bbf7419e2c4ce",
+        "requested": {
+          "gain": 8.0
+        }
+      }
+    },
+    {
+      "seq": 14,
+      "time": "2026-11-23T07:21:04.641+00:00",
+      "actor": "mcp",
+      "kind": "applied",
+      "details": {
+        "command_id": "5ff1050afba54ab0878bbf7419e2c4ce",
+        "values": {
+          "gain": 8
+        }
+      }
+    },
+    {
+      "seq": 15,
+      "time": "2026-11-23T07:21:04.717+00:00",
+      "actor": "mcp",
+      "kind": "verified",
+      "details": {
+        "command_id": "5ff1050afba54ab0878bbf7419e2c4ce",
+        "confirm_ms": 300.04,
+        "values": {
+          "gain": 8
+        }
+      }
+    },
+    {
+      "seq": 16,
+      "time": "2026-11-23T07:21:08.804+00:00",
+      "actor": "mcp",
+      "kind": "run_started",
+      "details": {
+        "action": "step",
+        "id": "92f6926a555b48c7a8e8c712645bcd0d",
+        "values": {
+          "gain": 8
+        }
+      }
+    },
+    {
+      "seq": 17,
+      "time": "2026-11-23T07:21:10.908+00:00",
+      "actor": "mcp",
+      "kind": "run_completed",
+      "details": {
+        "error": null,
+        "id": "92f6926a555b48c7a8e8c712645bcd0d",
+        "state": {
+          "state": "verified",
+          "values": {
+            "gain": 8
+          }
+        }
+      }
+    },
+    {
+      "seq": 18,
+      "time": "2026-11-23T07:21:15.817+00:00",
+      "actor": "mcp",
+      "kind": "run_started",
+      "details": {
+        "action": "step",
+        "id": "edecbc9d7e95426787768fcd26a3ba5c",
+        "values": {
+          "gain": 8
+        }
+      }
+    },
+    {
+      "seq": 19,
+      "time": "2026-11-23T07:21:17.658+00:00",
+      "actor": "mcp",
+      "kind": "run_completed",
+      "details": {
+        "error": null,
+        "id": "edecbc9d7e95426787768fcd26a3ba5c",
+        "state": {
+          "state": "verified",
+          "values": {
+            "gain": 8
+          }
+        }
+      }
+    },
+    {
+      "seq": 20,
+      "time": "2026-11-23T07:22:04.269+00:00",
+      "actor": "human",
+      "kind": "sent",
+      "details": {
+        "command_id": "1df6a3b0472e47f3b2a83b21ee79b9b4",
+        "requested": {
+          "gain": 6
+        }
+      }
+    },
+    {
+      "seq": 21,
+      "time": "2026-11-23T07:22:04.343+00:00",
+      "actor": "human",
+      "kind": "applied",
+      "details": {
+        "command_id": "1df6a3b0472e47f3b2a83b21ee79b9b4",
+        "values": {
+          "gain": 6
+        }
+      }
+    },
+    {
+      "seq": 22,
+      "time": "2026-11-23T07:22:04.568+00:00",
+      "actor": "human",
+      "kind": "verified",
+      "details": {
+        "command_id": "1df6a3b0472e47f3b2a83b21ee79b9b4",
+        "confirm_ms": 299.696,
+        "values": {
+          "gain": 6
+        }
+      }
+    },
+    {
+      "seq": 23,
+      "time": "2026-11-23T07:22:56.733+00:00",
+      "actor": "mcp",
+      "kind": "run_started",
+      "details": {
+        "action": "step",
+        "id": "74d4faafea82437980b94ad7a6becdbe",
+        "values": {
+          "gain": 6
+        }
+      }
+    },
+    {
+      "seq": 24,
+      "time": "2026-11-23T07:22:58.834+00:00",
+      "actor": "mcp",
+      "kind": "run_completed",
+      "details": {
+        "error": null,
+        "id": "74d4faafea82437980b94ad7a6becdbe",
+        "state": {
+          "state": "verified",
+          "values": {
+            "gain": 6
+          }
+        }
+      }
+    },
+    {
+      "seq": 25,
+      "time": "2026-11-23T07:23:50.170+00:00",
+      "actor": "cli",
+      "kind": "run_started",
+      "details": {
+        "action": "step",
+        "id": "221e94b9e0f6407dbbcf1033eb68f10d",
+        "values": {
+          "gain": 6
+        }
+      }
+    },
+    {
+      "seq": 26,
+      "time": "2026-11-23T07:23:50.870+00:00",
+      "actor": "device",
+      "kind": "unknown",
+      "details": {
+        "error": "Board I/O failed (BleakError).",
+        "last_confirmed": {
+          "time": "2026-11-23T07:22:46.981+00:00",
+          "values": {
+            "gain": 6
+          }
+        }
+      }
+    },
+    {
+      "seq": 27,
+      "time": "2026-11-23T07:23:50.960+00:00",
+      "actor": "cli",
+      "kind": "run_failed",
+      "details": {
+        "error": {
+          "code": "link_error",
+          "message": "Board I/O failed (BleakError)."
+        },
+        "id": "221e94b9e0f6407dbbcf1033eb68f10d",
+        "state": {
+          "last_confirmed": {
+            "gain": 6
+          },
+          "state": "unknown"
+        }
+      }
+    },
+    {
+      "seq": 28,
+      "time": "2026-11-23T07:23:57.288+00:00",
+      "actor": "cli",
+      "kind": "connected",
+      "details": {
+        "device": "bluepill-step",
+        "values": {
+          "gain": 6
+        },
+        "version": "0.2.0"
+      }
+    }
+  ]
+}

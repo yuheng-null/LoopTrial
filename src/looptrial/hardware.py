@@ -151,7 +151,7 @@ class _Peer:
                                 return words[1:]
                             if len(words) == 2 and words[0] == "ERR":
                                 raise HardwareError(words[1], f"Device rejected {command[0]} ({words[1]}).",
-                                                    state_unknown=words[1] == "unknown_trial")
+                                                    state_unknown=words[1] in {"unknown_trial", "clock_reset"})
                             raise HardwareError("bad_frame", "Unexpected response for this request.")
                         self.pending.extend(await self.read())
                         if len(self.pending) > 2048:

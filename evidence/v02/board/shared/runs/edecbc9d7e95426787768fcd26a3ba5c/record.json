@@ -1,0 +1,97 @@
+{
+  "format": 1,
+  "looptrial": "0.2.0",
+  "id": "edecbc9d7e95426787768fcd26a3ba5c",
+  "created": "2026-11-23T07:21:15.584+00:00",
+  "source": "ble://device",
+  "action": "step",
+  "conditions": {
+    "target": 120.0,
+    "samples": 16.0,
+    "period_ms": 20.0
+  },
+  "constraints": {},
+  "fault": null,
+  "goals": {
+    "final_error": {
+      "ge": -0.01,
+      "le": 0.01
+    }
+  },
+  "note": "Fresh independent confirmation of passing gain 8; user requests retaining temporary parameters.",
+  "pace": 0,
+  "device_state": {
+    "state": "verified",
+    "values": {
+      "gain": 8
+    }
+  },
+  "metrics": {
+    "final_response": 119.999,
+    "final_error": 0.0010000000000047748,
+    "mean_absolute_error": 7.499562500000001
+  },
+  "checks": {
+    "goals": [
+      {
+        "metric": "final_error",
+        "op": "ge",
+        "limit": -0.01,
+        "value": 0.0010000000000047748,
+        "passed": true
+      },
+      {
+        "metric": "final_error",
+        "op": "le",
+        "limit": 0.01,
+        "value": 0.0010000000000047748,
+        "passed": true
+      }
+    ],
+    "constraints": []
+  },
+  "device": "bluepill-step",
+  "version": "0.2.0",
+  "object_source": "board-software-model",
+  "signals": {
+    "t": {
+      "unit": "s",
+      "description": "Time since board-side start, from SysTick."
+    },
+    "target": {
+      "unit": "count"
+    },
+    "response": {
+      "unit": "count"
+    }
+  },
+  "timestamp_unit": "s",
+  "instance": "713eaaa4cd12ab81c16cb7ba",
+  "metric_units": {
+    "final_response": "count",
+    "final_error": "count",
+    "mean_absolute_error": "count"
+  },
+  "requires_event": {},
+  "parameters": {
+    "gain": 8
+  },
+  "actor": "mcp",
+  "started": "2026-11-23T07:21:15.817+00:00",
+  "timeline_start": 18,
+  "last_parameter_write": {
+    "time": "2026-11-23T07:21:04.717+00:00",
+    "actor": "mcp",
+    "command_id": "5ff1050afba54ab0878bbf7419e2c4ce",
+    "confirm_ms": 300.04,
+    "values": {
+      "gain": 8
+    }
+  },
+  "passed": true,
+  "status": "completed",
+  "finished": "2026-11-23T07:21:17.658+00:00",
+  "timeline_end": 19,
+  "samples": 16,
+  "samples_sha256": "a98663f1bc84f39ebe0563488cb345f91fae537bacad32bbd855e86e7d318a3c"
+}

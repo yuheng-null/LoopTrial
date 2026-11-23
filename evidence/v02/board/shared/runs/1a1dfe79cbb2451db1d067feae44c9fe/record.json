@@ -1,0 +1,73 @@
+{
+  "format": 1,
+  "looptrial": "0.2.0",
+  "id": "1a1dfe79cbb2451db1d067feae44c9fe",
+  "created": "2026-11-23T07:24:06.128+00:00",
+  "source": "serial://device",
+  "action": "step",
+  "conditions": {
+    "target": 100,
+    "samples": 64,
+    "period_ms": 100
+  },
+  "constraints": {},
+  "fault": null,
+  "goals": {},
+  "note": "",
+  "pace": 0,
+  "device_state": {
+    "state": "unknown",
+    "last_confirmed": {
+      "gain": 8
+    }
+  },
+  "metrics": {},
+  "checks": {},
+  "device": "bluepill-step",
+  "version": "0.2.0",
+  "object_source": "board-software-model",
+  "signals": {
+    "t": {
+      "unit": "s",
+      "description": "Time since board-side start, from SysTick."
+    },
+    "target": {
+      "unit": "count"
+    },
+    "response": {
+      "unit": "count"
+    }
+  },
+  "timestamp_unit": "s",
+  "instance": "713eaaa4cd12ab81c16cb7ba",
+  "metric_units": {
+    "final_response": "count",
+    "final_error": "count",
+    "mean_absolute_error": "count"
+  },
+  "requires_event": {},
+  "parameters": {
+    "gain": 8
+  },
+  "actor": "cli",
+  "started": "2026-11-23T07:24:06.221+00:00",
+  "timeline_start": 46,
+  "last_parameter_write": {
+    "time": "2026-11-23T07:24:03.979+00:00",
+    "actor": "cli",
+    "command_id": "060c2a0e3ae24962a3f2f9c3d76177b5",
+    "confirm_ms": 148.936,
+    "values": {
+      "gain": 8
+    }
+  },
+  "status": "failed",
+  "error": {
+    "code": "unknown_trial",
+    "message": "Device rejected Q (unknown_trial)."
+  },
+  "finished": "2026-11-23T07:24:11.056+00:00",
+  "timeline_end": 48,
+  "samples": 0,
+  "samples_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}
