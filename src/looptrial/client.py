@@ -22,7 +22,7 @@ async def session(args):
         async def invoke(name, arguments):
             result = await client.call_tool(name, arguments)
             if result.isError:
-                raise RuntimeError(result.content[0].text)
+                return {"ok": False, "error": {"code": "mcp_tool_error", "message": result.content[0].text}}
             parts = [json.loads(item.text) for item in result.content if item.type == "text"]
             for item in parts:
                 if isinstance(item, dict) and item.get("ok") is False:
@@ -36,11 +36,20 @@ async def session(args):
         if args.tool:
             return await invoke(args.tool, json.loads(args.arguments.read_text(encoding="utf-8-sig")) if args.arguments else {})
         info = await invoke("describe", {"uri":"sim://thermal"})
+        if info.get("ok") is False:
+            return info
         run = await invoke("run_experiment", {"uri":"sim://thermal", "action":"step", "conditions":{"target_c":50}})
+        if run.get("ok") is False:
+            return run
         fetched = await invoke("get_run", {"run_id":run["id"]})
+        if fetched.get("ok") is False or fetched["status"] != "completed":
+            return fetched
         verified = await invoke("review", {"record":run["id"]})
-        if fetched["status"] != "completed" or not verified["recomputed"]:
-            raise RuntimeError("sample acquisition or offline verification failed")
+        if verified.get("ok") is False:
+            return verified
+        if not verified["recomputed"]:
+            return {"ok": False, "error": {"code": "review_incomplete", "message": "Offline verification did not complete",
+                                           "run_id": run["id"]}}
         return {"tools": names, "device": info["id"], "run": fetched, "review": verified}
 
 
@@ -51,7 +60,7 @@ def main():
     cli.add_argument("--arguments", type=Path, help="UTF-8 JSON object file for the tool")
     result = asyncio.run(session(cli.parse_args()))
     print(json.dumps(result, ensure_ascii=True))
-    return int(isinstance(result, dict) and (result.get("ok") is False or result.get("status") == "failed"))
+    return int(isinstance(result, dict) and (result.get("ok") is False or result.get("status") in ("failed", "cancelled")))
 
 
 if __name__ == "__main__":

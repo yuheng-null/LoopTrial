@@ -1,6 +1,6 @@
 # LoopTrial
 
-[简体中文](README.md) · **English** · [Download v0.2.2](https://github.com/yuheng-null/LoopTrial/releases/tag/v0.2.2)
+[简体中文](README.md) · **English** · [Download v0.2.3](https://github.com/yuheng-null/LoopTrial/releases/tag/v0.2.3)
 
 LoopTrial is an embedded experiment workbench for engineers and their AI agents. Keep live signals on screen and describe a symptom to your own agent. In the bundled whole-car simulator, a request like “This car is slow through bends. Speed it up” can start an experiment. Its CLI or MCP calls share the device connection, read effective settings, test candidates and confirm results on the same timeline. A diagnosis can end after a single capture.
 
@@ -14,7 +14,7 @@ On Windows with Python 3.12 and the Python Launcher installed, open PowerShell i
 
 ```powershell
 py -3.12 -m venv .venv
-.\.venv\Scripts\python -m pip install https://github.com/yuheng-null/LoopTrial/releases/download/v0.2.2/looptrial-0.2.2-py3-none-any.whl
+.\.venv\Scripts\python -m pip install https://github.com/yuheng-null/LoopTrial/releases/download/v0.2.3/looptrial-0.2.3-py3-none-any.whl
 $env:PATH = "$PWD\.venv\Scripts;$env:PATH"
 $env:LOOPTRIAL_HOME = "$PWD\lab"
 looptrial studio
@@ -28,7 +28,7 @@ On a narrow screen, open the device controls from the connection button in the t
 
 Give this page's URL and your symptom to an agent with local tools. From a clone, run `python -m pip install .` at the root in a Python 3.11+ virtual environment. After installation use the CLI directly, or register that environment's `looptrial-mcp` in a stdio MCP client. Set the same absolute `LOOPTRIAL_HOME` in the workbench, CLI and MCP environment. Run `looptrial-client` to try a standalone client. Run `looptrial mcp-config` in the workbench environment for a ready-to-paste stdio configuration. Within the existing authorization the agent can discover capabilities and proceed through fresh confirmation runs. [Agent's experiment guide](src/looptrial/resources/agent-guide.en.md) · [CLI and MCP setup](docs/CLI.md)
 
-Open a second PowerShell in the same directory. The first command after environment setup shows the shared connection and recent manual changes. The next three acquire and review a hardware-free trace. These experiment commands also work with the workbench closed.
+Open a second PowerShell in the same directory. The first command after environment setup shows the shared connection and recent manual changes. The next three acquire and review a hardware-free trace. These experiment commands also work with the workbench closed. The final command starts a separate stdio MCP client and acquires a thermal trace.
 
 ```powershell
 $env:PATH = "$PWD\.venv\Scripts;$env:PATH"

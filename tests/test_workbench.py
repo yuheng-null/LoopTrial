@@ -85,6 +85,18 @@ def test_generated_mcp_config_shares_lab_from_an_unrelated_client(workbench, tmp
     assert asyncio.run(read_status())["session_id"] == session["session_id"]
 
 
+def test_standalone_demo_preserves_busy_device_error(workbench):
+    _, cli = workbench
+    job = cli("run", "sim://thermal", "step", "--background", "--pace", "30")
+    try:
+        result = subprocess.run([sys.executable, "-m", "looptrial.client"], timeout=20,
+                                capture_output=True, encoding="utf-8")
+        assert result.returncode == 1
+        assert json.loads(result.stdout)["error"]["code"] == "device_busy"
+    finally:
+        cli("cancel", job["id"])
+
+
 def test_standalone_client_preserves_single_event_lists_and_rejects_list_errors(workbench, tmp_path):
     post, _ = workbench
     post("connect", {"uri":"sim://sensor"})

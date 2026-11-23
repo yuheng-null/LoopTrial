@@ -364,6 +364,28 @@ def test_write_attribution_follows_the_board_and_effective_values(endpoint):
     assert trial["parameters"]["gain"] == 3 and "last_parameter_write" not in trial
 
 
+def test_unconfirmed_capture_invalidates_the_live_state(endpoint, monkeypatch):
+    from looptrial import engine
+    from looptrial.live import LiveSession
+    uri, _ = endpoint
+    session = LiveSession()
+    monkeypatch.setattr(engine, "runtime", session)
+    try:
+        session.connect(uri)
+        def lost_trial(*args):
+            raise hw.HardwareError("unknown_trial", "Board lost the active trial", state_unknown=True)
+        monkeypatch.setattr(session.board, "acquire", lost_trial)
+        run = engine.run_experiment(uri, "step", conditions={"samples": 4})
+        assert run["error"]["code"] == "unknown_trial"
+        live = session.snapshot()
+        assert run["device_state"]["state"] == live["state"] == "unknown"
+        assert live["values"] is None
+        assert live["last_confirmed"]["values"] == run["device_state"]["last_confirmed"]
+        assert session.connect(uri)["state"] == "verified"
+    finally:
+        session.close()
+
+
 def test_live_board_confirms_a_parameter_change_observed_in_telemetry(endpoint, monkeypatch):
     from looptrial import engine
     from looptrial.live import LiveSession

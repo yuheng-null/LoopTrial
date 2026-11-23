@@ -17,6 +17,8 @@ If the user asks about noise at rest, one capture can answer the question. Repor
 2. Apply a candidate within the authorized range, check the independent readback, then capture a fresh trace under matching conditions. Use the waveform and constraints to decide whether to continue. Reuse the same `key` to retry a request. Omit it or use a fresh key for independent confirmation.
 3. Confirm a passing candidate in a new run. To attribute a failure to saturation, report the output limit, time spent there and remaining target error. When the budget expires, state the range explored. Read back any restored settings. After a disconnect, repeat the handshake and read the configuration. Distinguish the last confirmed state from any current uncertainty. Cite each run ID that supports the conclusion.
 
+When comparing event times, check `unavailable_delta`. For each listed metric, report which run observed the event and the observation window. An exact time saving requires a measured crossing in both runs.
+
 [PowerShell quick start](quickstart.md) · [MCP configuration template](mcp-config.json)
 
 When the workbench is open, use the same absolute `LOOPTRIAL_HOME` for the CLI and stdio MCP. Inspect `looptrial live` or `session_status` for the selected device and most recent confirmed state. Use `session_timeline` to identify manual or other client changes. CLI and MCP can also operate headlessly. The `lap` action on `race://yali` uses a rendered camera, model controllers and eight ordered checkpoints. Require a valid finish, optimize elapsed time and confirm with fresh runs.

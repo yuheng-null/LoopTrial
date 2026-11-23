@@ -1,6 +1,6 @@
 # LoopTrial
 
-**简体中文** · [English](README.en.md) · [下载 v0.2.2](https://github.com/yuheng-null/LoopTrial/releases/tag/v0.2.2)
+**简体中文** · [English](README.en.md) · [下载 v0.2.3](https://github.com/yuheng-null/LoopTrial/releases/tag/v0.2.3)
 
 LoopTrial 是给嵌入式工程师和 AI Agent 共用的实验上位机。你可以开着实时波形看设备，对自己的 Agent 描述症状。在随包的整车仿真里，一句「这辆车过弯太慢，帮我调快一点」就可以开始实验。Agent 通过 CLI 或 MCP 使用同一次连接，读生效参数、试候选、复测，并把结果留在你能看到的时间轴上。一次诊断也可以只采一段波形。
 
@@ -14,7 +14,7 @@ LoopTrial 是给嵌入式工程师和 AI Agent 共用的实验上位机。你可
 
 ```powershell
 py -3.12 -m venv .venv
-.\.venv\Scripts\python -m pip install https://github.com/yuheng-null/LoopTrial/releases/download/v0.2.2/looptrial-0.2.2-py3-none-any.whl
+.\.venv\Scripts\python -m pip install https://github.com/yuheng-null/LoopTrial/releases/download/v0.2.3/looptrial-0.2.3-py3-none-any.whl
 $env:PATH = "$PWD\.venv\Scripts;$env:PATH"
 $env:LOOPTRIAL_HOME = "$PWD\lab"
 looptrial studio
@@ -28,7 +28,7 @@ looptrial studio
 
 把本页网址和症状发给能使用本地工具的 Agent 即可。克隆仓库后，在 Python 3.11+ 虚拟环境中从根目录执行 `python -m pip install .`。已安装时直接用 CLI，或在支持 stdio 的客户端注册同一环境中的 `looptrial-mcp`。工作台、CLI 和 MCP 使用同一个绝对路径 `LOOPTRIAL_HOME`，独立 MCP 客户端用 `looptrial-client`。在工作台所在环境运行 `looptrial mcp-config` 即可生成可粘贴的 stdio 配置。已授权的调参可以从发现能力一直做到新试验确认。[Agent 实验指南](src/looptrial/resources/agent-guide.md) · [CLI 与 MCP 配置](docs/CLI.zh-CN.md)
 
-在第二个 PowerShell 中进入同一目录，执行下面的命令。第一项可以看到当前连接和最近的人为改动。后面三项会在无硬件条件下完成一次取样和复核；关闭工作台也可独立使用这些实验命令。
+在第二个 PowerShell 中进入同一目录，执行下面的命令。第一项可以看到当前连接和最近的人为改动。后面三项会在无硬件条件下完成一次取样和复核；关闭工作台也可独立使用这些实验命令。最后一项会启动独立的 stdio MCP 客户端，另做一次温控实验。
 
 ```powershell
 $env:PATH = "$PWD\.venv\Scripts;$env:PATH"

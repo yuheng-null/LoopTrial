@@ -13,6 +13,7 @@ let frozenRows = null;
 let selectedEvent = null;
 let pendingWrite = false, pendingConnect = false, pendingRun = false, pendingStop = false;
 let refreshing = false, serviceLost = false, knownRecords = [], latestRun = "", overlayEpoch = 0;
+let overlayPending = false;
 let recordSignature = "", eventSignature = "", eventContainerSession = null;
 let view = "live";
 
@@ -460,12 +461,15 @@ async function refreshRuns(force=false) {
     if(knownRecords.some(r=>r.id===previous[index])) select.value=previous[index];
     else if(knownRecords.length>=2) select.value=knownRecords[index===0?1:0].id;
   }
-  $("compare-button").disabled=knownRecords.length<2;
+  if(previous[0]!==$("baseline").value || previous[1]!==$("candidate").value) resetOverlay();
+  $("compare-button").disabled=overlayPending || knownRecords.length<2;
   if(knownRecords.length<2) $("compare-note").textContent=tr("emptyRuns");
   else if(!overlay) $("compare-note").textContent="";
 }
 function resetOverlay() {
   overlayEpoch++;
+  overlayPending=false;
+  $("compare-button").disabled=knownRecords.length<2;
   overlay=null; overlaySignals=[]; overlaySelection=new Set();
   $("overlay-signals").replaceChildren();
   $("metrics-block").hidden=true; $("overlay-legend").hidden=true;
@@ -485,10 +489,14 @@ function showOverlay() {
   const origin = (label,write)=>write ? " · "+tr(label)+" "+(write.actor==="human"?tr("human"):write.actor)+" "+stamp(write.time) : "";
   $("changed-params").textContent = changes + origin("baseline",firstWrite) + origin("candidate",secondWrite);
   const body=$("metrics"); body.replaceChildren();
-  for(const [key,delta] of Object.entries(overlay.comparison.delta || {})){
+  const {delta, unavailable_delta = {}} = overlay.comparison;
+  for(const key of [...Object.keys(delta), ...Object.keys(unavailable_delta)]){
     const row=node("tr"), unit=overlay.comparison.metric_units?.[key] || b.metric_units?.[key] || a.metric_units?.[key] || "";
-    row.append(node("td",key+(unit?" ("+unit+")":"")),node("td",displayNumber(a.metrics?.[key])),node("td",displayNumber(b.metrics?.[key])),
-      node("td",(delta>0?"+":"")+displayNumber(delta)));
+    const missing = unavailable_delta[key];
+    const first = missing?.first_observed === false ? tr("eventNotObserved") : displayNumber(a.metrics[key]);
+    const second = missing?.second_observed === false ? tr("eventNotObserved") : displayNumber(b.metrics[key]);
+    const difference = missing ? tr("noExactDelta") : (delta[key]>0?"+":"")+displayNumber(delta[key]);
+    row.append(node("td",key+(unit?" ("+unit+")":"")),node("td",first),node("td",second),node("td",difference));
     body.append(row);
   }
   drawOverlay();
@@ -499,6 +507,7 @@ $("compare-form").addEventListener("submit",async event=>{
   const first=$("baseline").value, second=$("candidate").value;
   if(first===second){$("compare-note").textContent=tr("different");return;}
   const epoch=overlayEpoch;
+  overlayPending=true;
   $("compare-button").disabled=true;
   try {
     const comparison=await api("compare",{first,second});
@@ -512,7 +521,12 @@ $("compare-form").addEventListener("submit",async event=>{
     overlaySelection=initialSelection(overlaySignals);
     showOverlay();
   } catch(error) { if(epoch===overlayEpoch) $("compare-note").textContent=error.message; }
-  finally {$("compare-button").disabled=knownRecords.length<2;}
+  finally {
+    if(epoch===overlayEpoch){
+      overlayPending=false;
+      $("compare-button").disabled=knownRecords.length<2;
+    }
+  }
 });
 $("refresh-runs").addEventListener("click",()=>refreshRuns(true).catch(showError));
 

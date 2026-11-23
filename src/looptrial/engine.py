@@ -21,6 +21,7 @@ from datetime import datetime, timezone
 from filelock import FileLock, Timeout
 
 from . import __version__, records
+from .hardware import HardwareError
 from .records import validate_rules
 
 
@@ -148,7 +149,12 @@ def device_lock(uri, timeout=0):
         with lock_for("device/" + resource(uri), timeout=timeout):
             session = getattr(backend(uri), "session", None) if uri.startswith(("serial://", "ble://")) else None
             with session(uri) if session else contextlib.nullcontext():
-                yield
+                try:
+                    yield
+                except HardwareError as error:
+                    if runtime is not None and error.state_unknown:
+                        runtime.unknown(uri, str(error))
+                    raise
     except Timeout as error:
         raise Problem("device_busy", "another process is using this device") from error
 
@@ -431,7 +437,7 @@ def new_record(row, request):
 def finish(record):
     summary = {k:record[k] for k in ("id", "status", "source", "action", "conditions", "parameters",
                "device_state", "samples", "metrics", "checks", "passed", "error", "warnings", "instance",
-               "actor", "last_parameter_write", "started", "finished", "device", "metric_units") if k in record}
+               "actor", "last_parameter_write", "started", "finished", "device", "metric_units", "requires_event") if k in record}
     summary["record"] = "runs/" + record["id"] + "/record.json"
     with database() as db:
         db.execute("UPDATE jobs SET status=?,summary=? WHERE id=?",
@@ -484,6 +490,8 @@ def work(run_id):
                 validate(conditions, spec["conditions"])
                 params = _read(adapter, uri, info)
                 begin = observe(uri, "run_started", {"id": run_id, "action": action, "values": params})
+                if runtime is not None:
+                    runtime.confirm(uri, params, begin["time"])
                 record.update(conditions=conditions, parameters=params, device_state={"state": "verified", "values": params},
                               actor=actor.get(), started=begin["time"], timeline_start=begin["seq"])
                 # Writes are indexed by device instance across both transports.
@@ -583,7 +591,10 @@ def load_record(ref):
 
 
 def review(ref):
-    directory, record = load_record(ref)
+    return _review_record(*load_record(ref))
+
+
+def _review_record(directory, record):
     rows = records.load_samples(directory, record)
     result = dict(id=record["id"], status=record["status"], samples=len(rows), samples_sha256=record["samples_sha256"],
                   parameters=record.get("parameters"), device_state=record["device_state"])
@@ -599,7 +610,9 @@ def review(ref):
     checks = {k:records.check_rules(metrics, record[k], record.get("requires_event")) for k in ("goals", "constraints")}
     if not matches_evaluation(record, metrics, checks):
         raise Problem("record_mismatch", "recomputed metrics or verdict differ from saved record", metrics=metrics)
-    return result | {"recomputed": True, "metrics": metrics, "checks": checks, "passed": record["passed"]}
+    events = _metric_events(record)
+    return result | {"recomputed": True, "metrics": metrics, "requires_event": events,
+                     "checks": checks, "passed": record["passed"]}
 
 
 def matches_evaluation(record, metrics, checks):
@@ -621,19 +634,67 @@ def waveform(ref, start=0, count=8):
     return dict(id=record["id"], start=start, total=len(rows), rows=rows[start:start+count])
 
 
+def _metric_events(record):
+    uri = record["source"]
+    saved = record.get("requires_event", {})
+    if not isinstance(saved, dict) or any(not isinstance(v, str) for v in saved.values()):
+        raise ValueError("requires_event must map metric names to event names")
+    # Early simulator records predate stored metric metadata. Both sensor
+    # evaluators use the same event flag but compute its threshold differently.
+    if uri.startswith(("sim://", "race://")):
+        info = backend(uri).describe(uri)
+        legacy_sensor = uri == "sim://sensor" and record["version"] == "1.0"
+        if record["version"] != info["version"] and not legacy_sensor:
+            raise ValueError(f"unsupported evaluator version {record['version']} for {uri}")
+        fields = info["actions"][record["action"]]["metrics"]
+        expected = {k: spec["requires_event"] for k, spec in fields.items() if "requires_event" in spec}
+        if saved and saved != expected:
+            raise ValueError("saved event definitions differ from the evaluator")
+        saved = expected
+    for metric, event in saved.items():
+        if metric not in record["metrics"] or event not in record["metrics"]:
+            raise ValueError("event definition refers to an unavailable metric")
+    return saved
+
+
+
 def compare(first, second):
-    a, b = (load_record(ref)[1] for ref in (first, second))
-    for ref in (first, second):
-        review(ref)
+    loaded = [load_record(ref) for ref in (first, second)]
+    reviewed = [_review_record(directory, record) for directory, record in loaded]
+    a, b = [record for _, record in loaded]
     differences = [k for k in ("device", "instance", "version", "action", "conditions") if a.get(k) != b.get(k)]
-    if any(r["source"].startswith(("ble://", "serial://")) and not r.get("instance") for r in (a,b)):
+    physical = [r["source"].startswith(("ble://", "serial://")) for r in (a, b)]
+    if a["source"] != b["source"] and not all(physical):
+        differences.append("source")
+    if any(is_board and not r.get("instance") for is_board, r in zip(physical, (a, b))):
         differences.append("unknown physical instance")
     if differences or any(r["status"] != "completed" for r in (a,b)):
         raise Problem("incomparable", "requires completed trials with matching identity, version, action and conditions", differences=differences)
-    if a.get("action") == "lap" and any(r["metrics"].get("valid_lap") != 1 for r in (a,b)):
+    if a["source"] == "race://yali" and a["action"] == "lap" and any(r["metrics"].get("valid_lap") != 1 for r in (a,b)):
         raise Problem("incomparable", "An invalid lap has no finish time. Review its trajectory and stop event.")
+    requires_event = reviewed[0]["requires_event"]
+    if (requires_event != reviewed[1]["requires_event"] or a["metrics"].keys() != b["metrics"].keys()
+            or a["parameters"].keys() != b["parameters"].keys()):
+        raise Problem("incomparable", "Trial metric, event or parameter definitions differ.")
+    for k in a.get("metric_units", {}).keys() & b.get("metric_units", {}).keys():
+        if a["metric_units"][k] != b["metric_units"][k]:
+            raise Problem("incomparable", f"Metric units differ for {k}.")
+    delta, unavailable_delta = {}, {}
+    for k, v in a["metrics"].items():
+        event = requires_event.get(k)
+        if event:
+            first_observed = bool(a["metrics"][event])
+            second_observed = bool(b["metrics"][event])
+            if not (first_observed and second_observed):
+                unavailable_delta[k] = {
+                    "event": event,
+                    "first_observed": first_observed,
+                    "second_observed": second_observed,
+                }
+                continue
+        delta[k] = b["metrics"][k] - v
     return dict(first=a["id"], second=b["id"], parameters=[a["parameters"], b["parameters"]],
-                metric_units=b.get("metric_units", a.get("metric_units", {})),
+                metric_units=a.get("metric_units", {}) | b.get("metric_units", {}),
                 changed_parameters={k: [v,b["parameters"].get(k)] for k,v in a["parameters"].items() if b["parameters"].get(k) != v},
                 last_parameter_writes=[a.get("last_parameter_write"), b.get("last_parameter_write")],
-                delta={k:b["metrics"][k]-v for k,v in a["metrics"].items()})
+                delta=delta, unavailable_delta=unavailable_delta)

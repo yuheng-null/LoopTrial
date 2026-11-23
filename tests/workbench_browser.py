@@ -154,7 +154,16 @@ def main():
             page.locator("#compare-tab").click()
             page.locator("#baseline").select_option(baseline)
             page.locator("#candidate").select_option(candidate)
+            pending_comparisons = []
+            page.route("**/api/compare", lambda route: pending_comparisons.append(route))
             page.locator("#compare-button").click()
+            page.wait_for_selector("#compare-button:disabled")
+            with page.expect_response("**/api/list_runs"):
+                page.locator("#refresh-runs").click()
+            assert page.locator("#compare-button").is_disabled()
+            assert len(pending_comparisons) == 1
+            pending_comparisons[0].continue_()
+            page.unroute("**/api/compare")
             page.wait_for_selector("#metrics-block:visible")
             assert "noise_std" in page.locator("#metrics").inner_text()
             assert "alpha" in page.locator("#changed-params").inner_text()
@@ -168,6 +177,24 @@ def main():
             wait_for_cli(lambda: "incomparable" in page.locator("#compare-note").inner_text())
             assert not page.locator("#metrics-block").is_visible()
             summary["incompatible_overlay_refused"] = True
+
+            thermal = "sim://thermal"
+            cli("apply", thermal, "kp=0.002", "ki=0")
+            slow = cli("run", thermal, "step", "--condition", "duration_s=60")
+            cli("apply", thermal, "kp=0.065", "ki=0.002")
+            fast = cli("run", thermal, "step", "--condition", "duration_s=60")
+            page.locator("#refresh-runs").click()
+            page.locator("#baseline").select_option(slow["id"])
+            page.locator("#candidate").select_option(fast["id"])
+            page.locator("#compare-button").click()
+            row = page.locator("#metrics tr").filter(has_text="rise_s")
+            wait_for_cli(lambda: "未观测到" in row.inner_text())
+            cells = row.locator("td").all_text_contents()
+            assert cells[1:] == ["未观测到", str(fast["metrics"]["rise_s"]), "无法计算精确差值"], cells
+            page.locator("#language").click()
+            assert row.locator("td").all_text_contents()[1:] == ["Not observed", cells[2], "No exact difference"]
+            page.locator("#language").click()
+            summary["censored_rise_comparison"] = {"first": slow["id"], "second": fast["id"], "cells": cells}
 
             page.locator("#live-tab").click()
             page.locator("#window").select_option("60")

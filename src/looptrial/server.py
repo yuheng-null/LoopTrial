@@ -97,7 +97,10 @@ async def review(record: str):
 
 @mcp.tool()
 async def compare(first: str, second: str):
-    """Compare metrics of two completed experiments with matching device, version, action and conditions."""
+    """Compare completed trials with matching device, version, action and conditions.
+    Numeric differences are in delta. For unobserved event times, unavailable_delta
+    identifies the event and whether it occurred in the first and second trials.
+    """
     return await call(engine.compare, first, second)
 
 

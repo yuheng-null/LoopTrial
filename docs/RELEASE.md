@@ -1,8 +1,16 @@
-# LoopTrial 0.2.2
+# LoopTrial 0.2.3
 
 **简体中文** · [English](RELEASE.en.md)
 
-从 [v0.2.2 发布页](https://github.com/yuheng-null/LoopTrial/releases/tag/v0.2.2) 下载。标签固定用于构建的源码。SHA256SUMS.txt 列出主机 wheel、完整源码分发包、板端 BIN、ELF 和实验资料包的 SHA-256。release-audit.json 记录构建提交、平台、包外安装、标准 MCP 调用与离线核验结果。
+从 [v0.2.3 发布页](https://github.com/yuheng-null/LoopTrial/releases/tag/v0.2.3) 下载。标签固定用于构建的源码。SHA256SUMS.txt 列出主机 wheel、完整源码分发包、板端 BIN、ELF 和实验资料包的 SHA-256。release-audit.json 记录构建提交、平台、包外安装、标准 MCP 调用与离线核验结果。
+
+## 0.2.3 实验比较与状态回读
+
+基线和候选只有在观察窗内都发生了目标事件，才能计算精确的时间差。例如，同样观察 60 秒，基线一直没达到目标温升的 95%，候选在 41.5 秒达到。能确认候选在窗内达标，基线的实际达标时刻仍未知。工作台标明哪轮未观测到，CLI 和 MCP 在 `unavailable_delta` 中给出事件和两轮的观测标志。其他可比指标仍给出数值差。历史实验可用新版直接复核。
+
+若板卡报告试验状态未知，工作台同时将当前设备状态标为未知，保留最近一次确认的参数，重新连接并读回后再显示生效值。独立 MCP 客户端在默认示例遇到设备忙时会输出服务端的错误 JSON 和非零退出码。
+
+下载本页的实验资料包后，打开 `release-validation/agent/normal` 和 `release-validation/agent/limited`，可以核对同一句升温症状在两种加热功率上限下触发的实际工具调用、每轮记录和最后回读。浏览器实验的 60 秒对比保存在 `release-validation/comparison`。在解压目录运行 `looptrial review .\release-validation\comparison\baseline` 即可离线复核。
 
 ## 0.2.2 工作台
 
@@ -24,17 +32,17 @@
 
 | 文件 | 用途 |
 | --- | --- |
-| looptrial-0.2.2-py3-none-any.whl | Python 3.11+ 主机包。按 README 安装后有四个入口：looptrial、looptrial-studio、looptrial-mcp、looptrial-client。Windows 实测用 CPython 3.12。首次安装需要获取依赖。 |
-| looptrial-0.2.2.tar.gz | 对应主机程序、固件源码、实验示例、测试、依赖清单及许可证，可用于重建。 |
+| looptrial-0.2.3-py3-none-any.whl | Python 3.11+ 主机包。按 README 安装后有四个入口：looptrial、looptrial-studio、looptrial-mcp、looptrial-client。Windows 实测用 CPython 3.12。首次安装需要获取依赖。 |
+| looptrial-0.2.3.tar.gz | 对应主机程序、固件源码、实验示例、测试、依赖清单及许可证，可用于重建。 |
 | looptrial-bluepill-0.2.0.bin、looptrial-bluepill-0.2.0.elf | STM32F103C8T6、Cortex-M3，64 KiB Flash 的双 UART 示例。BIN 的起始地址为 0x08000000。 |
-| looptrial-evidence-0.2.2.zip | 公开的对话与调用、原始 CSV、记录摘要、曲线和板卡测试说明。保留相邻 CSV 与 record.json，按编号复核。 |
+| looptrial-evidence-0.2.3.zip | 公开的对话与调用、原始 CSV、记录摘要、曲线和板卡测试说明。保留相邻 CSV 与 record.json，按编号复核。 |
 
 ## 从源码重建
 
 以下在 Windows PowerShell 执行。安装 Python 3.12。编译 Blue Pill 需要 GNU Arm Embedded GCC（验收版 14.3.1）；在 PATH 中提供 arm-none-eabi-gcc，或给固件构建脚本传入 `--toolchain-bin <bin目录>`。运行两种传输的故障回归还需要 PATH 中的本机 C 编译器 gcc 或 cc，用于把同一份 C 协议代码编译成主机动态库。
 
 ```powershell
-git clone --branch v0.2.2 --depth 1 https://github.com/yuheng-null/LoopTrial.git
+git clone --branch v0.2.3 --depth 1 https://github.com/yuheng-null/LoopTrial.git
 cd LoopTrial
 git rev-parse HEAD
 py -3.12 -m venv .venv

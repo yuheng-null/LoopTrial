@@ -1,8 +1,16 @@
-# LoopTrial 0.2.2
+# LoopTrial 0.2.3
 
 [简体中文](RELEASE.md) · **English**
 
-Download the files from the [v0.2.2 release](https://github.com/yuheng-null/LoopTrial/releases/tag/v0.2.2). The tag identifies the source used for the build. `SHA256SUMS.txt` lists the host wheel, source distribution, board BIN and ELF, and evidence archive. `release-audit.json` records the build commit, platform, installation outside the checkout, standard MCP calls and offline checks.
+Download the files from the [v0.2.3 release](https://github.com/yuheng-null/LoopTrial/releases/tag/v0.2.3). The tag identifies the source used for the build. `SHA256SUMS.txt` lists the host wheel, source distribution, board BIN and ELF, and evidence archive. `release-audit.json` records the build commit, platform, installation outside the checkout, standard MCP calls and offline checks.
+
+## Comparison and readback in 0.2.3
+
+An exact time difference requires an observed event in each run. In a 60-second thermal experiment, for example, the candidate reached 95% of the temperature step at 41.5 seconds. The baseline never reached it during the observation window, so its crossing time remains unknown. The workbench labels the affected run. CLI and MCP include the event and both observation flags in `unavailable_delta`. Other comparable metrics retain their numeric differences. Existing records can be reviewed with the new host.
+
+When a board reports that trial state is unknown, the workbench marks the current device state unknown and retains the last confirmed settings. Reconnecting reads the effective settings again. If the default standalone MCP example encounters a busy device, it returns the server's JSON error and a nonzero exit code.
+
+In the evidence archive, open `release-validation/agent/normal` and `release-validation/agent/limited` for the actual tool calls, trials and final readbacks when the same heating symptom was reported under two power limits. The browser's 60-second comparison is in `release-validation/comparison`. From the extracted archive run `looptrial review .\release-validation\comparison\baseline` to repeat the offline check.
 
 ## Workbench 0.2.2
 
@@ -24,17 +32,17 @@ This patch rebuilds and verifies the existing 0.2.0 firmware. Legacy compatibili
 
 | File | Purpose |
 | --- | --- |
-| looptrial-0.2.2-py3-none-any.whl | Host package for Python 3.11+. Installing it provides `looptrial`, `looptrial-studio`, `looptrial-mcp` and `looptrial-client`. The release was tested on Windows with CPython 3.12. The first installation fetches dependencies. |
-| looptrial-0.2.2.tar.gz | Sources for the host and firmware, experiments, tests, dependency lists and licenses needed to rebuild. |
+| looptrial-0.2.3-py3-none-any.whl | Host package for Python 3.11+. Installing it provides `looptrial`, `looptrial-studio`, `looptrial-mcp` and `looptrial-client`. The release was tested on Windows with CPython 3.12. The first installation fetches dependencies. |
+| looptrial-0.2.3.tar.gz | Sources for the host and firmware, experiments, tests, dependency lists and licenses needed to rebuild. |
 | looptrial-bluepill-0.2.0.bin, looptrial-bluepill-0.2.0.elf | Dual-UART example for the STM32F103C8T6 (Cortex-M3, 64 KiB Flash). The BIN starts at 0x08000000. |
-| looptrial-evidence-0.2.2.zip | Public conversations, tool calls, raw CSVs, run records, plots and board test notes. Keep each CSV beside its `record.json` to review the run by ID. |
+| looptrial-evidence-0.2.3.zip | Public conversations, tool calls, raw CSVs, run records, plots and board test notes. Keep each CSV beside its `record.json` to review the run by ID. |
 
 ## Rebuild from source
 
 Run the following in Windows PowerShell with Python 3.12 installed. The Blue Pill build needs GNU Arm Embedded GCC (14.3.1 for acceptance). Put `arm-none-eabi-gcc` on PATH or pass `--toolchain-bin <directory>` to the firmware build script. Transport fault regression tests also need a native `gcc` or `cc` on PATH to build the C protocol code as a host shared library.
 
 ```powershell
-git clone --branch v0.2.2 --depth 1 https://github.com/yuheng-null/LoopTrial.git
+git clone --branch v0.2.3 --depth 1 https://github.com/yuheng-null/LoopTrial.git
 cd LoopTrial
 git rev-parse HEAD
 py -3.12 -m venv .venv

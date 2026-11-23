@@ -1,4 +1,5 @@
 const strings = {
+  eventNotObserved:["Not observed","未观测到"], noExactDelta:["No exact difference","无法计算精确差值"],
   live:["Live","实时"], frozen:["Frozen","已冻结"], captured:["Captured","已采集"],
   undo:["Discard edits","撤销修改"], done:["Done","完成"], filterSource:["Filter by source","按操作来源筛选"], allSources:["All sources","全部来源"], noMatchingEvents:["No events from this source.","此来源尚无事件。"],
   devices:["Discovered devices","已发现设备"],
